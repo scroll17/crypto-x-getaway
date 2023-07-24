@@ -1,0 +1,59 @@
+/*external modules*/
+import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+/*modules*/
+import { RedisModule } from './modules/redis/redis.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { UserModule } from './modules/user/user.module';
+import { SeedModule } from './modules/seed/seed.module';
+/*services*/
+/*controllers*/
+/*@entities*/
+import { UserEntity } from '@entities/user';
+import { AccessTokenEntity } from '@entities/accessToken';
+import { AdminEntity } from '@entities/admin';
+/*@common*/
+import { LoggingInterceptor } from '@common/interceptors';
+/*other*/
+import { configuration } from './config/configuration';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      load: [configuration],
+    }),
+    TypeOrmModule.forRootAsync({
+      useFactory: (configService: ConfigService) => {
+        return {
+          type: 'postgres',
+          url: configService.getOrThrow('postgres.url'),
+          entities: [UserEntity, AccessTokenEntity, AdminEntity],
+          logging: true,
+          synchronize: configService.getOrThrow('database.syncEntities'),
+          autoLoadEntities: configService.getOrThrow(
+            'database.autoLoadEntities',
+          ),
+        };
+      },
+      inject: [ConfigService],
+    }),
+    RedisModule, // Global
+    AuthModule,
+    AdminModule,
+    UserModule,
+    SeedModule,
+  ],
+  controllers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
+})
+export class AppModule {}
