@@ -1,7 +1,7 @@
 FROM node:18-bullseye
 
 ENV HOME_DIR /home/app
-ENV API_DIR $HOME_DIR/bnb_nodes_server
+ENV API_DIR $HOME_DIR/crypto_x_server
 
 ENV TZ=Europe/Kiev
 
