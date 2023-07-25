@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 /*modules*/
 import { RedisModule } from './modules/redis/redis.module';
+import { NgrokModule } from "./modules/ngrok/ngrok.module";
 import { AuthModule } from './modules/auth/auth.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { UserModule } from './modules/user/user.module';
@@ -43,6 +44,7 @@ import { configuration } from './config/configuration';
       inject: [ConfigService],
     }),
     RedisModule, // Global
+    NgrokModule, // Global
     AuthModule,
     AdminModule,
     UserModule,
