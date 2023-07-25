@@ -10,6 +10,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { UserModule } from './modules/user/user.module';
 import { SeedModule } from './modules/seed/seed.module';
+import { TelegramModule } from "./modules/telegram/telegram.module";
 /*services*/
 /*controllers*/
 /*@entities*/
@@ -49,6 +50,7 @@ import { configuration } from './config/configuration';
     AdminModule,
     UserModule,
     SeedModule,
+    TelegramModule
   ],
   controllers: [],
   providers: [
