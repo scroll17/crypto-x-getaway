@@ -1,6 +1,26 @@
 version: "3"
 
 services:
+#  nginx:
+#    image: nginx:1.15-alpine
+#    networks:
+#      - services-network
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    volumes:
+#      - ./nginx:/etc/nginx/conf.d
+#      - ./certbot/conf:/etc/letsencrypt:rw
+#      - ./certbot/www:/var/www/certbot:rw
+#
+#  certbot:
+#    image: certbot/certbot
+#    networks:
+#      - services-network
+#    volumes:
+#      - ./certbot/conf:/etc/letsencrypt:rw
+#      - ./certbot/www:/var/www/certbot:rw
+
   api:
     container_name: crypto_x_api
     build:
@@ -63,3 +83,6 @@ services:
 networks:
   services-network:
     driver: bridge
+
+volumes:
+  app:
