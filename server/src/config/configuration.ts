@@ -34,6 +34,12 @@ export const configuration = () => {
     fileName: process.env.NGROK_FILE_NAME,
   };
 
+  const telegram = {
+    webhook: process.env.TELEGRAM_WEBHOOK,
+    token: process.env.TELEGRAM_TOKEN,
+    botName: process.env.TELEGRAM_BOT_NAME,
+  };
+
   const google = {
     googleAppId: process.env.GOOGLE_APP_ID,
     googleAppSecret: process.env.GOOGLE_APP_SECRET,
@@ -69,6 +75,7 @@ export const configuration = () => {
     bll,
     ngrok,
     google,
+    telegram,
     facebook,
     postgres,
     database,
