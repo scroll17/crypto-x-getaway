@@ -61,7 +61,7 @@ services:
       timeout: 5s
       retries: 30
     environment:
-      - POSTGRES_DB=bnb_nodes
+      - POSTGRES_DB=crypto_x
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
