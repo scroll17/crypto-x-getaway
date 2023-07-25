@@ -31,12 +31,13 @@ export class UserModel
   })
   lastName: string;
 
+  @ApiPropertyOptional()
   @ApiProperty({
     type: String,
     example: 'test@test.com',
     description: 'The user email',
   })
-  email: string;
+  email: string | null;
 
   @ApiPropertyOptional()
   @ApiProperty({
@@ -66,6 +67,20 @@ export class UserModel
     description: 'Is user deleted',
   })
   deleted: boolean;
+
+  @ApiProperty({
+    type: Boolean,
+    example: true,
+    description: 'Is user has access to bot',
+  })
+  hasBotAccess: boolean;
+
+  @ApiProperty({
+    type: String,
+    example: '117864272370217919267',
+    description: 'Is user telegramId',
+  })
+  telegramId: string;
 
   @ApiProperty({
     type: String,

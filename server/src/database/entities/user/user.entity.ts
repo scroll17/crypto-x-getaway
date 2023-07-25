@@ -26,8 +26,8 @@ export class UserEntity extends BaseEntity {
   @Column('varchar', { name: 'last_name', length: 255, nullable: false })
   lastName: string;
 
-  @Column('citext', { nullable: false, unique: true })
-  email: string;
+  @Column('citext', { nullable: true, unique: true })
+  email: string | null;
 
   @Exclude()
   @Column('varchar', { length: 255, nullable: true, default: null })
@@ -49,6 +49,12 @@ export class UserEntity extends BaseEntity {
 
   @Column('boolean', { default: false })
   deleted: boolean;
+
+  @Column('boolean', { name: 'has_bot_access', default: true })
+  hasBotAccess: boolean;
+
+  @Column('varchar', { name: 'telegram_id', nullable: false, length: 100 })
+  telegramId: string;
 
   @Column('varchar', { name: 'google_id', default: null, length: 100 })
   googleId: string | null;

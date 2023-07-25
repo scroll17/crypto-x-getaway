@@ -1,5 +1,5 @@
 export interface IUserDataInAccessToken {
   id: number;
   userId: number; // userId or adminId
-  email: string;
+  email: string | null;
 }

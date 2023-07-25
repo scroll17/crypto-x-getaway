@@ -3,4 +3,5 @@ export enum UserWentFrom {
   Admin = 'admin',
   Google = 'google',
   Facebook = 'facebook',
+  Telegram = 'telegram'
 }

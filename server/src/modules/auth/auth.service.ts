@@ -164,6 +164,7 @@ export class AuthService {
       const user = this.usersRepository.create({
         ...dto,
         wentFrom: UserWentFrom.Manual,
+        telegramId: '0'
       });
       await user.hashPassword();
       await queryRunner.manager.save(user);
@@ -264,6 +265,7 @@ export class AuthService {
           verified: thirdPartyAuthUser.verified,
           wentFrom: provider,
           googleId: thirdPartyAuthUser.profileId,
+          telegramId: '0'
         });
         await queryRunner.manager.save(user);
 
