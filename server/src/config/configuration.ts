@@ -29,6 +29,11 @@ export const configuration = () => {
     autoLoadEntities: Boolean(Number(process.env.DATABASE_AUTO_LOAD_ENTITIES!)),
   };
 
+  const ngrok = {
+    token: process.env.NGROK_TOKEN,
+    fileName: process.env.NGROK_FILE_NAME,
+  };
+
   const google = {
     googleAppId: process.env.GOOGLE_APP_ID,
     googleAppSecret: process.env.GOOGLE_APP_SECRET,
@@ -62,6 +67,7 @@ export const configuration = () => {
     server,
     ports,
     bll,
+    ngrok,
     google,
     facebook,
     postgres,
