@@ -8,12 +8,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthAdmin } from '@common/guards';
-import { CurrentUser } from '@common/decorators';
+import { CurrentUser, DisableController } from '@common/decorators';
 import { ICurrentUserData } from '@common/interfaces/auth';
 import { AdminModel } from '@entities/admin';
 
 @Controller('admin')
 @ApiTags('Admin')
+@DisableController()
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 

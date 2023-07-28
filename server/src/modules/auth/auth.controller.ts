@@ -31,7 +31,7 @@ import {
 } from '@nestjs/swagger';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { GoogleAuthGuard, JwtAuthGuard, LocalAuthGuard } from '@common/guards';
-import { CurrentUser } from '@common/decorators';
+import { CurrentUser, DisableController } from '@common/decorators';
 import {
   ICurrentUserData,
   IUserDataInThirdPartyService,
@@ -50,6 +50,7 @@ import { FacebookAuthGuard } from '@common/guards/facebook-auth.guard';
 @Controller('auth')
 @ApiTags('Auth')
 @ApiExtraModels(LoggedInAdminEntity)
+@DisableController()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
