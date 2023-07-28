@@ -12,6 +12,7 @@ import { UserModule } from './modules/user/user.module';
 import { SeedModule } from './modules/seed/seed.module';
 import { TelegramModule } from "./modules/telegram/telegram.module";
 import { DebankModule } from "./modules/integrations/debank/debank.module";
+import { ProtectionModule } from "./modules/protection/protection.module";
 /*services*/
 /*controllers*/
 /*@entities*/
@@ -52,7 +53,8 @@ import { configuration } from './config/configuration';
     UserModule,
     SeedModule,
     TelegramModule,
-    DebankModule
+    DebankModule,
+    ProtectionModule
   ],
   controllers: [],
   providers: [
