@@ -6,3 +6,4 @@ export { ControllerDisabledGuard } from './controller-disabled.guard';
 export { PhoneExistsGuard } from './phone-exists.guard';
 export { AdminGuard } from './admin.guard';
 export { AuthAdmin } from './auth-admin.guard';
+export { SecurityTokenGuard } from './security-token.guard'
