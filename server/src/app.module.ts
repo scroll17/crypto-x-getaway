@@ -48,13 +48,13 @@ import { configuration } from './config/configuration';
     }),
     RedisModule, // Global
     NgrokModule, // Global
+    ProtectionModule, // Global
     AuthModule,
     AdminModule,
     UserModule,
     SeedModule,
     TelegramModule,
-    DebankModule,
-    ProtectionModule
+    DebankModule
   ],
   controllers: [],
   providers: [
