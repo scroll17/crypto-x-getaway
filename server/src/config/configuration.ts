@@ -62,6 +62,11 @@ export const configuration = () => {
     refreshExpires: process.env.JWT_REFRESH_EXPIRES,
   };
 
+  const protection = {
+    securityTokenSecret: process.env.PROTECTION_SECURITY_TOKEN_SECRET,
+    securityTokenExpires: process.env.PROTECTION_SECURITY_TOKEN_EXPIRES,
+  };
+
   const seed = {
     bootstrapCommands: JSON.parse(process.env.BOOTSTRAP_COMMANDS!),
   };
@@ -81,6 +86,7 @@ export const configuration = () => {
     database,
     redis,
     jwt,
+    protection,
     seed,
   };
 };
