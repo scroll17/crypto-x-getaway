@@ -31,10 +31,6 @@ export class CryptoXBotUpdate {
   async onMessage(@Ctx() ctx: Context, @Next() next: Function): Promise<void> {
     const message = (ctx.update as any)['message'];
 
-    console.log('mes 1 => ', ctx.message )
-    console.log('mes 1 => ', (ctx.update as any)['message'] )
-
-
     this.logger.log('Telegram Bot Message:', {
       from: {
         id: message.from.id,
@@ -68,6 +64,18 @@ export class CryptoXBotUpdate {
   @Command('get_server_url')
   async onGetServerUrlCommand(@Ctx() ctx: Context): Promise<void> {
     const message = await this.cryptoXBotService.getServerUrl();
+    await ctx.replyWithMarkdown(message);
+  }
+
+  @Command('get_security_token')
+  async onGetSecurityTokenCommand(@Ctx() ctx: Context): Promise<void> {
+    const message = await this.cryptoXBotService.getSecurityToken(ctx.message!.from.id)
+    await ctx.replyWithMarkdown(message);
+  }
+
+  @Command('refresh_security_token')
+  async onRefreshSecurityTokenCommand(@Ctx() ctx: Context): Promise<void> {
+    const message = await this.cryptoXBotService.refreshSecurityToken(ctx.message!.from.id)
     await ctx.replyWithMarkdown(message);
   }
 }
