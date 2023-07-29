@@ -48,14 +48,13 @@ export class CryptoXBotUpdate {
   @Help()
   async onHelp(): Promise<string> {
     const commands = [
-      '/get_auth_token - Получить токен аутентификации',
-      '/get_client_url - Получить URL клиента',
       '/get_server_url - Получить URL сервера',
+      '/get_security_token - Получить токен аутентификации',
+      '/refresh_security_token - Обновить токен аутентификации',
     ].join('\n');
     const description = [
-      'URL клиента это ссылка на CRM сайт',
-      'Токен аутентификации используеться на стороне клиента',
-      'URL сервера также используеться на стороне клиента',
+      'Токен аутентификации используеться в таблице',
+      'URL сервера также используеться в таблице',
     ].join('\n');
 
     return `${commands}\n\n${description}`;
