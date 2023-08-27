@@ -10,7 +10,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { UserModule } from './modules/user/user.module';
 import { SeedModule } from './modules/seed/seed.module';
-import { TelegramModule } from './modules/telegram/telegram.module';
+// import { TelegramModule } from './modules/telegram/telegram.module';
 import { DebankModule } from './modules/integrations/debank/debank.module';
 import { ProtectionModule } from './modules/protection/protection.module';
 import { DatabaseModule } from './modules/database/database.module';
@@ -53,7 +53,7 @@ import { configuration } from './config/configuration';
     AdminModule,
     UserModule,
     SeedModule,
-    TelegramModule,
+    // TelegramModule,
     DebankModule,
   ],
   controllers: [],
