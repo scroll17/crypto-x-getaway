@@ -4,10 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class AdminModel
   implements
-    Omit<
-      Omit<AdminEntity, keyof BaseEntity>,
-      'password' | 'tokens' | 'hashPassword' | 'comparePassword' | 'toJSON'
-    >
+    Omit<Omit<AdminEntity, keyof BaseEntity>, 'password' | 'tokens' | 'hashPassword' | 'comparePassword' | 'toJSON'>
 {
   @ApiProperty({
     type: Number,

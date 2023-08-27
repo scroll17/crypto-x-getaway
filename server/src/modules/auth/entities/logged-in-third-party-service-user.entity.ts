@@ -5,8 +5,7 @@ export class LoggedInThirdPartyServiceUserEntity extends LoggedInUserEntity {
   @ApiProperty({
     type: Boolean,
     example: true,
-    description:
-      'The property describes did this user created or have already had record',
+    description: 'The property describes did this user created or have already had record',
   })
   new: boolean;
 }

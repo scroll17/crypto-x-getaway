@@ -3,9 +3,7 @@ import { AccessTokenEntity } from '@entities/accessToken/accessToken.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Lookup } from 'geoip-lite';
 
-export class AccessTokenModel
-  implements Omit<AccessTokenEntity, keyof BaseEntity>
-{
+export class AccessTokenModel implements Omit<AccessTokenEntity, keyof BaseEntity> {
   @ApiProperty({
     type: Number,
     example: 35343,

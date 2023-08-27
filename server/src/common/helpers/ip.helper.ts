@@ -10,7 +10,6 @@ export class IpHelper {
   }
 
   public getHTTPRawIp(request: Request) {
-    return (request.headers['x-forwarded-for'] ||
-      request.socket.remoteAddress) as string;
+    return (request.headers['x-forwarded-for'] || request.socket.remoteAddress) as string;
   }
 }

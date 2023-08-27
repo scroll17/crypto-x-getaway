@@ -20,11 +20,7 @@ export class ProtectionService {
 
   public async generateSecurityToken(telegramId: number) {
     const securityTokenLiveTime = Math.floor(
-      ms(
-        this.configService.getOrThrow<string>(
-          'protection.securityTokenExpires',
-        ),
-      ) / 1000,
+      ms(this.configService.getOrThrow<string>('protection.securityTokenExpires')) / 1000,
     );
     const tokenStr = this.dataGenerateHelper.randomHEX(16);
 
@@ -34,19 +30,13 @@ export class ProtectionService {
     });
 
     const redis = await this.redisService.getDefaultConnection();
-    await redis.setex(
-      RedisProtection.SecurityToken,
-      securityTokenLiveTime,
-      tokenStr,
-    );
+    await redis.setex(RedisProtection.SecurityToken, securityTokenLiveTime, tokenStr);
 
     const securityTokenPayload: IDataInSecurityToken = {
       token: tokenStr,
       userId: telegramId,
     };
-    const securityTokenTokenStr = await this.jwtService.signAsync(
-      securityTokenPayload,
-    );
+    const securityTokenTokenStr = await this.jwtService.signAsync(securityTokenPayload);
 
     return securityTokenTokenStr;
   }
@@ -57,8 +47,7 @@ export class ProtectionService {
     });
 
     try {
-      const securityToken =
-        await this.jwtService.verifyAsync<IDataInSecurityToken>(token);
+      const securityToken = await this.jwtService.verifyAsync<IDataInSecurityToken>(token);
       if (!securityToken) {
         return {
           valid: false,
@@ -74,20 +63,14 @@ export class ProtectionService {
       if (!localToken) {
         return {
           valid: false,
-          error: new HttpException(
-            'Local Token does not exist yet or has already expired',
-            HttpStatus.BAD_REQUEST,
-          ),
+          error: new HttpException('Local Token does not exist yet or has already expired', HttpStatus.BAD_REQUEST),
         };
       }
 
       if (securityToken.token !== localToken) {
         return {
           valid: false,
-          error: new HttpException(
-            'Passed Token is wrong',
-            HttpStatus.FORBIDDEN,
-          ),
+          error: new HttpException('Passed Token is wrong', HttpStatus.FORBIDDEN),
         };
       }
 
@@ -98,10 +81,7 @@ export class ProtectionService {
     } catch (error) {
       return {
         valid: false,
-        error: new HttpException(
-          'Token malformed or expired',
-          HttpStatus.BAD_REQUEST,
-        ),
+        error: new HttpException('Token malformed or expired', HttpStatus.BAD_REQUEST),
       };
     }
   }

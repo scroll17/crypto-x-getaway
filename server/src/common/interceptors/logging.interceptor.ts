@@ -1,12 +1,5 @@
 /*external modules*/
-import {
-  CallHandler,
-  ContextType,
-  ExecutionContext,
-  Injectable,
-  Logger,
-  NestInterceptor,
-} from '@nestjs/common';
+import { CallHandler, ContextType, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 /*modules*/
@@ -64,14 +57,6 @@ export class LoggingInterceptor implements NestInterceptor {
     const now = Date.now();
     return next
       .handle()
-      .pipe(
-        tap(() =>
-          this.logger.debug(
-            `[${token}] Execution time: ${((Date.now() - now) / 1000).toFixed(
-              2,
-            )}s`,
-          ),
-        ),
-      );
+      .pipe(tap(() => this.logger.debug(`[${token}] Execution time: ${((Date.now() - now) / 1000).toFixed(2)}s`)));
   }
 }

@@ -5,10 +5,7 @@ import { BaseEntity } from 'typeorm';
 
 export class UserModel
   implements
-    Omit<
-      Omit<UserEntity, keyof BaseEntity>,
-      'password' | 'tokens' | 'hashPassword' | 'comparePassword' | 'toJSON'
-    >
+    Omit<Omit<UserEntity, keyof BaseEntity>, 'password' | 'tokens' | 'hashPassword' | 'comparePassword' | 'toJSON'>
 {
   @ApiProperty({
     type: Number,

@@ -1,12 +1,6 @@
 import { Controller, Get, HttpCode } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import {
-  ApiBearerAuth,
-  ApiForbiddenResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthAdmin } from '@common/guards';
 import { CurrentUser, DisableController } from '@common/decorators';
 import { ICurrentUserData } from '@common/interfaces/auth';

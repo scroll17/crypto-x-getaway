@@ -3,11 +3,7 @@ import { UserEntity } from '@entities/user';
 
 export const UserRepository = (dataSource: DataSource) =>
   dataSource.getRepository(UserEntity).extend({
-    async findByEmailOrPhone(
-      this: Repository<UserEntity>,
-      email: string,
-      phone: string,
-    ) {
+    async findByEmailOrPhone(this: Repository<UserEntity>, email: string, phone: string) {
       return this.createQueryBuilder('user')
         .where('user.email = :email', { email })
         .orWhere('user.phone = :phone', { phone })

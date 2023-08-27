@@ -1,18 +1,5 @@
-import {
-  Controller,
-  Get,
-  HttpCode,
-  ParseBoolPipe,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiForbiddenResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Controller, Get, HttpCode, ParseBoolPipe, Query, UseGuards } from '@nestjs/common';
+import { ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { DebankService } from './debank.service';
 import { SecurityTokenGuard } from '@common/guards';
 
@@ -32,10 +19,7 @@ export class DebankController {
     description: 'Balance list by address.',
   })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  async getBalanceList(
-    @Query('address') address: string,
-    @Query('cache', ParseBoolPipe) cache: boolean,
-  ) {
+  async getBalanceList(@Query('address') address: string, @Query('cache', ParseBoolPipe) cache: boolean) {
     return this.debankService.getBalanceList(address, cache);
   }
 }

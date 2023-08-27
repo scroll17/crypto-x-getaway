@@ -32,10 +32,7 @@ import {
 import { RegisterUserDto } from './dto/register-user.dto';
 import { GoogleAuthGuard, JwtAuthGuard, LocalAuthGuard } from '@common/guards';
 import { CurrentUser } from '@common/decorators';
-import {
-  ICurrentUserData,
-  IUserDataInThirdPartyService,
-} from '@common/interfaces/auth';
+import { ICurrentUserData, IUserDataInThirdPartyService } from '@common/interfaces/auth';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { InitPasswordResetDto } from './dto/init-password-reset.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
@@ -107,11 +104,7 @@ export class AuthController {
     type: LoggedInThirdPartyServiceUserEntity,
   })
   async googleLogin(@Req() req: Request, @Ip() ip: string) {
-    return this.authService.thirdPartyLogin(
-      req.user as IUserDataInThirdPartyService,
-      UserWentFrom.Google,
-      ip,
-    );
+    return this.authService.thirdPartyLogin(req.user as IUserDataInThirdPartyService, UserWentFrom.Google, ip);
   }
 
   @Get('/facebook')
@@ -128,11 +121,7 @@ export class AuthController {
     type: LoggedInThirdPartyServiceUserEntity,
   })
   async facebookLogin(@Req() req: Request, @Ip() ip: string) {
-    return this.authService.thirdPartyLogin(
-      req.user as IUserDataInThirdPartyService,
-      UserWentFrom.Facebook,
-      ip,
-    );
+    return this.authService.thirdPartyLogin(req.user as IUserDataInThirdPartyService, UserWentFrom.Facebook, ip);
   }
 
   @Patch('/verify-email')
@@ -146,10 +135,7 @@ export class AuthController {
     type: UserModel,
   })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  async verifyEmail(
-    @CurrentUser() user: ICurrentUserData,
-    @Body() dto: VerifyEmailDto,
-  ) {
+  async verifyEmail(@CurrentUser() user: ICurrentUserData, @Body() dto: VerifyEmailDto) {
     return this.authService.checkVerificationCode(user, dto.code);
   }
 
@@ -195,10 +181,7 @@ export class AuthController {
   @ApiQuery({ name: 'id', type: Number })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiNotFoundResponse({ description: 'Token not found.' })
-  async revokeToken(
-    @CurrentUser() user: ICurrentUserData,
-    @Query('id', ParseIntPipe) tokenId: number,
-  ) {
+  async revokeToken(@CurrentUser() user: ICurrentUserData, @Query('id', ParseIntPipe) tokenId: number) {
     await this.authService.revokeToken(user, tokenId);
   }
 
@@ -235,10 +218,7 @@ export class AuthController {
   })
   @ApiNotFoundResponse({ description: 'User not found.' })
   @ApiUnauthorizedResponse({ description: 'User not unauthorized.' })
-  async logout(
-    @CurrentUser() user: ICurrentUserData,
-    @Headers('Authorization') rawAccessToken: string,
-  ) {
+  async logout(@CurrentUser() user: ICurrentUserData, @Headers('Authorization') rawAccessToken: string) {
     const accessTokenStr = rawAccessToken.split(' ')[1];
     return this.authService.logout(user.info, accessTokenStr);
   }

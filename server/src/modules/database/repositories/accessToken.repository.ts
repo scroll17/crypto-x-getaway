@@ -9,16 +9,8 @@ export const AccessTokenRepository = (dataSource: DataSource) =>
         .orWhere('accessToken.adminId = :adminId', { adminId: entityId })
         .getMany();
     },
-    async findByIdAndEntity(
-      this: Repository<AccessTokenEntity>,
-      id: number,
-      entityId: number,
-      isAdmin: boolean,
-    ) {
-      const query = this.createQueryBuilder('accessToken').where(
-        'accessToken.id = :id',
-        { id },
-      );
+    async findByIdAndEntity(this: Repository<AccessTokenEntity>, id: number, entityId: number, isAdmin: boolean) {
+      const query = this.createQueryBuilder('accessToken').where('accessToken.id = :id', { id });
 
       isAdmin
         ? query.andWhere('accessToken.adminId = :adminId', {

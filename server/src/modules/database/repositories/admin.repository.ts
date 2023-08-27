@@ -1,8 +1,7 @@
 import { DataSource } from 'typeorm';
 import { AdminEntity } from '@entities/admin';
 
-export const AdminRepository = (dataSource: DataSource) =>
-  dataSource.getRepository(AdminEntity).extend({});
+export const AdminRepository = (dataSource: DataSource) => dataSource.getRepository(AdminEntity).extend({});
 
 export type TAdminRepository = ReturnType<typeof AdminRepository>;
 

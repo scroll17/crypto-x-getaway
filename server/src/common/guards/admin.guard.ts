@@ -1,11 +1,5 @@
 /*external modules*/
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  NotFoundException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { ICurrentUserData } from '@common/interfaces/auth';
 
 @Injectable()

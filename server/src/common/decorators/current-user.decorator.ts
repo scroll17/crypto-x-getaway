@@ -6,9 +6,7 @@ import { ICurrentUserData } from '@common/interfaces/auth';
 import { UserModel } from '@entities/user';
 import { AdminModel } from '@entities/admin';
 
-export const CurrentUser = createParamDecorator<
-  keyof UserModel | keyof AdminModel
->((data, ctx) => {
+export const CurrentUser = createParamDecorator<keyof UserModel | keyof AdminModel>((data, ctx) => {
   const request = ctx.switchToHttp().getRequest();
   const user: ICurrentUserData = request.user;
 

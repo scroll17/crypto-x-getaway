@@ -2,20 +2,10 @@
 import _ from 'lodash';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 /*@interfaces*/
-import {
-  ICurrentUserData,
-  IUserDataInAccessToken,
-} from '@common/interfaces/auth';
+import { ICurrentUserData, IUserDataInAccessToken } from '@common/interfaces/auth';
 /*@entities*/
 import { UserEntity } from '@entities/user';
 import { AdminEntity } from '@entities/admin';

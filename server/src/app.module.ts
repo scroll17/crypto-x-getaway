@@ -40,9 +40,7 @@ import { configuration } from './config/configuration';
           entities: [UserEntity, AccessTokenEntity, AdminEntity],
           logging: true,
           synchronize: configService.getOrThrow('database.syncEntities'),
-          autoLoadEntities: configService.getOrThrow(
-            'database.autoLoadEntities',
-          ),
+          autoLoadEntities: configService.getOrThrow('database.autoLoadEntities'),
         };
       },
       inject: [ConfigService],

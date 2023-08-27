@@ -15,9 +15,7 @@ import { ALL_DB_ENTITIES } from '@entities/index';
           entities: ALL_DB_ENTITIES,
           logging: true,
           synchronize: configService.getOrThrow('database.syncEntities'),
-          autoLoadEntities: configService.getOrThrow(
-            'database.autoLoadEntities',
-          ),
+          autoLoadEntities: configService.getOrThrow('database.autoLoadEntities'),
         };
       },
       inject: [ConfigService],

@@ -2,14 +2,7 @@
 import _ from 'lodash';
 import ms from 'ms';
 import * as geoip from 'geoip-lite';
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { DataSource, QueryRunner } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -68,10 +61,8 @@ export class AuthService {
     isAdmin: boolean,
     queryRunner: QueryRunner | null = null,
   ) {
-    const accessTokenLive =
-      this.configService.getOrThrow<string>('jwt.accessExpires');
-    const refreshTokenLive =
-      this.configService.getOrThrow<string>('jwt.refreshExpires');
+    const accessTokenLive = this.configService.getOrThrow<string>('jwt.accessExpires');
+    const refreshTokenLive = this.configService.getOrThrow<string>('jwt.refreshExpires');
 
     const geo = await geoip.lookup(ip);
 
@@ -84,9 +75,7 @@ export class AuthService {
       lastUsedAt: new Date(),
     });
 
-    queryRunner
-      ? await queryRunner.manager.save(accessToken)
-      : await accessToken.save();
+    queryRunner ? await queryRunner.manager.save(accessToken) : await accessToken.save();
 
     this.logger.debug(
       'Created new access token',
@@ -114,10 +103,7 @@ export class AuthService {
     };
   }
 
-  public async validateUser(
-    email: string,
-    password: string,
-  ): Promise<ICurrentUserData> {
+  public async validateUser(email: string, password: string): Promise<ICurrentUserData> {
     const user = await this.userRepository.findOne({
       where: {
         email,
@@ -153,15 +139,9 @@ export class AuthService {
   ): Promise<{ user: UserModel; accessToken: string; refreshToken: string }> {
     this.logger.debug('Register new user', { user: dto, ip });
 
-    const existingUser = await this.userRepository.findByEmailOrPhone(
-      dto.email,
-      dto.phone,
-    );
+    const existingUser = await this.userRepository.findByEmailOrPhone(dto.email, dto.phone);
     if (existingUser) {
-      throw new HttpException(
-        'User with passed email or phone already exists',
-        HttpStatus.FORBIDDEN,
-      );
+      throw new HttpException('User with passed email or phone already exists', HttpStatus.FORBIDDEN);
     }
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -177,17 +157,9 @@ export class AuthService {
       await user.hashPassword();
       await queryRunner.manager.save(user);
 
-      this.logger.debug(
-        'Created new user',
-        _.pick(user, ['id', 'email', 'phone']),
-      );
+      this.logger.debug('Created new user', _.pick(user, ['id', 'email', 'phone']));
 
-      const { accessToken, refreshToken } = await this.generateAuthTokens(
-        ip,
-        user,
-        false,
-        queryRunner,
-      );
+      const { accessToken, refreshToken } = await this.generateAuthTokens(ip, user, false, queryRunner);
 
       const verifyCode = this.dataGenerateHelper.randomNumber(0, 9, 5);
 
@@ -222,11 +194,7 @@ export class AuthService {
       ip,
     });
 
-    const { accessToken, refreshToken } = await this.generateAuthTokens(
-      ip,
-      user.info,
-      user.isAdmin,
-    );
+    const { accessToken, refreshToken } = await this.generateAuthTokens(ip, user.info, user.isAdmin);
 
     return {
       user,
@@ -240,11 +208,7 @@ export class AuthService {
     provider: UserWentFrom,
     ip: string,
   ): Promise<LoggedInThirdPartyServiceUserEntity> {
-    if (!thirdPartyAuthUser)
-      throw new HttpException(
-        `${provider} not provided user info`,
-        HttpStatus.NOT_FOUND,
-      );
+    if (!thirdPartyAuthUser) throw new HttpException(`${provider} not provided user info`, HttpStatus.NOT_FOUND);
 
     this.logger.debug(`Login user via "${provider}"`, {
       user: _.pick(thirdPartyAuthUser, ['profileId', 'email', 'name']),
@@ -262,9 +226,7 @@ export class AuthService {
         },
       });
       if (!user) {
-        this.logger.debug(
-          `User not found by "${provider}" email. Creating new user`,
-        );
+        this.logger.debug(`User not found by "${provider}" email. Creating new user`);
 
         const user = this.userRepository.create({
           firstName: thirdPartyAuthUser.name.givenName,
@@ -277,17 +239,9 @@ export class AuthService {
         });
         await queryRunner.manager.save(user);
 
-        this.logger.debug(
-          'Created new user',
-          _.pick(user, ['id', 'email', 'phone']),
-        );
+        this.logger.debug('Created new user', _.pick(user, ['id', 'email', 'phone']));
 
-        const { accessToken, refreshToken } = await this.generateAuthTokens(
-          ip,
-          user,
-          false,
-          queryRunner,
-        );
+        const { accessToken, refreshToken } = await this.generateAuthTokens(ip, user, false, queryRunner);
 
         await queryRunner.commitTransaction();
 
@@ -339,24 +293,13 @@ export class AuthService {
           break;
         }
         default: {
-          throw new HttpException(
-            `Invalid provider - "${provider}"`,
-            HttpStatus.BAD_REQUEST,
-          );
+          throw new HttpException(`Invalid provider - "${provider}"`, HttpStatus.BAD_REQUEST);
         }
       }
 
-      this.logger.debug(
-        `User logged in by "${provider}"`,
-        _.pick(user, ['id', 'email']),
-      );
+      this.logger.debug(`User logged in by "${provider}"`, _.pick(user, ['id', 'email']));
 
-      const { accessToken, refreshToken } = await this.generateAuthTokens(
-        ip,
-        user,
-        false,
-        queryRunner,
-      );
+      const { accessToken, refreshToken } = await this.generateAuthTokens(ip, user, false, queryRunner);
 
       await queryRunner.commitTransaction();
 
@@ -380,37 +323,23 @@ export class AuthService {
     });
 
     if (user.isAdmin) {
-      throw new HttpException(
-        'Admin cant verify email',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Admin cant verify email', HttpStatus.BAD_REQUEST);
     }
 
     const userEntity = user.info as UserEntity;
     if (userEntity.verified) {
-      throw new HttpException(
-        'You account already verified.',
-        HttpStatus.FORBIDDEN,
-      );
+      throw new HttpException('You account already verified.', HttpStatus.FORBIDDEN);
     }
 
     const redis = this.redisService.getDefaultConnection();
 
-    const verificationCode = await redis.get(
-      `${RedisUser.VerifyCode}_${user.info.email}`,
-    );
+    const verificationCode = await redis.get(`${RedisUser.VerifyCode}_${user.info.email}`);
     if (!verificationCode) {
-      throw new HttpException(
-        'Verification code not found. Please resend verify code',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException('Verification code not found. Please resend verify code', HttpStatus.NOT_FOUND);
     }
 
     if (parseInt(verificationCode, 10) !== code) {
-      throw new HttpException(
-        'Invalid verification code',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Invalid verification code', HttpStatus.BAD_REQUEST);
     }
 
     await redis.del(`${RedisUser.VerifyCode}_${user.info.email}`);
@@ -427,18 +356,12 @@ export class AuthService {
     });
 
     if (user.isAdmin) {
-      throw new HttpException(
-        'Admin cant resend verify email',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Admin cant resend verify email', HttpStatus.BAD_REQUEST);
     }
 
     const userEntity = user.info as UserEntity;
     if (userEntity.verified) {
-      throw new HttpException(
-        'You account already verified.',
-        HttpStatus.FORBIDDEN,
-      );
+      throw new HttpException('You account already verified.', HttpStatus.FORBIDDEN);
     }
 
     const verifyCode = this.dataGenerateHelper.randomNumber(0, 9, 5);
@@ -476,11 +399,7 @@ export class AuthService {
       user: _.pick(user, ['id', 'email']),
     });
 
-    const accessToken = await this.accessTokenRepository.findByIdAndEntity(
-      tokenId,
-      user.info.id,
-      user.isAdmin,
-    );
+    const accessToken = await this.accessTokenRepository.findByIdAndEntity(tokenId, user.info.id, user.isAdmin);
     if (!accessToken) {
       throw new HttpException('Token not found', HttpStatus.NOT_FOUND);
     }
@@ -491,10 +410,9 @@ export class AuthService {
   }
 
   public async refresh(refreshToken: string) {
-    const refreshTokenPayload: IUserDataInRefreshToken =
-      await this.jwtService.verifyAsync(refreshToken, {
-        secret: this.configService.getOrThrow<string>('jwt.refreshSecret'),
-      });
+    const refreshTokenPayload: IUserDataInRefreshToken = await this.jwtService.verifyAsync(refreshToken, {
+      secret: this.configService.getOrThrow<string>('jwt.refreshSecret'),
+    });
     if (!refreshTokenPayload) {
       throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
     }
@@ -533,13 +451,7 @@ export class AuthService {
 
       this.logger.debug(
         'Refreshed access token',
-        _.pick(accessToken, [
-          'id',
-          'userId',
-          'logFrom',
-          'logFromIP',
-          'liveTime',
-        ]),
+        _.pick(accessToken, ['id', 'userId', 'logFrom', 'logFromIP', 'liveTime']),
       );
 
       let entity: UserEntity | AdminEntity;
@@ -589,8 +501,7 @@ export class AuthService {
       user: _.pick(user, ['id', 'email']),
     });
 
-    const accessTokenPayload: IUserDataInAccessToken =
-      await this.jwtService.verifyAsync(accessTokenStr);
+    const accessTokenPayload: IUserDataInAccessToken = await this.jwtService.verifyAsync(accessTokenStr);
     if (!accessTokenPayload) {
       throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
     }
@@ -627,18 +538,11 @@ export class AuthService {
       throw new HttpException('Record not found', HttpStatus.NOT_FOUND);
     }
 
-    const linkLiveTime = this.configService.getOrThrow(
-      'bll.resetPasswordLinkLive',
-    );
+    const linkLiveTime = this.configService.getOrThrow('bll.resetPasswordLinkLive');
     const verifyCode = this.dataGenerateHelper.randomHEX(12);
 
     const redis = await this.redisService.getDefaultConnection();
-    await redis.set(
-      `${RedisUser.ResetCode}_${email}`,
-      verifyCode,
-      'PX',
-      linkLiveTime,
-    );
+    await redis.set(`${RedisUser.ResetCode}_${email}`, verifyCode, 'PX', linkLiveTime);
 
     this.logger.debug('Request for send reset password email', {
       user: email,
@@ -657,14 +561,9 @@ export class AuthService {
 
     const redis = await this.redisService.getDefaultConnection();
 
-    const verificationCode = await redis.get(
-      `${RedisUser.ResetCode}_${dto.email}`,
-    );
+    const verificationCode = await redis.get(`${RedisUser.ResetCode}_${dto.email}`);
     if (!verificationCode) {
-      throw new HttpException(
-        'Reset code not found. Please try again',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException('Reset code not found. Please try again', HttpStatus.NOT_FOUND);
     }
 
     if (verificationCode !== dto.code) {

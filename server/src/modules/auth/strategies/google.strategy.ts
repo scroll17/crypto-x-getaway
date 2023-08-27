@@ -18,17 +18,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
   }
 
-  async validate(
-    accessToken: string,
-    refreshToken: string,
-    profile: any,
-  ): Promise<IUserDataInThirdPartyService> {
+  async validate(accessToken: string, refreshToken: string, profile: any): Promise<IUserDataInThirdPartyService> {
     const { id: profileId, email, name, verified } = profile;
 
     if (!email) {
-      throw new BadRequestException(
-        'Google response data issue - "email" not provided.',
-      );
+      throw new BadRequestException('Google response data issue - "email" not provided.');
     }
 
     return {

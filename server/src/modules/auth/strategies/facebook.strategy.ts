@@ -19,18 +19,12 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     });
   }
 
-  async validate(
-    accessToken: string,
-    refreshToken: string,
-    profile: any,
-  ): Promise<IUserDataInThirdPartyService> {
+  async validate(accessToken: string, refreshToken: string, profile: any): Promise<IUserDataInThirdPartyService> {
     const { id: profileId, emails, name, verified } = profile;
     const email = emails?.[0]?.value;
 
     if (!email) {
-      throw new BadRequestException(
-        'Facebook response data issue - "email" not provided.',
-      );
+      throw new BadRequestException('Facebook response data issue - "email" not provided.');
     }
 
     return {

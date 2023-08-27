@@ -47,8 +47,7 @@ export class AdminSeed {
           await admin.hashPassword();
           await admin.save();
 
-          const { accessToken, refreshToken } =
-            await this.authService.generateAuthTokens('127.0.0.1', admin, true);
+          const { accessToken, refreshToken } = await this.authService.generateAuthTokens('127.0.0.1', admin, true);
 
           this.logger.verbose('Created Admin', {
             admin,

@@ -25,9 +25,7 @@ export class NgrokService implements OnModuleDestroy {
   private processUrl: string | null = null;
 
   constructor(private configService: ConfigService) {
-    this.binFileName = path.join(
-      this.configService.getOrThrow('ngrok.fileName'),
-    );
+    this.binFileName = path.join(this.configService.getOrThrow('ngrok.fileName'));
   }
 
   async onModuleDestroy() {
@@ -61,11 +59,7 @@ export class NgrokService implements OnModuleDestroy {
   }
 
   private async startProcess(opts: IOptions) {
-    const start: string[] = [
-      opts.proto,
-      `--log=${opts.log}`,
-      `--log-format=${opts.logFormat}`,
-    ];
+    const start: string[] = [opts.proto, `--log=${opts.log}`, `--log-format=${opts.logFormat}`];
 
     if (opts.authToken) start.push(`--authtoken=${opts.authToken}`);
     if (opts.hostHeader) start.push(`--host-header=${opts.hostHeader}`);
@@ -73,11 +67,7 @@ export class NgrokService implements OnModuleDestroy {
 
     start.push(String(opts.port));
 
-    const ngrok = spawn(
-      path.join(this.defaultDirPath, this.binFileName),
-      start,
-      { windowsHide: true },
-    );
+    const ngrok = spawn(path.join(this.defaultDirPath, this.binFileName), start, { windowsHide: true });
 
     try {
       const url = await new Promise<string>((resolve, reject) => {
