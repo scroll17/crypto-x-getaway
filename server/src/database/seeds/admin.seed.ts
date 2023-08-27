@@ -1,11 +1,13 @@
 import { Command } from 'nestjs-command';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AuthService } from '../../modules/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { AdminEntity } from '@entities/admin';
-import { AccessTokenEntity } from '@entities/accessToken';
+import {
+  ACCESS_TOKEN_REPOSITORY,
+  ADMIN_REPOSITORY,
+  TAccessTokenRepository,
+  TAdminRepository,
+} from '../../modules/database/repositories';
 
 @Injectable()
 export class AdminSeed {
@@ -15,15 +17,15 @@ export class AdminSeed {
   constructor(
     private authService: AuthService,
     private jwtService: JwtService,
-    @InjectRepository(AdminEntity)
-    private adminsRepository: Repository<AdminEntity>,
-    @InjectRepository(AccessTokenEntity)
-    private accessTokenRepository: Repository<AccessTokenEntity>,
+    @Inject(ADMIN_REPOSITORY)
+    private adminRepository: TAdminRepository,
+    @Inject(ACCESS_TOKEN_REPOSITORY)
+    private accessTokenRepository: TAccessTokenRepository,
   ) {}
 
   @Command({ command: 'create:admins', describe: 'Create admins' })
   async createBulk() {
-    const adminsCount = await this.adminsRepository.count();
+    const adminsCount = await this.adminRepository.count();
     if (adminsCount > 1) {
       this.logger.debug('Admins already exist in the DB. Break');
       return;
@@ -41,7 +43,7 @@ export class AdminSeed {
           };
           this.logger.debug('Creating Admin with data', aminData);
 
-          const admin = this.adminsRepository.create(aminData);
+          const admin = this.adminRepository.create(aminData);
           await admin.hashPassword();
           await admin.save();
 
