@@ -5,14 +5,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 /*modules*/
 import { RedisModule } from './modules/redis/redis.module';
-import { NgrokModule } from "./modules/ngrok/ngrok.module";
+import { NgrokModule } from './modules/ngrok/ngrok.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { UserModule } from './modules/user/user.module';
 import { SeedModule } from './modules/seed/seed.module';
-import { TelegramModule } from "./modules/telegram/telegram.module";
-import { DebankModule } from "./modules/integrations/debank/debank.module";
-import { ProtectionModule } from "./modules/protection/protection.module";
+import { TelegramModule } from './modules/telegram/telegram.module';
+import { DebankModule } from './modules/integrations/debank/debank.module';
+import { ProtectionModule } from './modules/protection/protection.module';
+import { DatabaseModule } from './modules/database/database.module';
 /*services*/
 /*controllers*/
 /*@entities*/
@@ -46,6 +47,7 @@ import { configuration } from './config/configuration';
       },
       inject: [ConfigService],
     }),
+    DatabaseModule,
     RedisModule, // Global
     NgrokModule, // Global
     ProtectionModule, // Global
@@ -54,7 +56,7 @@ import { configuration } from './config/configuration';
     UserModule,
     SeedModule,
     TelegramModule,
-    DebankModule
+    DebankModule,
   ],
   controllers: [],
   providers: [
