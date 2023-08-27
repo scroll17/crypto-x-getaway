@@ -5,13 +5,12 @@ import { PassportStrategy } from '@nestjs/passport';
 import {
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Repository } from 'typeorm';
 /*@interfaces*/
 import {
   ICurrentUserData,
@@ -20,7 +19,14 @@ import {
 /*@entities*/
 import { UserEntity } from '@entities/user';
 import { AdminEntity } from '@entities/admin';
-import { AccessTokenEntity } from '@entities/accessToken';
+import {
+  ACCESS_TOKEN_REPOSITORY,
+  TAccessTokenRepository,
+  TAdminRepository,
+  TUserRepository,
+  ADMIN_REPOSITORY,
+  USER_REPOSITORY,
+} from 'src/modules/database/repositories';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -28,12 +34,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   constructor(
     private configService: ConfigService,
-    @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>,
-    @InjectRepository(AdminEntity)
-    private adminsRepository: Repository<AdminEntity>,
-    @InjectRepository(AccessTokenEntity)
-    private accessTokenRepository: Repository<AccessTokenEntity>,
+    @Inject(USER_REPOSITORY)
+    private userRepository: TUserRepository,
+    @Inject(ADMIN_REPOSITORY)
+    private adminRepository: TAdminRepository,
+    @Inject(ACCESS_TOKEN_REPOSITORY)
+    private accessTokenRepository: TAccessTokenRepository,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -57,7 +63,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     let entity: UserEntity | AdminEntity;
     if (token.userId) {
-      const user = await this.usersRepository.findOne({
+      const user = await this.userRepository.findOne({
         where: {
           id: token.userId,
         },
@@ -66,7 +72,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
       entity = user;
     } else {
-      const admin = await this.adminsRepository.findOne({
+      const admin = await this.adminRepository.findOne({
         where: {
           id: token.adminId!,
         },

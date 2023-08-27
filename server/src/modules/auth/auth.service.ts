@@ -5,12 +5,13 @@ import * as geoip from 'geoip-lite';
 import {
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { DataSource, Repository, QueryRunner } from 'typeorm';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 /*services*/
@@ -22,6 +23,14 @@ import { RedisUser } from '@common/enums';
 import { UserEntity, UserModel, UserWentFrom } from '@entities/user';
 import { AdminEntity } from '@entities/admin';
 import { AccessTokenEntity } from '@entities/accessToken';
+import {
+  ACCESS_TOKEN_REPOSITORY,
+  ADMIN_REPOSITORY,
+  TAccessTokenRepository,
+  TAdminRepository,
+  TUserRepository,
+  USER_REPOSITORY,
+} from '../database/repositories';
 import { LoggedInThirdPartyServiceUserEntity } from './entities/logged-in-third-party-service-user.entity';
 /*@interfaces*/
 import {
@@ -45,12 +54,12 @@ export class AuthService {
     private dataGenerateHelper: DataGenerateHelper,
     @InjectDataSource()
     private dataSource: DataSource,
-    @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>,
-    @InjectRepository(AdminEntity)
-    private adminsRepository: Repository<AdminEntity>,
-    @InjectRepository(AccessTokenEntity)
-    private accessTokenRepository: Repository<AccessTokenEntity>,
+    @Inject(USER_REPOSITORY)
+    private userRepository: TUserRepository,
+    @Inject(ADMIN_REPOSITORY)
+    private adminRepository: TAdminRepository,
+    @Inject(ACCESS_TOKEN_REPOSITORY)
+    private accessTokenRepository: TAccessTokenRepository,
   ) {}
 
   public async generateAuthTokens(
@@ -109,13 +118,13 @@ export class AuthService {
     email: string,
     password: string,
   ): Promise<ICurrentUserData> {
-    const user = await this.usersRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: {
         email,
       },
     });
 
-    const admin = await this.adminsRepository.findOne({
+    const admin = await this.adminRepository.findOne({
       where: {
         email,
       },
@@ -144,11 +153,10 @@ export class AuthService {
   ): Promise<{ user: UserModel; accessToken: string; refreshToken: string }> {
     this.logger.debug('Register new user', { user: dto, ip });
 
-    const existingUser = await this.usersRepository
-      .createQueryBuilder('user')
-      .where('user.email = :email', { email: dto.email })
-      .orWhere('user.phone = :phone', { phone: dto.phone })
-      .getOne();
+    const existingUser = await this.userRepository.findByEmailOrPhone(
+      dto.email,
+      dto.phone,
+    );
     if (existingUser) {
       throw new HttpException(
         'User with passed email or phone already exists',
@@ -161,10 +169,10 @@ export class AuthService {
 
     await queryRunner.startTransaction();
     try {
-      const user = this.usersRepository.create({
+      const user = this.userRepository.create({
         ...dto,
         wentFrom: UserWentFrom.Manual,
-        telegramId: '0'
+        telegramId: '0',
       });
       await user.hashPassword();
       await queryRunner.manager.save(user);
@@ -248,7 +256,7 @@ export class AuthService {
 
     await queryRunner.startTransaction();
     try {
-      const user = await this.usersRepository.findOne({
+      const user = await this.userRepository.findOne({
         where: {
           email: thirdPartyAuthUser.email,
         },
@@ -258,14 +266,14 @@ export class AuthService {
           `User not found by "${provider}" email. Creating new user`,
         );
 
-        const user = this.usersRepository.create({
+        const user = this.userRepository.create({
           firstName: thirdPartyAuthUser.name.givenName,
           lastName: thirdPartyAuthUser.name.familyName,
           email: thirdPartyAuthUser.email,
           verified: thirdPartyAuthUser.verified,
           wentFrom: provider,
           googleId: thirdPartyAuthUser.profileId,
-          telegramId: '0'
+          telegramId: '0',
         });
         await queryRunner.manager.save(user);
 
@@ -449,35 +457,35 @@ export class AuthService {
   }
 
   public async getTokensList(user: ICurrentUserData['info']) {
-    this.logger.debug('Login user', {
+    this.logger.debug('Get user / admin tokens', {
       user: _.pick(user, ['id', 'email']),
     });
 
-    const accessTokens = await this.accessTokenRepository
-      .createQueryBuilder('accessToken')
-      .where('accessToken.userId = :userId', { userId: user.id })
-      .orWhere('accessToken.adminId = :adminId', { adminId: user.id })
-      .getMany();
+    const accessTokens = await this.accessTokenRepository.findByEntity(user.id);
+
+    this.logger.debug('Tokens found', {
+      count: accessTokens.length,
+    });
 
     return accessTokens;
   }
 
-  public async revokeToken(user: ICurrentUserData['info'], tokenId: number) {
+  public async revokeToken(user: ICurrentUserData, tokenId: number) {
     this.logger.debug('Revoke access token', {
       tokenId,
       user: _.pick(user, ['id', 'email']),
     });
 
-    const accessToken = await this.accessTokenRepository.findOne({
-      where: {
-        id: tokenId,
-      },
-    });
+    const accessToken = await this.accessTokenRepository.findByIdAndEntity(
+      tokenId,
+      user.info.id,
+      user.isAdmin,
+    );
     if (!accessToken) {
       throw new HttpException('Token not found', HttpStatus.NOT_FOUND);
     }
 
-    await accessToken.remove();
+    await accessToken!.remove();
 
     return true;
   }
@@ -603,13 +611,13 @@ export class AuthService {
       email,
     });
 
-    const user = await this.usersRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: {
         email,
       },
     });
 
-    const admin = await this.adminsRepository.findOne({
+    const admin = await this.adminRepository.findOne({
       where: {
         email,
       },
@@ -665,13 +673,13 @@ export class AuthService {
 
     await redis.del(`${RedisUser.ResetCode}_${dto.email}`);
 
-    const user = await this.usersRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: {
         email: dto.email,
       },
     });
 
-    const admin = await this.adminsRepository.findOne({
+    const admin = await this.adminRepository.findOne({
       where: {
         email: dto.email,
       },

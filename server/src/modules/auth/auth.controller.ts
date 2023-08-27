@@ -200,7 +200,7 @@ export class AuthController {
     @CurrentUser() user: ICurrentUserData,
     @Query('id', ParseIntPipe) tokenId: number,
   ) {
-    await this.authService.revokeToken(user.info, tokenId);
+    await this.authService.revokeToken(user, tokenId);
   }
 
   @Put('/refresh')
