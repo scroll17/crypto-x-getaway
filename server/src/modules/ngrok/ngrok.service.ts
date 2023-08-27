@@ -25,7 +25,9 @@ export class NgrokService implements OnModuleDestroy {
   private processUrl: string | null = null;
 
   constructor(private configService: ConfigService) {
-    this.binFileName = path.join(this.configService.getOrThrow('ngrok.fileName'));
+    this.binFileName = path.join(
+      this.configService.getOrThrow('ngrok.fileName'),
+    );
   }
 
   async onModuleDestroy() {

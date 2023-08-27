@@ -1,8 +1,8 @@
-import {Injectable, Logger} from '@nestjs/common';
-import {HttpService} from "@nestjs/axios";
-import {firstValueFrom} from "rxjs";
+import { Injectable, Logger } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
-const DEBANK_HOST = 'https://api.debank.com'
+const DEBANK_HOST = 'https://api.debank.com';
 
 @Injectable()
 export class DebankService {
@@ -18,14 +18,15 @@ export class DebankService {
       const result = await firstValueFrom(
         this.httpService.get(url, {
           headers: {
-            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36'
-          }
-        })
-      )
+            'user-agent':
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
+          },
+        }),
+      );
 
-      return result.data
+      return result.data;
     } catch (e) {
-      this.logger.error('Balance request error: ', e)
+      this.logger.error('Balance request error: ', e);
       throw e;
     }
   }

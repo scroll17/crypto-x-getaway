@@ -1,8 +1,8 @@
-import {Global, Module} from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ProtectionService } from './protection.service';
-import {DataGenerateHelper, IpHelper} from "@common/helpers";
-import {JwtModule} from "@nestjs/jwt";
-import {ConfigService} from "@nestjs/config";
+import { DataGenerateHelper, IpHelper } from '@common/helpers';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Global()
 @Module({
@@ -21,6 +21,6 @@ import {ConfigService} from "@nestjs/config";
     }),
   ],
   providers: [ProtectionService, DataGenerateHelper, IpHelper],
-  exports: [ProtectionService, DataGenerateHelper, IpHelper]
+  exports: [ProtectionService, DataGenerateHelper, IpHelper],
 })
 export class ProtectionModule {}

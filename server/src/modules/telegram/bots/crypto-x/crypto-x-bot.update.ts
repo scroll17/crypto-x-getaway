@@ -10,7 +10,7 @@ import {
 } from 'nestjs-telegraf';
 import { Context, Telegraf } from 'telegraf';
 import { Logger } from '@nestjs/common';
-import {CryptoXBotService} from "./crypto-x-bot.service";
+import { CryptoXBotService } from './crypto-x-bot.service';
 
 @Update()
 export class CryptoXBotUpdate {
@@ -68,13 +68,17 @@ export class CryptoXBotUpdate {
 
   @Command('get_security_token')
   async onGetSecurityTokenCommand(@Ctx() ctx: Context): Promise<void> {
-    const message = await this.cryptoXBotService.getSecurityToken(ctx.message!.from.id)
+    const message = await this.cryptoXBotService.getSecurityToken(
+      ctx.message!.from.id,
+    );
     await ctx.replyWithMarkdown(message);
   }
 
   @Command('refresh_security_token')
   async onRefreshSecurityTokenCommand(@Ctx() ctx: Context): Promise<void> {
-    const message = await this.cryptoXBotService.refreshSecurityToken(ctx.message!.from.id)
+    const message = await this.cryptoXBotService.refreshSecurityToken(
+      ctx.message!.from.id,
+    );
     await ctx.replyWithMarkdown(message);
   }
 }

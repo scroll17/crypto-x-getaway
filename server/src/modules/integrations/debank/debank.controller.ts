@@ -1,12 +1,20 @@
-import {Controller, Get, HttpCode, ParseBoolPipe, Query, UseGuards} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  ParseBoolPipe,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiForbiddenResponse,
   ApiOkResponse,
-  ApiOperation, ApiQuery,
+  ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import {DebankService} from "./debank.service";
-import { SecurityTokenGuard } from "@common/guards";
+import { DebankService } from './debank.service';
+import { SecurityTokenGuard } from '@common/guards';
 
 @Controller('integrations/debank')
 @ApiTags('Integrations', 'Debank')

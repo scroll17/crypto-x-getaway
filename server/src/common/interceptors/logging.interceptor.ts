@@ -1,6 +1,7 @@
 /*external modules*/
 import {
   CallHandler,
+  ContextType,
   ExecutionContext,
   Injectable,
   Logger,
@@ -24,6 +25,11 @@ export class LoggingInterceptor implements NestInterceptor {
     let token: string | null = null;
     let trace: Record<string, string | number | Date> = {};
 
+    // console.log('getType => ', context.getType())
+    // console.log('switchToWs => ', context.switchToWs())
+    // console.log('switchToWs getContext => ', context.switchToWs().getClient())
+    // console.log('switchToWs getData => ', context.switchToWs().getData())
+
     switch (context.getType()) {
       case 'http': {
         const httpContext = context.switchToHttp();
@@ -38,6 +44,18 @@ export class LoggingInterceptor implements NestInterceptor {
         };
 
         break;
+      }
+      case 'telegraf' as ContextType: {
+        const httpContext = context.switchToHttp();
+        const request = httpContext.getRequest();
+
+        token = `Telegraf ${request.method} "${request.path}"`;
+        trace = {
+          body: request.body,
+          query: request.query,
+          headers: request.headers,
+          timestamp: new Date(),
+        };
       }
     }
 

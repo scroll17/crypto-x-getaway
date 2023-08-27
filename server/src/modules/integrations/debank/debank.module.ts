@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { HttpModule } from "@nestjs/axios";
-import {DebankService} from "./debank.service";
-import {DebankController} from "./debank.controller";
+import { HttpModule } from '@nestjs/axios';
+import { DebankService } from './debank.service';
+import { DebankController } from './debank.controller';
 
 @Module({
   imports: [
@@ -10,6 +10,6 @@ import {DebankController} from "./debank.controller";
     }),
   ],
   providers: [DebankService],
-  controllers: [DebankController]
+  controllers: [DebankController],
 })
 export class DebankModule {}

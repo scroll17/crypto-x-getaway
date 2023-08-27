@@ -9,7 +9,7 @@ import {
 import { Request } from 'express';
 import { HttpStatus } from '@nestjs/common/enums';
 import { IpHelper } from '../helpers';
-import { ProtectionService } from "../../modules/protection/protection.service";
+import { ProtectionService } from '../../modules/protection/protection.service';
 
 @Injectable()
 export class SecurityTokenGuard implements CanActivate {
@@ -28,11 +28,7 @@ export class SecurityTokenGuard implements CanActivate {
         const token = request.header('X-Protection-Token');
         const ip = this.ipHelper.getHTTPRawIp(request);
 
-        await this.checkAccess(
-          context,
-          token,
-          this.ipHelper.convertRawIp(ip),
-        );
+        await this.checkAccess(context, token, this.ipHelper.convertRawIp(ip));
         break;
       }
     }
@@ -54,11 +50,13 @@ export class SecurityTokenGuard implements CanActivate {
       );
     }
 
-    const { valid, error } = await this.protectionService.validateSecurityToken(token);
+    const { valid, error } = await this.protectionService.validateSecurityToken(
+      token,
+    );
     this.logger.debug('Security token validation result:', {
       valid,
-      error
-    })
+      error,
+    });
 
     if (!valid && error) {
       this.logBadRequest(context, error.message);

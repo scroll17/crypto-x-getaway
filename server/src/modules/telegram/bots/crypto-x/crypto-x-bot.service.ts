@@ -1,8 +1,8 @@
-import {Injectable, Logger} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MarkdownHelper } from '../../common/helpers';
 import { NgrokService } from '../../../ngrok/ngrok.service';
-import {ProtectionService} from "../../../protection/protection.service";
+import { ProtectionService } from '../../../protection/protection.service';
 
 @Injectable()
 export class CryptoXBotService {
@@ -19,7 +19,7 @@ export class CryptoXBotService {
   public async getServerUrl() {
     const url = await this.ngrokService.connect({
       port: this.configService.getOrThrow<number>('ports.http'),
-      proto: 'http'
+      proto: 'http',
     });
 
     const urlMsg = MarkdownHelper.bold('URL');
@@ -29,8 +29,8 @@ export class CryptoXBotService {
   }
 
   public async getSecurityToken(telegramUserId: number) {
-    if(this.lastSecurityToken) {
-      this.logger.debug('Return old security token')
+    if (this.lastSecurityToken) {
+      this.logger.debug('Return old security token');
 
       const tokenMsg = MarkdownHelper.bold('Token');
       const tokenText = MarkdownHelper.monospaced(this.lastSecurityToken);
@@ -38,7 +38,9 @@ export class CryptoXBotService {
       return `${tokenMsg}: ${tokenText}`;
     }
 
-    const newSecurityToken = await this.protectionService.generateSecurityToken(telegramUserId);
+    const newSecurityToken = await this.protectionService.generateSecurityToken(
+      telegramUserId,
+    );
     this.lastSecurityToken = newSecurityToken;
 
     const tokenMsg = MarkdownHelper.bold('Token');
@@ -48,9 +50,11 @@ export class CryptoXBotService {
   }
 
   public async refreshSecurityToken(telegramUserId: number) {
-    this.logger.debug('Refresh security token')
+    this.logger.debug('Refresh security token');
 
-    const newSecurityToken = await this.protectionService.generateSecurityToken(telegramUserId);
+    const newSecurityToken = await this.protectionService.generateSecurityToken(
+      telegramUserId,
+    );
 
     const tokenMsg = MarkdownHelper.bold('Token');
     const tokenText = MarkdownHelper.monospaced(newSecurityToken);
