@@ -81,7 +81,7 @@ module.exports = {
          * Helps to avoid of MIME type ('text/html') is not a supported stylesheet
          * And sets address in html imports
          */
-        publicPath: "/",
+        // publicPath: "./build",
     },
     // Checking the maximum weight of the bundle is disabled
     performance: {

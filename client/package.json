@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "not dead"
+  ],
   "config": {
     "dev": "--config __webpack__/dev.config.js",
     "prod": "--config __webpack__/prod.config.js"
