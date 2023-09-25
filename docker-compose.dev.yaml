@@ -31,10 +31,8 @@ services:
     networks:
       - services-network
     depends_on:
-      database:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - database
+      - redis
     environment:
       PORT: 4040
       NODE_ENV: development
