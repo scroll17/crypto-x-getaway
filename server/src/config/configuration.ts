@@ -14,6 +14,10 @@ export const configuration = () => {
     resetPasswordLinkLive: ms(process.env.RESET_PASSWORD_LINK_LIVE!),
   };
 
+  const security = {
+    corsWhiteList: JSON.parse(process.env.CORS_WHITE_LIST!),
+  };
+
   const logs = {
     origin: Boolean(Number.parseInt(process.env.LOGS_ORIGIN_ENABLED!, 10)),
   };
@@ -82,6 +86,7 @@ export const configuration = () => {
     server,
     ports,
     bll,
+    security,
     logs,
     ngrok,
     google,
