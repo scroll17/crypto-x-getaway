@@ -7,16 +7,24 @@ export const configuration = () => {
   };
 
   const ports = {
-    http: parseInt(process.env.HTTP_PORT!, 10),
+    http: Number.parseInt(process.env.HTTP_PORT!, 10),
   };
 
   const bll = {
     resetPasswordLinkLive: ms(process.env.RESET_PASSWORD_LINK_LIVE!),
   };
 
+  const security = {
+    corsWhiteList: JSON.parse(process.env.CORS_WHITE_LIST!),
+  };
+
+  const logs = {
+    origin: Boolean(Number.parseInt(process.env.LOGS_ORIGIN_ENABLED!, 10)),
+  };
+
   const postgres = {
     host: process.env.POSTGRES_HOST,
-    port: parseInt(process.env.POSTGRES_PORT!, 10),
+    port: Number.parseInt(process.env.POSTGRES_PORT!, 10),
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     name: process.env.POSTGRES_DB_NAME,
@@ -52,7 +60,7 @@ export const configuration = () => {
 
   const redis = {
     host: process.env.REDIS_HOST,
-    port: parseInt(process.env.REDIS_PORT!, 10),
+    port: Number.parseInt(process.env.REDIS_PORT!, 10),
   };
 
   const jwt = {
@@ -78,6 +86,8 @@ export const configuration = () => {
     server,
     ports,
     bll,
+    security,
+    logs,
     ngrok,
     google,
     telegram,

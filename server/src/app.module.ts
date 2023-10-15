@@ -1,5 +1,14 @@
 /*external modules*/
-import { Module } from '@nestjs/common';
+import cors from 'cors';
+import {
+  HttpException,
+  HttpStatus,
+  Logger,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -64,4 +73,50 @@ import { configuration } from './config/configuration';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  private readonly logger = new Logger(this.constructor.name);
+
+  constructor(private config: ConfigService) {}
+
+  configure(consumer: MiddlewareConsumer) {
+    const logsEnabled = this.config.getOrThrow('logs.origin');
+    const whitelist = this.config.getOrThrow('security.corsWhiteList');
+
+    if (whitelist.length > 0) {
+      consumer
+        .apply(
+          cors({
+            methods: ['HEAD', 'PUT', 'PATCH', 'POST', 'GET', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token', 'x-forwarded-for'],
+            exposedHeaders: ['*', 'Authorization', 'x-forwarded-for'],
+            preflightContinue: false,
+            credentials: true,
+            origin: (origin, callback) => {
+              if (logsEnabled)
+                this.logger.debug('Request from origin:', {
+                  origin: origin ?? typeof origin,
+                  serverConfig: {
+                    whitelist,
+                  },
+                });
+
+              if (whitelist.includes('*')) {
+                callback(null, true);
+                return;
+              }
+
+              // Note: "!origin" -> for server requests
+              if (whitelist.includes(origin) || !origin) {
+                callback(null, true);
+              } else {
+                this.logger.error('Request from not allowed CORS');
+
+                callback(new HttpException('Not allowed by CORS', HttpStatus.FORBIDDEN));
+              }
+            },
+          }),
+        )
+        .forRoutes({ path: '*', method: RequestMethod.ALL });
+    }
+  }
+}
