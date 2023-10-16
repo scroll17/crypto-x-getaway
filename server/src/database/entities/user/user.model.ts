@@ -80,11 +80,11 @@ export class UserModel
   changePassword: boolean;
 
   @ApiProperty({
-    type: String,
-    example: '117864272370217919267',
+    type: Number,
+    example: 345_345_345,
     description: 'Is user telegramId',
   })
-  telegramId: string;
+  telegramId: number;
 
   @ApiProperty({
     type: String,

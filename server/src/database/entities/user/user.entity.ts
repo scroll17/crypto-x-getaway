@@ -56,8 +56,8 @@ export class UserEntity extends BaseEntity {
   @Column('boolean', { name: 'change_password', default: true })
   changePassword: boolean;
 
-  @Column('varchar', { name: 'telegram_id', nullable: false, length: 100 })
-  telegramId: string;
+  @Column('int4', { name: 'telegram_id', nullable: false })
+  telegramId: number;
 
   @Column('varchar', { name: 'google_id', default: null, length: 100 })
   googleId: string | null;

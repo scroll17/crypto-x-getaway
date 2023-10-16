@@ -199,7 +199,7 @@ export class AuthService {
       const user = this.userRepository.create({
         ...dto,
         wentFrom: UserWentFrom.Manual,
-        telegramId: '0',
+        telegramId: 123_123_123,
       });
       await user.hashPassword();
       await queryRunner.manager.save(user);
