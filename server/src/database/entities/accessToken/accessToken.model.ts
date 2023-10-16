@@ -6,7 +6,7 @@ import { Lookup } from 'geoip-lite';
 export class AccessTokenModel implements Omit<AccessTokenEntity, keyof BaseEntity> {
   @ApiProperty({
     type: Number,
-    example: 35343,
+    example: 35_343,
     description: 'The entity ID',
   })
   id: number;
@@ -22,7 +22,7 @@ export class AccessTokenModel implements Omit<AccessTokenEntity, keyof BaseEntit
   @ApiProperty({
     type: 'object',
     example: {
-      range: [908394496, 908396543],
+      range: [908_394_496, 908_396_543],
       country: 'GB',
       region: '',
       eu: '1',
@@ -54,7 +54,7 @@ export class AccessTokenModel implements Omit<AccessTokenEntity, keyof BaseEntit
 
   @ApiProperty({
     type: Number,
-    example: 320000,
+    example: 320_000,
     description: 'The token live in the second',
   })
   liveTime: number;
@@ -67,6 +67,15 @@ export class AccessTokenModel implements Omit<AccessTokenEntity, keyof BaseEntit
     description: 'Time when user / admin had last activity',
   })
   lastUsedAt: Date | null;
+
+  @ApiProperty({
+    type: Date,
+    format: 'date-time',
+    example: '2023-03-22T17:32:28Z',
+    description:
+      'The datetime from which the token was "created" or "refreshed" and its value using with the "liveTime"',
+  })
+  startAliveAt: Date;
 
   @ApiProperty({
     type: Date,

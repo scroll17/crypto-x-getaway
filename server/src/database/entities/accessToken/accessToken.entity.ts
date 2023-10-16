@@ -41,6 +41,9 @@ export class AccessTokenEntity extends BaseEntity {
   })
   lastUsedAt: Date | null;
 
+  @CreateDateColumn({ name: 'start_alive_at', type: 'timestamp with time zone', nullable: false })
+  startAliveAt: Date;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
   createdAt: Date;
 }
