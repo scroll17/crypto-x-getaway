@@ -63,7 +63,7 @@ export class AuthService {
 
     res.cookie(AuthCookies.RefreshToken, refreshToken, {
       maxAge: this.getRefreshTokenLiveTime(),
-      sameSite: 'none',
+      sameSite: 'strict',
       httpOnly: true, // http only, prevents JavaScript cookie access
       secure: secure, // cookie must be sent over https / ssl
     });
@@ -74,14 +74,14 @@ export class AuthService {
 
     res.cookie(AuthCookies.LoggedIn, true, {
       maxAge: this.getAccessTokenLiveTime(),
-      sameSite: 'none',
+      sameSite: 'strict',
       httpOnly: false, // http only, prevents JavaScript cookie access
       secure: secure, // cookie must be sent over https / ssl
     });
 
     res.cookie(AuthCookies.AccessToken, accessToken, {
       maxAge: this.getAccessTokenLiveTime(),
-      sameSite: 'none',
+      sameSite: 'strict',
       httpOnly: true, // http only, prevents JavaScript cookie access
       secure: secure, // cookie must be sent over https / ssl
     });
