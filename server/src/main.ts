@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
@@ -37,6 +38,9 @@ async function bootstrap() {
         : {},
     }),
   );
+
+  // MIDDLEWARES
+  app.use(cookieParser());
 
   // SWAGGER
   const document = SwaggerModule.createDocument(app, config);
