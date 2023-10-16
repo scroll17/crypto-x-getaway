@@ -4,9 +4,8 @@ import { createParamDecorator } from '@nestjs/common';
 import { ICurrentUserData } from '@common/interfaces/auth';
 /*@entities*/
 import { UserModel } from '@entities/user';
-import { AdminModel } from '@entities/admin';
 
-export const CurrentUser = createParamDecorator<keyof UserModel | keyof AdminModel>((data, ctx) => {
+export const CurrentUser = createParamDecorator<keyof UserModel>((data, ctx) => {
   const request = ctx.switchToHttp().getRequest();
   const user: ICurrentUserData = request.user;
 
