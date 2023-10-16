@@ -53,6 +53,9 @@ export class UserEntity extends BaseEntity {
   @Column('boolean', { name: 'has_bot_access', default: true })
   hasBotAccess: boolean;
 
+  @Column('boolean', { name: 'change_password', default: true })
+  changePassword: boolean;
+
   @Column('varchar', { name: 'telegram_id', nullable: false, length: 100 })
   telegramId: string;
 

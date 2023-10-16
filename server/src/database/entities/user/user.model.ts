@@ -73,6 +73,13 @@ export class UserModel
   hasBotAccess: boolean;
 
   @ApiProperty({
+    type: Boolean,
+    example: true,
+    description: 'Is user should change password before perform any Actions',
+  })
+  changePassword: boolean;
+
+  @ApiProperty({
     type: String,
     example: '117864272370217919267',
     description: 'Is user telegramId',
