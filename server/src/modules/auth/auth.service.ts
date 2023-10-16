@@ -75,7 +75,7 @@ export class AuthService {
     res.cookie(AuthCookies.LoggedIn, true, {
       maxAge: this.getAccessTokenLiveTime(),
       sameSite: 'none',
-      httpOnly: true, // http only, prevents JavaScript cookie access
+      httpOnly: false, // http only, prevents JavaScript cookie access
       secure: secure, // cookie must be sent over https / ssl
     });
 
