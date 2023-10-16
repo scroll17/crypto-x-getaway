@@ -10,12 +10,18 @@ import { CryptoXBotModule } from './bots/crypto-x/crypto-x-bot.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: function (configService: ConfigService) {
-        this.botName = configService.get('telegram.botName');
+        this.botName = configService.getOrThrow<string>('telegram.botName');
 
-        return {
-          token: configService.getOrThrow('telegram.token'),
-          include: [CryptoXBotModule],
-        };
+        const botEnabled = configService.getOrThrow<boolean>('telegram.botEnabled');
+        return botEnabled
+          ? {
+              token: configService.getOrThrow('telegram.token'),
+              include: [CryptoXBotModule],
+            }
+          : {
+              token: '',
+              include: [],
+            };
       },
     }),
   ],
