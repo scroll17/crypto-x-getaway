@@ -5,12 +5,14 @@ import { TUserSeed } from '@common/interfaces';
 export const usersConfiguration = (): {
   usersSeed: Array<TUserSeed>;
 } => {
-  const usersFilePath = path.resolve(__dirname, '../../../', '.users.json');
+  const usersFilePath = path.resolve(__dirname, '../../', '.users.json');
   fs.accessSync(usersFilePath, fs.constants.R_OK | fs.constants.W_OK);
 
-  return JSON.parse(
+  const users = JSON.parse(
     fs.readFileSync(usersFilePath, {
       encoding: 'utf8',
     }),
   );
+
+  return { usersSeed: users };
 };
