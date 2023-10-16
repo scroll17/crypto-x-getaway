@@ -1,0 +1,13 @@
+[
+  {
+    "firstName": "Petro",
+    "lastName": "YXT",
+    "email": "tesla5@gmail.com",
+    "password": "sd234c-012",
+    "verified": true,
+    "hasBotAccess": true,
+    "changePassword": true,
+    "telegramId": 12352256,
+    "wentFrom": "admin"
+  }
+]

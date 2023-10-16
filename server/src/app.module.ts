@@ -33,13 +33,14 @@ import { AdminEntity } from '@entities/admin';
 import { LoggingInterceptor } from '@common/interceptors';
 /*other*/
 import { configuration } from './config/configuration';
+import { usersConfiguration } from './config/users-configuration';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
-      load: [configuration],
+      load: [configuration, usersConfiguration],
     }),
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
