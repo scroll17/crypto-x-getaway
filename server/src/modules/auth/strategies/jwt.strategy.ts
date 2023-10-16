@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { HttpException, HttpStatus, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
 /*@interfaces*/
 import { ICurrentUserData, IUserDataInAccessToken } from '@common/interfaces/auth';
 /*@entities*/
@@ -17,6 +18,7 @@ import {
   ADMIN_REPOSITORY,
   USER_REPOSITORY,
 } from 'src/modules/database/repositories';
+import { AuthCookies } from '@common/enums';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -32,7 +34,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private accessTokenRepository: TAccessTokenRepository,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([(req: Request) => req.cookies[AuthCookies.AccessToken]]),
       ignoreExpiration: false,
       secretOrKey: configService.get('jwt.accessSecret'),
     });

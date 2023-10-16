@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AdminModel } from '@entities/admin';
+import { AccessTokenEntity } from '@entities/accessToken';
+
 export class LoggedInAdminEntity {
   @ApiProperty({
     type: AdminModel,
@@ -9,18 +11,8 @@ export class LoggedInAdminEntity {
   user: AdminModel;
 
   @ApiProperty({
-    type: String,
-    example:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsInVzZXJJZCI6NSwiZW1haWwiOiJ6b2xvbG90YXJlbmtvLjIwMTVAZ21haWwuY29tIiwiaWF0IjoxNjg3MDMwNzMxLCJleHAiOjE2ODcwMzEwNTF9.18LICIDeth9LIfQBjt3Dr6ew5S6wBKCppiR3pjMcWC4',
-    description: 'The access token string',
+    type: AccessTokenEntity,
+    description: 'The access token кусщкв',
   })
-  accessToken: string;
-
-  @ApiProperty({
-    type: String,
-    example:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NJZCI6MzIsImlhdCI6MTY4NzAzMDczMSwiZXhwIjoxOTQ2MjMwNzMxfQ.SZyBJotYtrZRzAXpvFRAcrEYi_wCdkBzIIRx9l5ovQs',
-    description: 'The refresh token string',
-  })
-  refreshToken: string;
+  accessToken: AccessTokenEntity;
 }

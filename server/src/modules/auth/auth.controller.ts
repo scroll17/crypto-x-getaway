@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   Ip,
   ParseIntPipe,
@@ -12,8 +11,10 @@ import {
   Put,
   Query,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import {
   ApiBasicAuth,
@@ -21,6 +22,7 @@ import {
   ApiCreatedResponse,
   ApiExtraModels,
   ApiForbiddenResponse,
+  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -31,7 +33,7 @@ import {
 } from '@nestjs/swagger';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { GoogleAuthGuard, JwtAuthGuard, LocalAuthGuard } from '@common/guards';
-import { CurrentUser } from '@common/decorators';
+import { AccessToken, CurrentUser, DisableEndpoint, RefreshToken } from '@common/decorators';
 import { ICurrentUserData, IUserDataInThirdPartyService } from '@common/interfaces/auth';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { InitPasswordResetDto } from './dto/init-password-reset.dto';
@@ -39,10 +41,11 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { LoggedInUserEntity } from './entities/logged-in-user.entity';
 import { LoggedInAdminEntity } from './entities/logged-in-admin.entity';
 import { UserModel, UserWentFrom } from '@entities/user';
-import { AccessTokenModel } from '@entities/accessToken';
+import { AccessTokenEntity, AccessTokenModel } from '@entities/accessToken';
 import { Request } from 'express';
 import { LoggedInThirdPartyServiceUserEntity } from './entities/logged-in-third-party-service-user.entity';
 import { FacebookAuthGuard } from '@common/guards/facebook-auth.guard';
+import { AuthCookies } from '@common/enums';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -87,8 +90,8 @@ export class AuthController {
   })
   @ApiNotFoundResponse({ description: 'User not found.' })
   @ApiUnauthorizedResponse({ description: 'User not unauthorized.' })
-  async login(@CurrentUser() user: ICurrentUserData, @Ip() ip: string) {
-    return this.authService.login(user, ip);
+  async login(@CurrentUser() user: ICurrentUserData, @Ip() ip: string, @Res({ passthrough: true }) res: Response) {
+    return this.authService.login(user, ip, res);
   }
 
   @Get('/google')
@@ -104,15 +107,17 @@ export class AuthController {
     description: 'User with tokens.',
     type: LoggedInThirdPartyServiceUserEntity,
   })
-  async googleLogin(@Req() req: Request, @Ip() ip: string) {
-    return this.authService.thirdPartyLogin(req.user as IUserDataInThirdPartyService, UserWentFrom.Google, ip);
+  async googleLogin(@Req() req: Request, @Ip() ip: string, @Res({ passthrough: true }) res: Response) {
+    return this.authService.thirdPartyLogin(req.user as IUserDataInThirdPartyService, UserWentFrom.Google, ip, res);
   }
 
+  @DisableEndpoint()
   @Get('/facebook')
   @UseGuards(FacebookAuthGuard)
   @ApiOperation({ summary: 'Init facebook auth' })
   async facebookInit() {}
 
+  @DisableEndpoint()
   @Get('/facebook/callback')
   @UseGuards(FacebookAuthGuard)
   @ApiOperation({ summary: 'Complete facebook auth' })
@@ -121,17 +126,18 @@ export class AuthController {
     description: 'User with tokens.',
     type: LoggedInThirdPartyServiceUserEntity,
   })
-  async facebookLogin(@Req() req: Request, @Ip() ip: string) {
-    return this.authService.thirdPartyLogin(req.user as IUserDataInThirdPartyService, UserWentFrom.Facebook, ip);
+  async facebookLogin(@Req() req: Request, @Ip() ip: string, @Res({ passthrough: true }) res: Response) {
+    return this.authService.thirdPartyLogin(req.user as IUserDataInThirdPartyService, UserWentFrom.Facebook, ip, res);
   }
 
+  @DisableEndpoint()
   @Patch('/verify-email')
   @UseGuards(JwtAuthGuard)
-  @HttpCode(200)
+  @HttpCode(201)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Verify user email.' })
   @ApiCreatedResponse({
-    status: 200,
+    status: 201,
     description: 'Current user.',
     type: UserModel,
   })
@@ -140,6 +146,7 @@ export class AuthController {
     return this.authService.checkVerificationCode(user, dto.code);
   }
 
+  @DisableEndpoint()
   @Post('/resend-verify-code')
   @UseGuards(JwtAuthGuard)
   @HttpCode(201)
@@ -175,7 +182,7 @@ export class AuthController {
   @HttpCode(204)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Remove access token by id.' })
-  @ApiOkResponse({
+  @ApiNoContentResponse({
     status: 204,
     description: 'Token revoked.',
   })
@@ -187,24 +194,16 @@ export class AuthController {
   }
 
   @Put('/refresh')
-  @HttpCode(200)
-  @ApiBasicAuth()
+  @HttpCode(201)
   @ApiOperation({ summary: 'Refresh access token.' })
   @ApiCreatedResponse({
-    status: 200,
-    description: 'New refresh and access tokens.',
-    schema: {
-      properties: {
-        accessToken: {
-          type: 'string',
-        },
-      },
-    },
+    status: 201,
+    description: 'New access token record',
+    type: AccessTokenEntity,
   })
-  @ApiQuery({ name: 'token', type: String })
   @ApiNotFoundResponse({ description: 'Token not found.' })
-  async refresh(@Query('token') refreshToken: string) {
-    return this.authService.refresh(refreshToken);
+  async refresh(@RefreshToken() refreshToken: string, @Res({ passthrough: true }) res: Response) {
+    return this.authService.refresh(refreshToken, res);
   }
 
   @Post('/logout')
@@ -219,9 +218,18 @@ export class AuthController {
   })
   @ApiNotFoundResponse({ description: 'User not found.' })
   @ApiUnauthorizedResponse({ description: 'User not unauthorized.' })
-  async logout(@CurrentUser() user: ICurrentUserData, @Headers('Authorization') rawAccessToken: string) {
-    const accessTokenStr = rawAccessToken.split(' ')[1];
-    return this.authService.logout(user.info, accessTokenStr);
+  async logout(
+    @CurrentUser() user: ICurrentUserData,
+    @AccessToken() accessTokenStr: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = this.authService.logout(user.info, accessTokenStr);
+
+    res.cookie(AuthCookies.LoggedIn, null, { maxAge: 0 });
+    res.cookie(AuthCookies.AccessToken, null, { maxAge: 0 });
+    res.cookie(AuthCookies.RefreshToken, null, { maxAge: 0 });
+
+    return result;
   }
 
   @Post('/init-password-reset')

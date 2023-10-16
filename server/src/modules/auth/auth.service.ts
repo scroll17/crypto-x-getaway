@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import ms from 'ms';
 import * as geoip from 'geoip-lite';
+import { Response } from 'express';
 import { HttpException, HttpStatus, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { DataSource, QueryRunner } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -11,7 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import { RedisService } from '../redis/redis.service';
 /*@common*/
 import { DataGenerateHelper } from '@common/helpers';
-import { RedisUser } from '@common/enums';
+import { AuthCookies, RedisUser } from '@common/enums';
 /*@entities*/
 import { UserEntity, UserModel, UserWentFrom } from '@entities/user';
 import { AdminEntity } from '@entities/admin';
@@ -55,14 +56,53 @@ export class AuthService {
     private accessTokenRepository: TAccessTokenRepository,
   ) {}
 
+  private setAuthCookies(res: Response, accessToken: string, refreshToken: string) {
+    const secure = this.configService.getOrThrow<boolean>('security.cookiesOverHttps');
+
+    this.setAccessAuthCookies(res, accessToken);
+
+    res.cookie(AuthCookies.RefreshToken, refreshToken, {
+      maxAge: this.getRefreshTokenLiveTime(),
+      sameSite: 'none',
+      httpOnly: true, // http only, prevents JavaScript cookie access
+      secure: secure, // cookie must be sent over https / ssl
+    });
+  }
+
+  private setAccessAuthCookies(res: Response, accessToken: string) {
+    const secure = this.configService.getOrThrow<boolean>('security.cookiesOverHttps');
+
+    res.cookie(AuthCookies.LoggedIn, true, {
+      maxAge: this.getAccessTokenLiveTime(),
+      sameSite: 'none',
+      httpOnly: true, // http only, prevents JavaScript cookie access
+      secure: secure, // cookie must be sent over https / ssl
+    });
+
+    res.cookie(AuthCookies.AccessToken, accessToken, {
+      maxAge: this.getAccessTokenLiveTime(),
+      sameSite: 'none',
+      httpOnly: true, // http only, prevents JavaScript cookie access
+      secure: secure, // cookie must be sent over https / ssl
+    });
+  }
+
+  public getAccessTokenLiveTime() {
+    return ms(this.configService.getOrThrow<string>('jwt.accessExpires'));
+  }
+
+  public getRefreshTokenLiveTime() {
+    return ms(this.configService.getOrThrow<string>('jwt.refreshExpires'));
+  }
+
   public async generateAuthTokens(
     ip: string,
     user: Pick<UserModel, 'id' | 'email'>,
     isAdmin: boolean,
     queryRunner: QueryRunner | null = null,
   ) {
-    const accessTokenLive = this.configService.getOrThrow<string>('jwt.accessExpires');
-    const refreshTokenLive = this.configService.getOrThrow<string>('jwt.refreshExpires');
+    const accessTokenLive = this.getAccessTokenLiveTime();
+    const refreshTokenLive = this.getRefreshTokenLiveTime();
 
     const geo = await geoip.lookup(ip);
 
@@ -71,8 +111,9 @@ export class AuthService {
       logFromIP: ip,
       userId: isAdmin ? null : user.id,
       adminId: isAdmin ? user.id : null,
-      liveTime: ms(accessTokenLive),
+      liveTime: accessTokenLive,
       lastUsedAt: new Date(),
+      startAliveAt: new Date(),
     });
 
     queryRunner ? await queryRunner.manager.save(accessToken) : await accessToken.save();
@@ -93,11 +134,14 @@ export class AuthService {
       accessId: accessToken.id,
     };
     const refreshTokenStr = await this.jwtService.signAsync(refreshPayload, {
-      expiresIn: ms(refreshTokenLive),
+      expiresIn: refreshTokenLive,
       secret: this.configService.getOrThrow<string>('jwt.refreshSecret'),
     });
 
+    // TODO: send notification to telegram
+
     return {
+      accessTokenRecord: accessToken,
       accessToken: accessTokenStr,
       refreshToken: refreshTokenStr,
     };
@@ -133,6 +177,9 @@ export class AuthService {
     };
   }
 
+  /**
+   *  @deprecated
+   * */
   public async register(
     dto: RegisterUserDto,
     ip: string,
@@ -180,26 +227,26 @@ export class AuthService {
         accessToken,
         refreshToken,
       };
-    } catch (err) {
+    } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw err;
+      throw error;
     } finally {
       await queryRunner.release();
     }
   }
 
-  public async login(user: ICurrentUserData, ip: string) {
+  public async login(user: ICurrentUserData, ip: string, res: Response) {
     this.logger.debug('Login user', {
       user: _.pick(user.info, ['id', 'email']),
       ip,
     });
 
-    const { accessToken, refreshToken } = await this.generateAuthTokens(ip, user.info, user.isAdmin);
+    const { accessTokenRecord, accessToken, refreshToken } = await this.generateAuthTokens(ip, user.info, user.isAdmin);
+    this.setAuthCookies(res, accessToken, refreshToken);
 
     return {
-      user,
-      accessToken,
-      refreshToken,
+      user: user.info.toJSON(),
+      accessToken: accessTokenRecord,
     };
   }
 
@@ -207,6 +254,7 @@ export class AuthService {
     thirdPartyAuthUser: IUserDataInThirdPartyService,
     provider: UserWentFrom,
     ip: string,
+    res: Response,
   ): Promise<LoggedInThirdPartyServiceUserEntity> {
     if (!thirdPartyAuthUser) throw new HttpException(`${provider} not provided user info`, HttpStatus.NOT_FOUND);
 
@@ -226,31 +274,32 @@ export class AuthService {
         },
       });
       if (!user) {
-        this.logger.debug(`User not found by "${provider}" email. Creating new user`);
+        this.logger.error(`User not found by "${provider}" email.`);
+        throw new HttpException('User not found by "${provider}" email.', HttpStatus.NOT_FOUND);
 
-        const user = this.userRepository.create({
-          firstName: thirdPartyAuthUser.name.givenName,
-          lastName: thirdPartyAuthUser.name.familyName,
-          email: thirdPartyAuthUser.email,
-          verified: thirdPartyAuthUser.verified,
-          wentFrom: provider,
-          googleId: thirdPartyAuthUser.profileId,
-          telegramId: '0',
-        });
-        await queryRunner.manager.save(user);
-
-        this.logger.debug('Created new user', _.pick(user, ['id', 'email', 'phone']));
-
-        const { accessToken, refreshToken } = await this.generateAuthTokens(ip, user, false, queryRunner);
-
-        await queryRunner.commitTransaction();
-
-        return {
-          user,
-          accessToken,
-          refreshToken,
-          new: true,
-        };
+        // const user = this.userRepository.create({
+        //   firstName: thirdPartyAuthUser.name.givenName,
+        //   lastName: thirdPartyAuthUser.name.familyName,
+        //   email: thirdPartyAuthUser.email,
+        //   verified: thirdPartyAuthUser.verified,
+        //   wentFrom: provider,
+        //   googleId: thirdPartyAuthUser.profileId,
+        //   telegramId: '0',
+        // });
+        // await queryRunner.manager.save(user);
+        //
+        // this.logger.debug('Created new user', _.pick(user, ['id', 'email', 'phone']));
+        //
+        // const { accessToken, refreshToken } = await this.generateAuthTokens(ip, user, false, queryRunner);
+        //
+        // await queryRunner.commitTransaction();
+        //
+        // return {
+        //   user,
+        //   accessToken,
+        //   refreshToken,
+        //   new: true,
+        // };
       }
 
       switch (provider) {
@@ -299,24 +348,32 @@ export class AuthService {
 
       this.logger.debug(`User logged in by "${provider}"`, _.pick(user, ['id', 'email']));
 
-      const { accessToken, refreshToken } = await this.generateAuthTokens(ip, user, false, queryRunner);
+      const { accessTokenRecord, accessToken, refreshToken } = await this.generateAuthTokens(
+        ip,
+        user,
+        false,
+        queryRunner,
+      );
+      this.setAuthCookies(res, accessToken, refreshToken);
 
       await queryRunner.commitTransaction();
 
       return {
-        user,
-        accessToken,
-        refreshToken,
+        user: user.toJSON(),
+        accessToken: accessTokenRecord,
         new: false,
       };
-    } catch (err) {
+    } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw err;
+      throw error;
     } finally {
       await queryRunner.release();
     }
   }
 
+  /**
+   *  @deprecated
+   * */
   public async checkVerificationCode(user: ICurrentUserData, code: number) {
     this.logger.debug('Verify user email', {
       user: _.pick(user.info, ['id', 'email']),
@@ -338,7 +395,7 @@ export class AuthService {
       throw new HttpException('Verification code not found. Please resend verify code', HttpStatus.NOT_FOUND);
     }
 
-    if (parseInt(verificationCode, 10) !== code) {
+    if (Number.parseInt(verificationCode, 10) !== code) {
       throw new HttpException('Invalid verification code', HttpStatus.BAD_REQUEST);
     }
 
@@ -350,6 +407,9 @@ export class AuthService {
     return userEntity.toJSON();
   }
 
+  /**
+   *  @deprecated
+   * */
   public async resendVerificationCode(user: ICurrentUserData) {
     this.logger.debug('Resend verify user email', {
       user: _.pick(user.info, ['id', 'email']),
@@ -409,7 +469,7 @@ export class AuthService {
     return true;
   }
 
-  public async refresh(refreshToken: string) {
+  public async refresh(refreshToken: string, res: Response) {
     const refreshTokenPayload: IUserDataInRefreshToken = await this.jwtService.verifyAsync(refreshToken, {
       secret: this.configService.getOrThrow<string>('jwt.refreshSecret'),
     });
@@ -442,7 +502,7 @@ export class AuthService {
           id: refreshTokenPayload.accessId,
         },
         {
-          createdAt: new Date(),
+          startAliveAt: new Date(),
         },
       );
       if (!result) {
@@ -482,15 +542,15 @@ export class AuthService {
       };
       const accessTokenStr = await this.jwtService.signAsync(accessPayload);
 
+      this.setAccessAuthCookies(res, accessTokenStr);
+
       await queryRunner.commitTransaction();
 
-      return {
-        accessToken: accessTokenStr,
-      };
-    } catch (err) {
+      return accessToken;
+    } catch (error) {
       // TODO: jws error handling
       await queryRunner.rollbackTransaction();
-      throw err;
+      throw error;
     } finally {
       await queryRunner.release();
     }
