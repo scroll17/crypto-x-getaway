@@ -17,7 +17,7 @@ import {
 import { AuthService } from './auth.service';
 import {
   ApiBasicAuth,
-  ApiBearerAuth,
+  ApiCookieAuth,
   ApiCreatedResponse,
   ApiExtraModels,
   ApiForbiddenResponse,
@@ -50,6 +50,7 @@ import { FacebookAuthGuard } from '@common/guards/facebook-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  // TODO: Disable endpoint
   @Post('/register')
   @HttpCode(201)
   @ApiOperation({ summary: 'Register user.' })
@@ -127,7 +128,7 @@ export class AuthController {
   @Patch('/verify-email')
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Verify user email.' })
   @ApiCreatedResponse({
     status: 200,
@@ -142,7 +143,7 @@ export class AuthController {
   @Post('/resend-verify-code')
   @UseGuards(JwtAuthGuard)
   @HttpCode(201)
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Resend verify user code to user.' })
   @ApiOkResponse({
     status: 200,
@@ -157,7 +158,7 @@ export class AuthController {
   @Get('/tokens-list')
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Get list of existed tokens.' })
   @ApiOkResponse({
     status: 200,
@@ -172,7 +173,7 @@ export class AuthController {
   @Delete('/revoke-token')
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Remove access token by id.' })
   @ApiOkResponse({
     status: 204,
@@ -209,7 +210,7 @@ export class AuthController {
   @Post('/logout')
   @UseGuards(JwtAuthGuard)
   @HttpCode(201)
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Logout user and destroy token.' })
   @ApiCreatedResponse({
     status: 201,
@@ -224,7 +225,9 @@ export class AuthController {
   }
 
   @Post('/init-password-reset')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(201)
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Init password reset for user.' })
   @ApiCreatedResponse({
     status: 201,
@@ -237,7 +240,9 @@ export class AuthController {
   }
 
   @Post('/reset-password')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(201)
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Reset password for user.' })
   @ApiCreatedResponse({
     status: 201,

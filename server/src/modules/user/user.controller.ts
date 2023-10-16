@@ -1,5 +1,5 @@
 import { Controller, Get, HttpCode, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '@common/guards';
 import { CurrentUser, DisableController } from '@common/decorators';
@@ -15,7 +15,7 @@ export class UserController {
   @Get('/me')
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Get current user.' })
   @ApiOkResponse({
     status: 200,
