@@ -47,6 +47,7 @@ export const configuration = () => {
     webhook: process.env.TELEGRAM_WEBHOOK,
     token: process.env.TELEGRAM_TOKEN,
     botName: process.env.TELEGRAM_BOT_NAME,
+    botEnabled: Boolean(Number.parseInt(process.env.TELEGRAM_BOT_ENABLED!, 10)),
   };
 
   const google = {
