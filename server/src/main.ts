@@ -6,10 +6,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CommandModule, CommandService } from 'nestjs-command';
 
 const config = new DocumentBuilder()
-  .setTitle('BNB Nodes')
-  .setDescription('The BNB Nodes API description')
+  .setTitle('Crypto X Getaway')
+  .setDescription('The Crypto X Getaway API description')
   .setVersion('1.0')
-  .addBearerAuth()
+  .addCookieAuth()
   .addBasicAuth()
   .build();
 
@@ -45,12 +45,10 @@ async function bootstrap() {
   // EXEC COMMANDS
   // HINT: it's direct call to avoid app.init() call
   await app.get(CommandModule).onModuleInit();
-  await configService
-    .get('seed.bootstrapCommands')
-    .reduce(async (acc: Promise<void>, command: any) => {
-      await acc;
-      return commandService.exec(command);
-    }, Promise.resolve());
+  await configService.get('seed.bootstrapCommands').reduce(async (acc: Promise<void>, command: any) => {
+    await acc;
+    return commandService.exec(command);
+  }, Promise.resolve());
 
   // START
   await app.listen(configService.getOrThrow('ports.http'), () => {
