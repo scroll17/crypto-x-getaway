@@ -16,6 +16,7 @@ export const configuration = () => {
 
   const security = {
     corsWhiteList: JSON.parse(process.env.CORS_WHITE_LIST!),
+    cookiesOverHttps: Boolean(Number.parseInt(process.env.COOKIES_OVER_HTTPS!, 10)),
   };
 
   const logs = {
