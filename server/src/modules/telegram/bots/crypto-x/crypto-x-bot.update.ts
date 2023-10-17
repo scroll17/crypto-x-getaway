@@ -1,11 +1,15 @@
 import { Command, Ctx, Help, InjectBot, Next, On, Start, Update } from 'nestjs-telegraf';
 import { Context, Telegraf } from 'telegraf';
-import { Logger, UseInterceptors } from '@nestjs/common';
+import { Logger, UseFilters, UseInterceptors } from '@nestjs/common';
 import { CryptoXBotService } from './crypto-x-bot.service';
 import { TelegrafMessageLoggingInterceptor } from '@common/telegram/interceptors';
+import { TelegrafExceptionFilter } from '@common/telegram/filters';
+import { TelegrafAuthUser, TelegrafCurrentUser } from '@common/telegram/decorators';
+import { ITelegramUser } from '@common/types';
 
 @Update()
 @UseInterceptors(TelegrafMessageLoggingInterceptor)
+@UseFilters(TelegrafExceptionFilter)
 export class CryptoXBotUpdate {
   private readonly logger = new Logger(this.constructor.name);
 
@@ -39,6 +43,7 @@ export class CryptoXBotUpdate {
   }
 
   @Help()
+  @TelegrafAuthUser()
   async onHelp(): Promise<string> {
     const commands = [
       '/get_server_url - Получить URL сервера',
@@ -54,18 +59,21 @@ export class CryptoXBotUpdate {
   }
 
   @Command('get_server_url')
+  @TelegrafAuthUser()
   async onGetServerUrlCommand(@Ctx() ctx: Context): Promise<void> {
     const message = await this.cryptoXBotService.getServerUrl();
     await ctx.replyWithMarkdown(message);
   }
 
   @Command('get_security_token')
-  async onGetSecurityTokenCommand(@Ctx() ctx: Context): Promise<void> {
+  @TelegrafAuthUser()
+  async onGetSecurityTokenCommand(@TelegrafCurrentUser() tgUser: ITelegramUser, @Ctx() ctx: Context): Promise<void> {
     const message = await this.cryptoXBotService.getSecurityToken(ctx.message!.from.id);
     await ctx.replyWithMarkdown(message);
   }
 
   @Command('refresh_security_token')
+  @TelegrafAuthUser()
   async onRefreshSecurityTokenCommand(@Ctx() ctx: Context): Promise<void> {
     const message = await this.cryptoXBotService.refreshSecurityToken(ctx.message!.from.id);
     await ctx.replyWithMarkdown(message);
