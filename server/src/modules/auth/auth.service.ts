@@ -32,7 +32,7 @@ import {
   IUserDataInAccessToken,
   IUserDataInThirdPartyService,
   IUserDataInRefreshToken,
-} from '@common/interfaces/auth';
+} from '@common/types/auth';
 /*@dto*/
 import { RegisterUserDto } from './dto/register-user.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';

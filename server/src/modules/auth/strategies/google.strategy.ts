@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 /*@interfaces*/
-import { IUserDataInThirdPartyService } from '@common/interfaces/auth';
+import { IUserDataInThirdPartyService } from '@common/types/auth';
 /*@entities*/
 
 @Injectable()

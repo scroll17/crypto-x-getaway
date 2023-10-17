@@ -3,7 +3,7 @@ import { AdminService } from './admin.service';
 import { ApiCookieAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthAdmin } from '@common/guards';
 import { CurrentUser, DisableController } from '@common/decorators';
-import { ICurrentUserData } from '@common/interfaces/auth';
+import { ICurrentUserData } from '@common/types/auth';
 import { AdminModel } from '@entities/admin';
 
 @Controller('admin')

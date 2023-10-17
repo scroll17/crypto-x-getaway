@@ -1,6 +1,6 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs';
-import { TUserSeed } from '@common/interfaces';
+import { TUserSeed } from 'src/common/types';
 
 export const usersConfiguration = (): {
   usersSeed: Array<TUserSeed>;

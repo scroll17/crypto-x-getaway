@@ -1,4 +1,5 @@
 /*external modules*/
+import * as _ from 'lodash';
 import { CallHandler, ContextType, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -16,12 +17,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     let token: string | null = null;
-    let trace: Record<string, string | number | Date> = {};
-
-    // console.log('getType => ', context.getType())
-    // console.log('switchToWs => ', context.switchToWs())
-    // console.log('switchToWs getContext => ', context.switchToWs().getClient())
-    // console.log('switchToWs getData => ', context.switchToWs().getData())
+    let trace: Record<string, string | number | Date | Record<string, unknown>> = {};
 
     switch (context.getType()) {
       case 'http': {
@@ -32,7 +28,7 @@ export class LoggingInterceptor implements NestInterceptor {
         trace = {
           body: request.body,
           query: request.query,
-          headers: request.headers,
+          headers: _.pick(request.headers, ['content-type', 'user-agent', 'host']),
           timestamp: new Date(),
         };
 

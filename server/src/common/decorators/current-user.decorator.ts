@@ -1,7 +1,7 @@
 /*external modules*/
 import { createParamDecorator } from '@nestjs/common';
 /*@interfaces*/
-import { ICurrentUserData } from '@common/interfaces/auth';
+import { ICurrentUserData } from '@common/types/auth';
 /*@entities*/
 import { UserModel } from '@entities/user';
 

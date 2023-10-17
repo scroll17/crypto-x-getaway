@@ -34,7 +34,7 @@ import {
 import { RegisterUserDto } from './dto/register-user.dto';
 import { GoogleAuthGuard, JwtAuthGuard, LocalAuthGuard } from '@common/guards';
 import { AccessToken, CurrentUser, DisableEndpoint, RefreshToken } from '@common/decorators';
-import { ICurrentUserData, IUserDataInThirdPartyService } from '@common/interfaces/auth';
+import { ICurrentUserData, IUserDataInThirdPartyService } from '@common/types/auth';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { LoggedInUserEntity } from './entities/logged-in-user.entity';

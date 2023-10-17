@@ -6,7 +6,7 @@ import { HttpException, HttpStatus, Inject, Injectable, Logger, NotFoundExceptio
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 /*@interfaces*/
-import { ICurrentUserData, IUserDataInAccessToken } from '@common/interfaces/auth';
+import { ICurrentUserData, IUserDataInAccessToken } from '@common/types/auth';
 /*@entities*/
 import { UserEntity } from '@entities/user';
 import { AdminEntity } from '@entities/admin';

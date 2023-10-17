@@ -5,7 +5,7 @@ import { RedisService } from '../redis/redis.service';
 import { DataGenerateHelper } from '@common/helpers';
 import { RedisProtection } from '@common/enums';
 import { JwtService } from '@nestjs/jwt';
-import { IDataInSecurityToken } from '@common/interfaces/protection';
+import { IDataInSecurityToken } from '@common/types/protection';
 
 @Injectable()
 export class ProtectionService {

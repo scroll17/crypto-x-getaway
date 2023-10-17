@@ -3,7 +3,7 @@ import { ApiCookieAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTa
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '@common/guards';
 import { CurrentUser } from '@common/decorators';
-import { ICurrentUserData } from '@common/interfaces/auth';
+import { ICurrentUserData } from '@common/types/auth';
 import { UserModel } from '@entities/user';
 
 @Controller('user')

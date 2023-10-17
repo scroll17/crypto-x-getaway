@@ -5,7 +5,7 @@ import { AuthService } from '../../modules/auth/auth.service';
 import { TUserRepository, USER_REPOSITORY } from '../../modules/database/repositories';
 import { UserWentFrom } from '@entities/user';
 import { ConfigService } from '@nestjs/config';
-import { TUserSeed } from '@common/interfaces';
+import { TUserSeed } from 'src/common/types';
 
 @Injectable()
 export class UserSeed {
