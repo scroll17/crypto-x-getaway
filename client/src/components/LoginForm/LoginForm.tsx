@@ -1,16 +1,69 @@
 import React, { useEffect, useState, FC, FormEvent } from 'react';
-import axios from 'axios';
 
 import { isEmailValid } from '../../utils/emailValidation';
 import { Container, Typography, TextField, Button, Box } from '@mui/material';
+import { login } from '../../api/authApi';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useMutation, useQuery } from 'react-query';
+import { useStateContext } from '../../context';
+import { getMe } from '../../api/authApi';
+import { toast } from 'react-toastify';
 
-interface LoginProps {}
+export type UserLoginData = { firstName: string; lastName: string };
 
-export const LoginForm: FC<LoginProps> = () => {
+export const LoginForm: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const [token, setToken] = useState('');
   const [error, setError] = useState(true);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = ((location.state as any)?.from.pathname as string) || '/';
+
+  const stateContext = useStateContext();
+
+  // API Get Current Logged-in user
+  const query = useQuery(['authUser'], getMe, {
+    enabled: false,
+    select: data => data.data,
+    retry: 1,
+    onSuccess: data => {
+      stateContext.dispatch({ type: 'SET_USER', payload: data });
+    },
+  });
+
+  //  API Login Mutation
+  const { mutate: loginUser, isLoading } = useMutation(
+    (userData: UserLoginData) => login(userData),
+    {
+      onSuccess: data => {
+        stateContext.dispatch({ type: 'SET_ACCESS_TOKEN', payload: data['accessToken'] });
+        setToken(data['accessToken']);
+
+        // TODO: what we really need
+        sessionStorage.setItem('accessToken', data['accessToken']);
+
+        query.refetch();
+        toast.success('You successfully logged in');
+        navigate(from);
+      },
+      onError: (error: any) => {
+        if (Array.isArray((error as any).response.data.error)) {
+          (error as any).response.data.error.forEach((el: any) =>
+            toast.error(el.message, {
+              position: 'top-right',
+            }),
+          );
+        } else {
+          toast.error((error as any).response.data.message, {
+            position: 'top-right',
+          });
+        }
+      },
+    },
+  );
 
   useEffect(() => {
     if (email.length === 0 || password.length === 0) {
@@ -27,17 +80,7 @@ export const LoginForm: FC<LoginProps> = () => {
       setError(true);
       return;
     }
-    axios
-      .post('/auth/login', {
-        firstName: email,
-        lastName: password,
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    loginUser({ email, password });
   };
 
   return (
@@ -57,7 +100,7 @@ export const LoginForm: FC<LoginProps> = () => {
             margin="normal"
             required
             fullWidth
-            label="Email адрес"
+            placeholder="Email адрес"
             variant="outlined"
             value={email}
             onChange={e => setEmail(e.target.value)}
@@ -66,7 +109,7 @@ export const LoginForm: FC<LoginProps> = () => {
             margin="normal"
             required
             fullWidth
-            label="Пароль"
+            placeholder="Пароль"
             type="password"
             variant="outlined"
             value={password}
@@ -76,7 +119,7 @@ export const LoginForm: FC<LoginProps> = () => {
             variant="contained"
             color="primary"
             type="submit"
-            disabled={error}
+            disabled={error || isLoading}
             fullWidth
             sx={{ mt: 3 }}
           >

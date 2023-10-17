@@ -1,6 +1,16 @@
 import React from 'react';
-import { LoginForm } from './components/LoginForm/LoginForm';
+import { useRoutes } from 'react-router-dom';
+import routes from './router';
+import AuthMiddleware from './middleware/AuthMiddleware';
 
-export default function App() {
-  return <LoginForm />;
+function App() {
+  const content = useRoutes(routes);
+
+  return (
+    <>
+      <AuthMiddleware>{content}</AuthMiddleware>
+    </>
+  );
 }
+
+export default App;
