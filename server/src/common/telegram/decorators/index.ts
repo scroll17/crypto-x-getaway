@@ -1,1 +1,2 @@
-export { CurrentTelegramUser } from './current-telegram-user.decorator';
+export { TelegramCurrentUser } from './telegram-current-user.decorator';
+export { TelegramUpdateType } from './telegram-update-type.decorator';

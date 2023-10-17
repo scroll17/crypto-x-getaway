@@ -2,7 +2,7 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { TelegrafExecutionContext, TelegrafException } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 
-export const CurrentTelegramUser = createParamDecorator((_dataKey, ctx: ExecutionContext) => {
+export const TelegramCurrentUser = createParamDecorator((_dataKey, ctx: ExecutionContext) => {
   const tgCtx = TelegrafExecutionContext.create(ctx).getContext<Context>();
 
   if (tgCtx.updateType === 'message') {
