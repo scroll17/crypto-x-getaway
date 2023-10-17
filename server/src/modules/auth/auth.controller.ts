@@ -32,14 +32,14 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { GoogleAuthGuard, JwtAuthGuard, LocalAuthGuard } from '@common/guards';
+import { GoogleAuthGuard, JwtAuthGuard, LocalAuthGuard, UserGuard } from '@common/guards';
 import { AccessToken, CurrentUser, DisableEndpoint, RefreshToken } from '@common/decorators';
 import { ICurrentUserData, IUserDataInThirdPartyService } from '@common/types/auth';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { LoggedInUserEntity } from './entities/logged-in-user.entity';
 import { LoggedInAdminEntity } from './entities/logged-in-admin.entity';
-import { UserModel, UserWentFrom } from '@entities/user';
+import { UserEntity, UserModel, UserWentFrom } from '@entities/user';
 import { AccessTokenEntity, AccessTokenModel } from '@entities/accessToken';
 import { Request } from 'express';
 import { LoggedInThirdPartyServiceUserEntity } from './entities/logged-in-third-party-service-user.entity';
@@ -232,7 +232,7 @@ export class AuthController {
   }
 
   @Patch('/init-password-reset')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, UserGuard)
   @HttpCode(200)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Init password reset for user.' })
@@ -243,11 +243,11 @@ export class AuthController {
   })
   @ApiNotFoundResponse({ description: 'Record not found.' })
   async initPasswordReset(@CurrentUser() user: ICurrentUserData) {
-    return this.authService.initPasswordReset(user.info);
+    return this.authService.initPasswordReset(user.info as UserEntity);
   }
 
   @Patch('/reset-password')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, UserGuard)
   @HttpCode(200)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Reset password for user.' })
@@ -259,6 +259,6 @@ export class AuthController {
   @ApiNotFoundResponse({ description: 'Reset code not found.' })
   @ApiNotFoundResponse({ description: 'Record not found.' })
   async resetPassword(@CurrentUser() user: ICurrentUserData, @Body() dto: ResetPasswordDto) {
-    return this.authService.resetPassword(user.info, dto);
+    return this.authService.resetPassword(user.info as UserEntity, dto);
   }
 }
