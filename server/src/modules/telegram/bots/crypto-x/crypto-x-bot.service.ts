@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MarkdownHelper } from '../../common/helpers';
 import { NgrokService } from '../../../ngrok/ngrok.service';
 import { ProtectionService } from '../../../protection/protection.service';
+import { MarkdownHelper } from '@common/telegram/helpers';
 
 @Injectable()
 export class CryptoXBotService {
@@ -14,6 +14,7 @@ export class CryptoXBotService {
     private readonly configService: ConfigService,
     private readonly ngrokService: NgrokService,
     private readonly protectionService: ProtectionService,
+    private readonly markdownHelper: MarkdownHelper,
   ) {}
 
   public async getServerUrl() {
@@ -22,8 +23,8 @@ export class CryptoXBotService {
       proto: 'http',
     });
 
-    const urlMsg = MarkdownHelper.bold('URL');
-    const urlText = MarkdownHelper.monospaced(url);
+    const urlMsg = this.markdownHelper.bold('URL');
+    const urlText = this.markdownHelper.monospaced(url);
 
     return `${urlMsg}: ${urlText}`;
   }
@@ -32,8 +33,8 @@ export class CryptoXBotService {
     if (this.lastSecurityToken) {
       this.logger.debug('Return old security token');
 
-      const tokenMsg = MarkdownHelper.bold('Token');
-      const tokenText = MarkdownHelper.monospaced(this.lastSecurityToken);
+      const tokenMsg = this.markdownHelper.bold('Token');
+      const tokenText = this.markdownHelper.monospaced(this.lastSecurityToken);
 
       return `${tokenMsg}: ${tokenText}`;
     }
@@ -41,8 +42,8 @@ export class CryptoXBotService {
     const newSecurityToken = await this.protectionService.generateSecurityToken(telegramUserId);
     this.lastSecurityToken = newSecurityToken;
 
-    const tokenMsg = MarkdownHelper.bold('Token');
-    const tokenText = MarkdownHelper.monospaced(newSecurityToken);
+    const tokenMsg = this.markdownHelper.bold('Token');
+    const tokenText = this.markdownHelper.monospaced(newSecurityToken);
 
     return `${tokenMsg}: ${tokenText}`;
   }
@@ -52,8 +53,8 @@ export class CryptoXBotService {
 
     const newSecurityToken = await this.protectionService.generateSecurityToken(telegramUserId);
 
-    const tokenMsg = MarkdownHelper.bold('Token');
-    const tokenText = MarkdownHelper.monospaced(newSecurityToken);
+    const tokenMsg = this.markdownHelper.bold('Token');
+    const tokenText = this.markdownHelper.monospaced(newSecurityToken);
 
     return `${tokenMsg}: ${tokenText}`;
   }
