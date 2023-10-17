@@ -9,7 +9,7 @@ export class UserModel
 {
   @ApiProperty({
     type: Number,
-    example: 35343,
+    example: 35_343,
     description: 'The entity ID',
   })
   id: number;
@@ -28,13 +28,12 @@ export class UserModel
   })
   lastName: string;
 
-  @ApiPropertyOptional()
   @ApiProperty({
     type: String,
     example: 'test@test.com',
     description: 'The user email',
   })
-  email: string | null;
+  email: string;
 
   @ApiPropertyOptional()
   @ApiProperty({

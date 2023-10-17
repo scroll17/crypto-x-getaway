@@ -26,8 +26,8 @@ export class UserEntity extends BaseEntity {
   @Column('varchar', { name: 'last_name', length: 255, nullable: false })
   lastName: string;
 
-  @Column('citext', { nullable: true, unique: true })
-  email: string | null;
+  @Column('citext', { nullable: false, unique: true })
+  email: string;
 
   @Exclude()
   @Column('varchar', { length: 255, nullable: true, default: null })

@@ -6,8 +6,6 @@
     "password": "sd234c-012",
     "verified": true,
     "hasBotAccess": true,
-    "changePassword": true,
-    "telegramId": 12352256,
-    "wentFrom": "admin"
+    "telegramId": 12352256
   }
 ]
