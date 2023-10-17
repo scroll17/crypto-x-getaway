@@ -34,18 +34,21 @@ export class LoggingInterceptor implements NestInterceptor {
 
         break;
       }
-      case 'telegraf' as ContextType: {
-        const httpContext = context.switchToHttp();
-        const request = httpContext.getRequest();
-
-        token = `Telegraf ${request.method} "${request.path}"`;
-        trace = {
-          body: request.body,
-          query: request.query,
-          headers: request.headers,
-          timestamp: new Date(),
-        };
+      default: {
+        return next.handle();
       }
+      // case 'telegraf' as ContextType: {
+      //   const httpContext = context.switchToHttp();
+      //   const request = httpContext.getRequest();
+      //
+      //   token = `Telegraf ${request.method} "${request.path}"`;
+      //   trace = {
+      //     body: request.body,
+      //     query: request.query,
+      //     headers: request.headers,
+      //     timestamp: new Date(),
+      //   };
+      // }
     }
 
     this.logger.verbose(token ?? '<token>', trace);

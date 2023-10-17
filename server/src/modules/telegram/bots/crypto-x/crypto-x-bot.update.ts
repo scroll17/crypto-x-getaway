@@ -1,9 +1,11 @@
 import { Command, Ctx, Help, InjectBot, Next, On, Start, Update } from 'nestjs-telegraf';
 import { Context, Telegraf } from 'telegraf';
-import { Logger } from '@nestjs/common';
+import { Logger, UseInterceptors } from '@nestjs/common';
 import { CryptoXBotService } from './crypto-x-bot.service';
+import { TelegrafMessageLoggingInterceptor } from '@common/telegram/interceptors';
 
 @Update()
+@UseInterceptors(TelegrafMessageLoggingInterceptor)
 export class CryptoXBotUpdate {
   private readonly logger = new Logger(this.constructor.name);
 
@@ -18,8 +20,8 @@ export class CryptoXBotUpdate {
     return `Бот запущен`;
   }
 
-  @On('message')
-  async onMessage(@Ctx() ctx: Context, @Next() next: Function): Promise<void> {
+  // @On('message')
+  async onMessage(@Ctx() ctx: Context, @Next() next: () => Promise<void>): Promise<void> {
     const message = (ctx.update as any)['message'];
 
     this.logger.log('Telegram Bot Message:', {
