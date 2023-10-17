@@ -52,7 +52,7 @@ export class LoggingInterceptor implements NestInterceptor {
       }
     }
 
-    this.logger.debug(token ?? '<token>', trace);
+    this.logger.verbose(token ?? '<token>', trace);
 
     const now = Date.now();
     return next
