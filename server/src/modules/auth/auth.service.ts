@@ -577,51 +577,37 @@ export class AuthService {
     return Boolean(result.affected);
   }
 
-  public async initPasswordReset(email: string) {
-    this.logger.debug('Init password reset by user email', {
-      email,
+  public async initPasswordReset(user: ICurrentUserData['info']) {
+    this.logger.debug('Init password reset for user', {
+      email: user.email,
     });
-
-    const user = await this.userRepository.findOne({
-      where: {
-        email,
-      },
-    });
-
-    const admin = await this.adminRepository.findOne({
-      where: {
-        email,
-      },
-    });
-
-    if (!user && !admin) {
-      throw new HttpException('Record not found', HttpStatus.NOT_FOUND);
-    }
 
     const linkLiveTime = this.configService.getOrThrow('bll.resetPasswordLinkLive');
     const verifyCode = this.dataGenerateHelper.randomHEX(12);
 
-    const redis = await this.redisService.getDefaultConnection();
-    await redis.set(`${RedisUser.ResetCode}_${email}`, verifyCode, 'PX', linkLiveTime);
+    const redis = this.redisService.getDefaultConnection();
+    await redis.set(`${RedisUser.ResetCode}:${user.email}`, verifyCode, 'PX', linkLiveTime);
 
-    this.logger.debug('Request for send reset password email', {
-      user: email,
+    this.logger.debug('Request for send reset password notification', {
+      user: user.email,
+      liveTime: ms(linkLiveTime),
       code: this.configService.get('isDev') ? verifyCode : '#####',
     });
 
-    // TODO: send email with link to client host + code + email
+    // TODO: send message to telegram
 
     return true;
   }
 
-  public async resetPassword(dto: ResetPasswordDto) {
-    this.logger.debug('Reset password by user email', {
+  public async resetPassword(user: ICurrentUserData['info'], dto: ResetPasswordDto) {
+    this.logger.debug('Reset password for user', {
+      email: user.email,
       data: _.omit(dto, ['password']),
     });
 
-    const redis = await this.redisService.getDefaultConnection();
+    const redis = this.redisService.getDefaultConnection();
 
-    const verificationCode = await redis.get(`${RedisUser.ResetCode}_${dto.email}`);
+    const verificationCode = await redis.get(`${RedisUser.ResetCode}:${user.email}`);
     if (!verificationCode) {
       throw new HttpException('Reset code not found. Please try again', HttpStatus.NOT_FOUND);
     }
@@ -630,29 +616,21 @@ export class AuthService {
       throw new HttpException('Invalid reset code', HttpStatus.BAD_REQUEST);
     }
 
-    await redis.del(`${RedisUser.ResetCode}_${dto.email}`);
+    await redis.del(`${RedisUser.ResetCode}:${user.email}`);
 
-    const user = await this.userRepository.findOne({
-      where: {
-        email: dto.email,
-      },
-    });
-
-    const admin = await this.adminRepository.findOne({
-      where: {
-        email: dto.email,
-      },
-    });
-
-    if (!user && !admin) {
-      throw new HttpException('Record not found', HttpStatus.NOT_FOUND);
+    user.password = dto.password;
+    if (user instanceof UserEntity) {
+      user.changePassword = false;
     }
 
-    const entity = user ?? admin!;
+    await user.hashPassword();
+    await user.save();
 
-    entity.password = dto.password;
-    await entity.hashPassword();
-    await entity.save();
+    this.logger.debug('User password has changed', {
+      email: user.email,
+    });
+
+    // TODO: send message to telegram
 
     return true;
   }

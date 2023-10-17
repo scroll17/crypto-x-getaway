@@ -36,7 +36,6 @@ import { GoogleAuthGuard, JwtAuthGuard, LocalAuthGuard } from '@common/guards';
 import { AccessToken, CurrentUser, DisableEndpoint, RefreshToken } from '@common/decorators';
 import { ICurrentUserData, IUserDataInThirdPartyService } from '@common/interfaces/auth';
 import { VerifyEmailDto } from './dto/verify-email.dto';
-import { InitPasswordResetDto } from './dto/init-password-reset.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { LoggedInUserEntity } from './entities/logged-in-user.entity';
 import { LoggedInAdminEntity } from './entities/logged-in-admin.entity';
@@ -53,7 +52,7 @@ import { AuthCookies } from '@common/enums';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // TODO: Disable endpoint
+  @DisableEndpoint()
   @Post('/register')
   @HttpCode(201)
   @ApiOperation({ summary: 'Register user.' })
@@ -232,34 +231,34 @@ export class AuthController {
     return result;
   }
 
-  @Post('/init-password-reset')
+  @Patch('/init-password-reset')
   @UseGuards(JwtAuthGuard)
-  @HttpCode(201)
+  @HttpCode(200)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Init password reset for user.' })
-  @ApiCreatedResponse({
-    status: 201,
-    description: 'Result of send init password reset email.',
+  @ApiOkResponse({
+    status: 200,
+    description: 'Result of send init password notification.',
     type: Boolean,
   })
   @ApiNotFoundResponse({ description: 'Record not found.' })
-  async initPasswordReset(@Body() dto: InitPasswordResetDto) {
-    return this.authService.initPasswordReset(dto.email);
+  async initPasswordReset(@CurrentUser() user: ICurrentUserData) {
+    return this.authService.initPasswordReset(user.info);
   }
 
-  @Post('/reset-password')
+  @Patch('/reset-password')
   @UseGuards(JwtAuthGuard)
-  @HttpCode(201)
+  @HttpCode(200)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Reset password for user.' })
-  @ApiCreatedResponse({
-    status: 201,
+  @ApiOkResponse({
+    status: 200,
     description: 'Result of password reset.',
     type: Boolean,
   })
   @ApiNotFoundResponse({ description: 'Reset code not found.' })
   @ApiNotFoundResponse({ description: 'Record not found.' })
-  async resetPassword(@Body() dto: ResetPasswordDto) {
-    return this.authService.resetPassword(dto);
+  async resetPassword(@CurrentUser() user: ICurrentUserData, @Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(user.info, dto);
   }
 }
