@@ -1,8 +1,11 @@
-import React from "react"
+import React from 'react';
+import { useRoutes } from 'react-router-dom';
+import routes from './router';
 
-export default function App() {
-  return (
-    <h1>awdwad</h1>
-      
-  );
+function App() {
+  const content = useRoutes(routes);
+
+  return <>{content}</>;
 }
+
+export default App;
