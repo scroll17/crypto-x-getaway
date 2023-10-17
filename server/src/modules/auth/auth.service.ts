@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 /*services*/
 import { RedisService } from '../redis/redis.service';
+import { TelegramNotificationBotService } from '../telegram/notification/notification.service';
 /*@common*/
 import { DataGenerateHelper } from '@common/helpers';
 import { AuthCookies, RedisUser } from '@common/enums';
@@ -36,6 +37,7 @@ import {
 /*@dto*/
 import { RegisterUserDto } from './dto/register-user.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { MarkdownHelper } from '@common/telegram/helpers';
 
 @Injectable()
 export class AuthService {
@@ -45,6 +47,8 @@ export class AuthService {
     private configService: ConfigService,
     private jwtService: JwtService,
     private redisService: RedisService,
+    private tgBotNotifyService: TelegramNotificationBotService,
+    private markdownHelper: MarkdownHelper,
     private dataGenerateHelper: DataGenerateHelper,
     @InjectDataSource()
     private dataSource: DataSource,
@@ -577,7 +581,7 @@ export class AuthService {
     return Boolean(result.affected);
   }
 
-  public async initPasswordReset(user: ICurrentUserData['info']) {
+  public async initPasswordReset(user: UserEntity) {
     this.logger.debug('Init password reset for user', {
       email: user.email,
     });
@@ -594,12 +598,23 @@ export class AuthService {
       code: this.configService.get('isDev') ? verifyCode : '#####',
     });
 
-    // TODO: send message to telegram
+    this.logger.debug('Notify User in Telegram:', {
+      email: user.email,
+      telegramId: user.telegramId,
+    });
+
+    await this.tgBotNotifyService.send({
+      to: String(user.telegramId),
+      title: `Password reset code`,
+      details: Object.entries({
+        code: this.markdownHelper.monospaced(String(verifyCode)),
+      }),
+    });
 
     return true;
   }
 
-  public async resetPassword(user: ICurrentUserData['info'], dto: ResetPasswordDto) {
+  public async resetPassword(user: UserEntity, dto: ResetPasswordDto) {
     this.logger.debug('Reset password for user', {
       email: user.email,
       data: _.omit(dto, ['password']),
@@ -618,10 +633,9 @@ export class AuthService {
 
     await redis.del(`${RedisUser.ResetCode}:${user.email}`);
 
+    // DB
     user.password = dto.password;
-    if (user instanceof UserEntity) {
-      user.changePassword = false;
-    }
+    user.changePassword = false;
 
     await user.hashPassword();
     await user.save();
@@ -630,7 +644,15 @@ export class AuthService {
       email: user.email,
     });
 
-    // TODO: send message to telegram
+    this.logger.debug('Notify User in Telegram:', {
+      email: user.email,
+      telegramId: user.telegramId,
+    });
+
+    await this.tgBotNotifyService.send({
+      to: String(user.telegramId),
+      title: `Password changed`,
+    });
 
     return true;
   }

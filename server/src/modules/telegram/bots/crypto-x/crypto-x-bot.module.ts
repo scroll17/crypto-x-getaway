@@ -8,6 +8,6 @@ import { TelegramNotificationBotService } from '../../notification/notification.
 @Module({
   imports: [ProtectionModule],
   providers: [CryptoXBotService, CryptoXBotUpdate, MarkdownHelper, TelegramNotificationBotService],
-  exports: [CryptoXBotService, TelegramNotificationBotService],
+  exports: [CryptoXBotService, TelegramNotificationBotService, MarkdownHelper],
 })
 export class CryptoXBotModule {}

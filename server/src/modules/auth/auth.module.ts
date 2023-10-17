@@ -14,10 +14,12 @@ import {
   AdminRepositoryProvider,
   UserRepositoryProvider,
 } from '../database/repositories';
+import { CryptoXBotModule } from '../telegram/bots/crypto-x/crypto-x-bot.module';
 
 @Module({
   imports: [
     PassportModule,
+    CryptoXBotModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         return {
