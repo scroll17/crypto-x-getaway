@@ -53,6 +53,13 @@ export class AccessTokenModel implements Omit<AccessTokenEntity, keyof BaseEntit
   adminId: number | null;
 
   @ApiProperty({
+    type: Boolean,
+    example: false,
+    description: 'The indication of TFA complete action',
+  })
+  confirmed: boolean;
+
+  @ApiProperty({
     type: Number,
     example: 320_000,
     description: 'The token live in the second',
