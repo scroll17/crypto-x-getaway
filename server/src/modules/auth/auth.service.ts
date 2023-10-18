@@ -101,13 +101,14 @@ export class AuthService {
 
   public async generateAuthTokens(
     ip: string,
-    user: Pick<UserModel, 'id' | 'email'>,
+    user: Pick<UserModel, 'id' | 'email' | 'telegramId'>,
     isAdmin: boolean,
     queryRunner: QueryRunner | null = null,
   ) {
     const accessTokenLive = this.getAccessTokenLiveTime();
     const refreshTokenLive = this.getRefreshTokenLiveTime();
 
+    const date = new Date();
     const geo = await geoip.lookup(ip);
 
     const accessToken = this.accessTokenRepository.create({
@@ -117,8 +118,8 @@ export class AuthService {
       adminId: isAdmin ? user.id : null,
       confirmed: false,
       liveTime: accessTokenLive,
-      lastUsedAt: new Date(),
-      startAliveAt: new Date(),
+      lastUsedAt: date,
+      startAliveAt: date,
     });
 
     queryRunner ? await queryRunner.manager.save(accessToken) : await accessToken.save();
@@ -143,7 +144,28 @@ export class AuthService {
       secret: this.configService.getOrThrow<string>('jwt.refreshSecret'),
     });
 
-    // TODO: send notification to telegram
+    if (!isAdmin) {
+      const loginConfirmationExpires = this.configService.getOrThrow('security.loginConfirmationExpires');
+
+      const redis = this.redisService.getDefaultConnection();
+      await redis.set(`${RedisUser.LoginConfirmation}:${user.email}`, accessToken.id, 'PX', loginConfirmationExpires);
+
+      this.logger.debug('Notify User in Telegram:', {
+        email: user.email,
+        telegramId: user.telegramId,
+      });
+
+      await this.tgBotNotifyService.send({
+        to: String(user.telegramId),
+        title: `New login`,
+        details: Object.entries({
+          ip: this.markdownHelper.escape(ip),
+          time: this.markdownHelper.escape(date.toString().slice(0, date.toString().indexOf('(') - 1)),
+          ...(geo ? { geo: this.markdownHelper.escape(`${geo.country}, ${geo.city}, ${geo.area}`) } : {}),
+        }),
+        callbackButtons: this.tgBotNotifyService.getConfirmAccessTokenButtons(accessToken.id),
+      });
+    }
 
     return {
       accessTokenRecord: accessToken,
