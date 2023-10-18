@@ -32,7 +32,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { GoogleAuthGuard, JwtAuthGuard, LocalAuthGuard, UserGuard } from '@common/guards';
+import { AccessTokenConfirmedGuard, GoogleAuthGuard, JwtAuthGuard, LocalAuthGuard, UserGuard } from '@common/guards';
 import { AccessToken, CurrentUser, DisableEndpoint, RefreshToken } from '@common/decorators';
 import { ICurrentUserData, IUserDataInThirdPartyService } from '@common/types/auth';
 import { VerifyEmailDto } from './dto/verify-email.dto';
@@ -162,7 +162,7 @@ export class AuthController {
   }
 
   @Get('/tokens-list')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AccessTokenConfirmedGuard)
   @HttpCode(200)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Get list of existed tokens.' })
@@ -177,7 +177,7 @@ export class AuthController {
   }
 
   @Delete('/revoke-token')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AccessTokenConfirmedGuard)
   @HttpCode(204)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Remove access token by id.' })
@@ -206,7 +206,7 @@ export class AuthController {
   }
 
   @Post('/logout')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AccessTokenConfirmedGuard)
   @HttpCode(201)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Logout user and destroy token.' })
@@ -232,7 +232,7 @@ export class AuthController {
   }
 
   @Patch('/init-password-reset')
-  @UseGuards(JwtAuthGuard, UserGuard)
+  @UseGuards(JwtAuthGuard, UserGuard, AccessTokenConfirmedGuard)
   @HttpCode(200)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Init password reset for user.' })
@@ -247,7 +247,7 @@ export class AuthController {
   }
 
   @Patch('/reset-password')
-  @UseGuards(JwtAuthGuard, UserGuard)
+  @UseGuards(JwtAuthGuard, UserGuard, AccessTokenConfirmedGuard)
   @HttpCode(200)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Reset password for user.' })
