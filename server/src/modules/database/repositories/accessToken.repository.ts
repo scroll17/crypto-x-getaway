@@ -20,6 +20,13 @@ export const AccessTokenRepository = (dataSource: DataSource) =>
 
       return await query.getOne();
     },
+    async removeUnconfirmed(this: Repository<AccessTokenEntity>, expireTime: number) {
+      return this.createQueryBuilder()
+        .delete()
+        .where('confirmed = :confirmed', { confirmed: false })
+        .andWhere(`(createdAt + :expireTime * interval '1 second') < now()`, { expireTime })
+        .execute();
+    },
   });
 
 export type TAccessTokenRepository = ReturnType<typeof AccessTokenRepository>;
