@@ -105,6 +105,8 @@ export class AuthService {
     isAdmin: boolean,
     queryRunner: QueryRunner | null = null,
   ) {
+    const accessTokenAutoConfirmed = this.configService.getOrThrow<boolean>('security.accessTokenAutoConfirmed');
+
     const accessTokenLive = this.getAccessTokenLiveTime();
     const refreshTokenLive = this.getRefreshTokenLiveTime();
 
@@ -116,7 +118,7 @@ export class AuthService {
       logFromIP: ip,
       userId: isAdmin ? null : user.id,
       adminId: isAdmin ? user.id : null,
-      confirmed: false,
+      confirmed: accessTokenAutoConfirmed,
       liveTime: accessTokenLive,
       lastUsedAt: date,
       startAliveAt: date,
@@ -144,7 +146,7 @@ export class AuthService {
       secret: this.configService.getOrThrow<string>('jwt.refreshSecret'),
     });
 
-    if (!isAdmin) {
+    if (!accessToken.confirmed) {
       const loginConfirmationExpires = this.configService.getOrThrow('security.loginConfirmationExpires');
 
       const redis = this.redisService.getDefaultConnection();
