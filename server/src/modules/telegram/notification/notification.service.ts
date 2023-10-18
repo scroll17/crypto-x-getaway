@@ -25,12 +25,9 @@ export class TelegramNotificationBotService {
   }
 
   private buildMessage(data: Omit<ISendNotification, 'button'>) {
-    const notificationTitle = this.markdownHelper.bold('Новое уведомление:');
+    const notificationTitle = this.markdownHelper.bold(data.title);
 
-    const titleMessage = this.markdownHelper.italic('Заголовок: ');
-    const titleDescription = this.markdownHelper.bold(data.title);
-
-    let message = `${notificationTitle}\n\n${titleMessage}${titleDescription}`;
+    let message = `${notificationTitle}`;
 
     if (!_.isEmpty(data.details)) {
       const detailsMessage = this.markdownHelper.italic('Детали: ');
