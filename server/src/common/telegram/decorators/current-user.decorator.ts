@@ -1,25 +1,16 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { TelegrafExecutionContext, TelegrafException } from 'nestjs-telegraf';
+import { TelegrafExecutionContext } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 import { ITelegramUser } from '@common/types';
+import { TelegrafMessageHelper } from '@common/telegram/helpers';
+
+const telegrafMessageHelper = new TelegrafMessageHelper();
 
 export const TelegrafCurrentUser = createParamDecorator<keyof ITelegramUser>((dataKey, ctx: ExecutionContext) => {
   const tgCtx = TelegrafExecutionContext.create(ctx).getContext<Context>();
 
-  if (tgCtx.updateType === 'message') {
-    const message = tgCtx.message!;
+  const { user } = telegrafMessageHelper.getTelegramUserFromCtx(tgCtx);
+  if (dataKey) return user[dataKey];
 
-    const userData: ITelegramUser = {
-      telegramId: message.from.id,
-      name: message.from.first_name,
-      username: message.from.username,
-      chatId: message.chat.id,
-    };
-
-    if (dataKey) return userData[dataKey];
-
-    return userData;
-  }
-
-  throw new TelegrafException(`Unsupported updateType = "${tgCtx.updateType}"`);
+  return user;
 });
