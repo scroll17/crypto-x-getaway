@@ -1,11 +1,19 @@
 import React from 'react';
+
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import App from './App';
-import { StateContextProvider } from './context';
 import { BrowserRouter } from 'react-router-dom';
 
-const queryClient = new QueryClient();
+import App from './App';
+import { StateContextProvider } from './context';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 // const queryClient = new QueryClient({
 //     defaultOptions: {

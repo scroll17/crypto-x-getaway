@@ -1,5 +1,6 @@
-import { Box, CircularProgress, Container } from '@mui/material';
 import React from 'react';
+
+import { Box, CircularProgress, Container } from '@mui/material';
 
 export const FullScreenLoader = () => {
   return (

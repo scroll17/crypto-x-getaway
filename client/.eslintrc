@@ -19,7 +19,8 @@
     },
     "plugins": [
         "@typescript-eslint",
-        "react"
+        "react",
+        "import"
     ],
     "rules": {
         "@typescript-eslint/no-var-requires": "off", // To avoid of error: "Require statement not part of import statement", if ES modules are used
@@ -30,6 +31,40 @@
         "quotes": [
             "error",
             "single"
+        ],
+        "import/order": [
+            2,
+            {
+                "alphabetize": {
+                    "order": "asc",
+                    "caseInsensitive": true
+                },
+                "groups": [
+                    "builtin", "external", [
+                        "unknown", "parent", "sibling", "index"
+                    ]],
+                "pathGroups": [
+                    {
+                        "pattern": "react",
+                        "group": "builtin",
+                        "position": "before"
+                    },
+                    {
+                        "pattern": "@**",
+                        "group": "external",
+                        "position": "after"
+                    },
+                    {
+                        "pattern": "**.css",
+                        "group": "index",
+                        "position": "after"
+                    }
+                ],
+                "pathGroupsExcludedImportTypes": [
+                    "builtin"
+                ],
+                "newlines-between": "always"
+            }
         ],
         "indent": "off",
         "no-fallthrough": "off", // disallow fallthrough of case statements

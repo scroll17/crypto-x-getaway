@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+
 import { AuthRefresh, User } from './types';
 import { UserLoginData } from '../components/LoginForm';
 
@@ -74,7 +75,7 @@ authApi.interceptors.response.use(
 
 // Makes a POST request to sign in the registered user.
 export const login = async (user: UserLoginData) => {
-  const response = await authApi.post(`/auth/login`, user);
+  const response = await authApi.post('/auth/login', user);
 
   return response.data;
 };

@@ -1,11 +1,13 @@
 import React from 'react';
+
 import { useCookies } from 'react-cookie';
 import { useQuery } from 'react-query';
+import { Navigate, useLocation } from 'react-router-dom';
+
 import { getMe } from '../api/authApi';
-import { useStateContext } from '../context';
 import { FullScreenLoader } from '../components/FullScreenLoader';
 import { Layout } from '../components/Layout';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useStateContext } from '../context';
 
 const AuthMiddleware: React.FC = () => {
   const [cookies] = useCookies(['logged_in']);

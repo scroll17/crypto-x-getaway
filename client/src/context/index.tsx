@@ -31,7 +31,7 @@ const stateReducer = (state: State, action: Action) => {
       };
     }
     default: {
-      throw new Error(`Unhandled action type`);
+      throw new Error('Unhandled action type');
     }
   }
 };

@@ -1,4 +1,7 @@
+import React from 'react';
+
 import { Box, Container, Typography } from '@mui/material';
+
 import { useStateContext } from '../context';
 
 const ProfilePage = () => {

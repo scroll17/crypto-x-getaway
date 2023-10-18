@@ -1,13 +1,14 @@
 import React, { useEffect, useState, FC, FormEvent } from 'react';
 
-import { isEmailValid } from '../../utils/emailValidation';
 import { Container, Typography, TextField, Button, Box } from '@mui/material';
-import { login } from '../../api/authApi';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
-import { useStateContext } from '../../context';
-import { getMe } from '../../api/authApi';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
+import { login } from '../../api/authApi';
+import { getMe } from '../../api/authApi';
+import { useStateContext } from '../../context';
+import { isEmailValid } from '../../utils/emailValidation';
 
 export type UserLoginData = { email: string; password: string };
 

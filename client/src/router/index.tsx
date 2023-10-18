@@ -1,11 +1,13 @@
 import React from 'react';
 import { Suspense, lazy } from 'react';
+
 import type { RouteObject } from 'react-router-dom';
+
 import { FullScreenLoader } from '../components/FullScreenLoader';
+import AuthMiddleware from '../middleware/AuthMiddleware';
 import { HomePage } from '../pages/home.page';
 import { LoginPage } from '../pages/login.page';
 import ProfilePage from '../pages/profile.page';
-import AuthMiddleware from '../middleware/AuthMiddleware';
 
 const Loadable = (Component: React.ComponentType<any>) => (props: JSX.IntrinsicAttributes) =>
   (
