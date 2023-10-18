@@ -8,7 +8,7 @@ export class AdminModel
 {
   @ApiProperty({
     type: Number,
-    example: 35343,
+    example: 35_343,
     description: 'The entity ID',
   })
   id: number;
@@ -26,6 +26,13 @@ export class AdminModel
     description: 'The admin email',
   })
   email: string;
+
+  @ApiProperty({
+    type: Number,
+    example: 345_345_345,
+    description: 'Is admin telegramId',
+  })
+  telegramId: number;
 
   @ApiProperty({
     type: Date,
