@@ -1,8 +1,7 @@
 import { Controller, Get, HttpCode } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { ApiCookieAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthAdmin } from '@common/guards';
-import { CurrentUser, DisableController } from '@common/decorators';
+import { CurrentUser, DisableController, AuthAdmin } from '@common/decorators';
 import { ICurrentUserData } from '@common/types/auth';
 import { AdminModel } from '@entities/admin';
 

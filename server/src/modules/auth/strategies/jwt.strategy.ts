@@ -92,6 +92,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return {
       isAdmin: Boolean(token.adminId),
       info: entity,
+      token: token,
     };
   }
 }

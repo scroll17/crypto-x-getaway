@@ -115,6 +115,7 @@ export class AuthService {
       logFromIP: ip,
       userId: isAdmin ? null : user.id,
       adminId: isAdmin ? user.id : null,
+      confirmed: false,
       liveTime: accessTokenLive,
       lastUsedAt: new Date(),
       startAliveAt: new Date(),
@@ -151,7 +152,7 @@ export class AuthService {
     };
   }
 
-  public async validateUser(email: string, password: string): Promise<ICurrentUserData> {
+  public async validateUser(email: string, password: string): Promise<Omit<ICurrentUserData, 'token'>> {
     const user = await this.userRepository.findOne({
       where: {
         email,
