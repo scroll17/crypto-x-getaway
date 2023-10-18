@@ -71,7 +71,7 @@ export class TelegramNotificationBotService {
     return this.bot.telegram;
   }
 
-  public getConfirmAccessTokenButtons(tokenId: number) {
+  public getConfirmAccessTokenButtons(tokenId: number): Array<[string, string]> {
     return [
       ['Approve', `${MarkupCallbackButtonName.ApproveAccessToken}:${tokenId}`],
       ['Disapprove', `${MarkupCallbackButtonName.DisapproveAccessToken}:${tokenId}`],
