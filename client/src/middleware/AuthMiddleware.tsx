@@ -1,11 +1,13 @@
 import React from 'react';
 
+import { AxiosError } from 'axios';
 import { useCookies } from 'react-cookie';
 import { useQuery } from 'react-query';
 import { Navigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import { getMe } from '../api/authApi';
-import { QUERY_KEYS } from '../api/types';
+import { AxiosErrorData, QUERY_KEYS } from '../api/types';
 import { FullScreenLoader } from '../components/FullScreenLoader';
 import { Layout } from '../components/Layout';
 import { useStateContext } from '../context';
@@ -21,6 +23,13 @@ const AuthMiddleware: React.FC = () => {
     select: data => data.data.user,
     onSuccess: data => {
       stateContext.dispatch({ type: ACTION_TYPE.SetUser, payload: data });
+    },
+    onError: (error: AxiosError<AxiosErrorData>) => {
+      if (error instanceof AxiosError) {
+        toast.error(error?.response?.data?.message, {
+          position: 'top-right',
+        });
+      }
     },
   });
 

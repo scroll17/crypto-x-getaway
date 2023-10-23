@@ -25,3 +25,9 @@ export interface UserResponse {
   };
 }
 export type UserLoginData = { email: string; password: string };
+
+export type AxiosErrorData = {
+  statusCode: number;
+  message: string;
+  details: Record<string, unknown>;
+};

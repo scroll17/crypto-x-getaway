@@ -1,6 +1,9 @@
 import axios, { AxiosError } from 'axios';
+import { redirect } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import { User, UserLoginData } from './types';
+import { ROUTES } from '../router/routerTypes';
 
 const BASE_URL = 'http://localhost:4040';
 
@@ -52,7 +55,8 @@ authApi.interceptors.response.use(
       // the second request is Unauthorised
       case error.response.status === 401: {
         if (window.location.pathname !== '/auth') {
-          // redirect to "/auth"
+          toast.error('You are not logged ');
+          redirect(ROUTES.Login);
         }
         break;
       }

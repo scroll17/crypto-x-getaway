@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { login } from '../../api/authApi';
-import { UserLoginData } from '../../api/types';
+import { AxiosErrorData, UserLoginData } from '../../api/types';
 import { isEmailValid } from '../../utils/emailValidation';
 
 export const LoginForm: FC = () => {
@@ -28,14 +28,8 @@ export const LoginForm: FC = () => {
         toast.success('You successfully logged in');
         navigate(from);
       },
-      onError: (error: AxiosError<{ error?: string; message?: string }>) => {
-        if (Array.isArray(error?.response?.data?.error)) {
-          error?.response?.data.error.forEach(el =>
-            toast.error(el.message, {
-              position: 'top-right',
-            }),
-          );
-        } else {
+      onError: (error: AxiosError<AxiosErrorData>) => {
+        if (error instanceof AxiosError) {
           toast.error(error?.response?.data?.message, {
             position: 'top-right',
           });
