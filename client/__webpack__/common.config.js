@@ -109,10 +109,11 @@ module.exports = {
       },
       // --- HTML
       { test: /\.(html)$/, use: ['html-loader'] },
-      // --- S/A/C/SS
+      // --- S/A/SS
       {
-        test: /\.(s[ac]|c)ss$/i,
+        test: /.(s[ac])ss$/i,
         use: [
+          'style-loader',
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader', // translates css into CommonJS
@@ -141,12 +142,16 @@ module.exports = {
               },
             },
           },
+          'sass-loader'
         ],
       },
-      // --- S/A/SS
+      // CSS
       {
-        test: /\.(s[ac])ss$/i,
-        use: ['sass-loader'],
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
       },
       // --- IMG
       {
