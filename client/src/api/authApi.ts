@@ -1,7 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-import { AuthRefresh, User } from './types';
-import { UserLoginData } from '../components/LoginForm';
+import { User, UserLoginData } from './types';
 
 const BASE_URL = 'http://localhost:4040';
 
@@ -13,12 +12,6 @@ export const authApi = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
-// Refresh the access token when it expires.
-export const refreshAccessTokenFn = async () => {
-  const response = await authApi.get<AuthRefresh>('auth/refresh');
-  return response.data;
-};
 
 authApi.interceptors.request.use(
   config => config,

@@ -1,16 +1,14 @@
 import React, { useEffect, useState, FC, FormEvent } from 'react';
 
 import { Container, Typography, TextField, Button, Box } from '@mui/material';
-import { useMutation, useQuery } from 'react-query';
+import { AxiosError } from 'axios';
+import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { login } from '../../api/authApi';
-import { getMe } from '../../api/authApi';
-import { useStateContext } from '../../context';
+import { UserLoginData } from '../../api/types';
 import { isEmailValid } from '../../utils/emailValidation';
-
-export type UserLoginData = { email: string; password: string };
 
 export const LoginForm: FC = () => {
   const [email, setEmail] = useState('');
@@ -20,40 +18,25 @@ export const LoginForm: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = ((location.state as any)?.from.pathname as string) || '/';
-
-  const stateContext = useStateContext();
-
-  // API Get Current Logged-in user
-  const query = useQuery(['authUser'], getMe, {
-    enabled: false,
-    select: data => data.data,
-    retry: 1,
-    onSuccess: data => {
-      stateContext.dispatch({ type: 'SET_USER', payload: data });
-    },
-  });
+  const from = (location.state?.from.pathname as string) || '/';
 
   //  API Login Mutation
   const { mutate: loginUser, isLoading } = useMutation(
     (userData: UserLoginData) => login(userData),
     {
-      onSuccess: data => {
-        stateContext.dispatch({ type: 'SET_USER', payload: data });
-
-        query.refetch();
+      onSuccess: () => {
         toast.success('You successfully logged in');
         navigate(from);
       },
-      onError: (error: any) => {
-        if (Array.isArray((error as any).response.data.error)) {
-          (error as any).response.data.error.forEach((el: any) =>
+      onError: (error: AxiosError<{ error?: string; message?: string }>) => {
+        if (Array.isArray(error?.response?.data?.error)) {
+          error?.response?.data.error.forEach(el =>
             toast.error(el.message, {
               position: 'top-right',
             }),
           );
         } else {
-          toast.error((error as any).response.data.message, {
+          toast.error(error?.response?.data?.message, {
             position: 'top-right',
           });
         }
@@ -62,11 +45,7 @@ export const LoginForm: FC = () => {
   );
 
   useEffect(() => {
-    if (email.length === 0 || password.length === 0) {
-      setError(true);
-    } else {
-      setError(false);
-    }
+    setError(email.length === 0 || password.length === 0);
   }, [email, password]);
 
   const handleLogin = (e: FormEvent<HTMLFormElement>) => {

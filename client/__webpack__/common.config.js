@@ -94,6 +94,7 @@ module.exports = {
   },
   module: {
     strictExportPresence: true, // Strict mod to avoid of importing non-existent objects
+
     rules: [
       // --- JS | TS USING BABEL
       {

@@ -1,16 +1,6 @@
 import React from 'react';
-import { User } from '../api/types';
 
-type State = {
-  authUser: User | null;
-};
-
-type Action = {
-  type: string;
-  payload: User | null;
-};
-
-type Dispatch = (action: Action) => void;
+import { Action, ACTION_TYPE, Dispatch, State } from './types';
 
 const initialState: State = {
   authUser: null,
@@ -24,7 +14,7 @@ const StateContext = React.createContext<{ state: State; dispatch: Dispatch } | 
 
 const stateReducer = (state: State, action: Action) => {
   switch (action.type) {
-    case 'SET_USER': {
+    case ACTION_TYPE.SetUser: {
       return {
         ...state,
         authUser: action.payload,
@@ -50,7 +40,7 @@ const useStateContext = () => {
     return context;
   }
 
-  throw new Error(`useStateContext must be used within a StateContextProvider`);
+  throw new Error('useStateContext must be used within a StateContextProvider');
 };
 
 export { StateContextProvider, useStateContext };

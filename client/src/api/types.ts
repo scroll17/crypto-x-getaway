@@ -1,3 +1,7 @@
+export enum QUERY_KEYS {
+  AuthUser = 'authUser',
+}
+
 export interface User {
   name: string;
   email: string;
@@ -14,13 +18,10 @@ export interface GenericResponse {
   message: string;
 }
 
-export interface AuthRefresh {
-  access_token: string;
-}
-
 export interface UserResponse {
   status: string;
   data: {
     user: User;
   };
 }
+export type UserLoginData = { email: string; password: string };
