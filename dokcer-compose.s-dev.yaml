@@ -1,25 +1,25 @@
 version: "3"
 
 services:
-#  nginx:
-#    image: nginx:1.15-alpine
-#    networks:
-#      - services-network
-#    ports:
-#      - "80:80"
-#      - "443:443"
-#    volumes:
-#      - ./nginx:/etc/nginx/conf.d
-#      - ./certbot/conf:/etc/letsencrypt:rw
-#      - ./certbot/www:/var/www/certbot:rw
-#
-#  certbot:
-#    image: certbot/certbot
-#    networks:
-#      - services-network
-#    volumes:
-#      - ./certbot/conf:/etc/letsencrypt:rw
-#      - ./certbot/www:/var/www/certbot:rw
+  #  nginx:
+  #    image: nginx:1.15-alpine
+  #    networks:
+  #      - services-network
+  #    ports:
+  #      - "80:80"
+  #      - "443:443"
+  #    volumes:
+  #      - ./nginx:/etc/nginx/conf.d
+  #      - ./certbot/conf:/etc/letsencrypt:rw
+  #      - ./certbot/www:/var/www/certbot:rw
+  #
+  #  certbot:
+  #    image: certbot/certbot
+  #    networks:
+  #      - services-network
+  #    volumes:
+  #      - ./certbot/conf:/etc/letsencrypt:rw
+  #      - ./certbot/www:/var/www/certbot:rw
 
   api:
     container_name: crypto_x_api
@@ -31,10 +31,8 @@ services:
     networks:
       - services-network
     depends_on:
-      database:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - database
+      - redis
     environment:
       PORT: 4040
       NODE_ENV: development
@@ -45,8 +43,8 @@ services:
     tty: true
     restart: "always"
     entrypoint: /bin/bash
-#    command: -c "npm run start"
-    command: -s
+    command: -c "npm run start:dev"
+  #    command: -s
 
   database:
     image: postgres:13-bullseye
