@@ -12,6 +12,7 @@ import {
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 /*modules*/
 import { RedisModule } from './modules/redis/redis.module';
 import { NgrokModule } from './modules/ngrok/ngrok.module';
@@ -55,6 +56,7 @@ import { usersConfiguration } from './config/users-configuration';
       },
       inject: [ConfigService],
     }),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     RedisModule, // Global
     NgrokModule, // Global

@@ -11,5 +11,6 @@ export interface ISendNotification {
   fileBuffer?: ISendNotificationFileBuffer;
   jsonObject?: Record<string, unknown>;
   details?: Array<[string, string | number]>;
-  buttons?: Array<[string, string]>;
+  urlButtons?: Array<[string, string]>;
+  callbackButtons?: Array<[string, string]>;
 }

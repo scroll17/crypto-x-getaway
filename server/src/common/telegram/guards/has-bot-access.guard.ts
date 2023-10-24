@@ -2,10 +2,12 @@ import { CanActivate, ExecutionContext, Inject, Injectable } from '@nestjs/commo
 import { TelegrafException, TelegrafExecutionContext } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 import { TUserRepository, USER_REPOSITORY } from '../../../modules/database/repositories';
+import { TelegrafMessageHelper } from '@common/telegram/helpers';
 
 @Injectable()
 export class TelegrafHasBotAccessGuard implements CanActivate {
   constructor(
+    private messageHelper: TelegrafMessageHelper,
     @Inject(USER_REPOSITORY)
     private userRepository: TUserRepository,
   ) {}
@@ -13,15 +15,11 @@ export class TelegrafHasBotAccessGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const tgCtx = TelegrafExecutionContext.create(context).getContext<Context>();
 
-    if (tgCtx.updateType !== 'message') {
-      throw new TelegrafException('Bad action');
-    }
-
-    const message = tgCtx.message!;
+    const { user: tgUser } = this.messageHelper.getTelegramUserFromCtx(tgCtx);
 
     const user = await this.userRepository.findOne({
       where: {
-        telegramId: message.from.id,
+        telegramId: tgUser.telegramId,
       },
     });
     if (!user) {

@@ -29,6 +29,9 @@ export class AdminEntity extends BaseEntity {
   @Column('varchar', { length: 255, nullable: false })
   password: string;
 
+  @Column('int4', { name: 'telegram_id', nullable: false })
+  telegramId: number;
+
   @OneToMany(() => AccessTokenEntity, (token) => token.userId)
   tokens: AccessTokenEntity[];
 

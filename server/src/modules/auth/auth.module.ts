@@ -15,6 +15,7 @@ import {
   UserRepositoryProvider,
 } from '../database/repositories';
 import { CryptoXBotModule } from '../telegram/bots/crypto-x/crypto-x-bot.module';
+import { RemoveUnconfirmedTokensTask } from './tasks';
 
 @Module({
   imports: [
@@ -45,6 +46,8 @@ import { CryptoXBotModule } from '../telegram/bots/crypto-x/crypto-x-bot.module'
     AccessTokenRepositoryProvider,
     AdminRepositoryProvider,
     UserRepositoryProvider,
+    // Tasks
+    RemoveUnconfirmedTokensTask,
   ],
   exports: [JwtModule, AuthService],
 })

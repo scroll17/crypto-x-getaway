@@ -1,4 +1,5 @@
-import { Command, Ctx, Help, InjectBot, Next, On, Start, Update } from 'nestjs-telegraf';
+import * as _ from 'lodash';
+import { Action, Command, Ctx, Help, InjectBot, Next, On, Start, Update } from 'nestjs-telegraf';
 import { Context, Telegraf } from 'telegraf';
 import { Logger, UseFilters, UseInterceptors } from '@nestjs/common';
 import { CryptoXBotService } from './crypto-x-bot.service';
@@ -6,6 +7,7 @@ import { TelegrafMessageLoggingInterceptor } from '@common/telegram/interceptors
 import { TelegrafExceptionFilter } from '@common/telegram/filters';
 import { TelegrafAuthUser, TelegrafCurrentUser } from '@common/telegram/decorators';
 import { ITelegramUser } from '@common/types';
+import { MarkupCallbackButtonName } from '@common/telegram/enums';
 
 @Update()
 @UseInterceptors(TelegrafMessageLoggingInterceptor)
@@ -24,7 +26,7 @@ export class CryptoXBotUpdate {
     return `Бот запущен`;
   }
 
-  // @On('message')
+  @On('message')
   async onMessage(@Ctx() ctx: Context, @Next() next: () => Promise<void>): Promise<void> {
     const message = (ctx.update as any)['message'];
 
@@ -77,5 +79,27 @@ export class CryptoXBotUpdate {
   async onRefreshSecurityTokenCommand(@Ctx() ctx: Context): Promise<void> {
     const message = await this.cryptoXBotService.refreshSecurityToken(ctx.message!.from.id);
     await ctx.replyWithMarkdown(message);
+  }
+
+  // Note: priority - 1
+  @Action(new RegExp(MarkupCallbackButtonName.DisapproveAccessToken))
+  @TelegrafAuthUser()
+  async disapproveAccessTokenAction(@TelegrafCurrentUser() tgUser: ITelegramUser, @Ctx() ctx: Context) {
+    await ctx.answerCbQuery();
+
+    await this.cryptoXBotService.disapproveAccessToken(tgUser.telegramId, _.get(ctx.callbackQuery, ['data']));
+
+    await ctx.reply('Token removed');
+  }
+
+  // Note: priority - 2
+  @Action(new RegExp(MarkupCallbackButtonName.ApproveAccessToken))
+  @TelegrafAuthUser()
+  async approveAccessTokenAction(@TelegrafCurrentUser() tgUser: ITelegramUser, @Ctx() ctx: Context) {
+    await ctx.answerCbQuery();
+
+    await this.cryptoXBotService.approveAccessToken(tgUser.telegramId, _.get(ctx.callbackQuery, ['data']));
+
+    await ctx.reply('Token confirmed');
   }
 }

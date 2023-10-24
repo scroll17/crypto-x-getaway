@@ -30,6 +30,9 @@ export class AccessTokenEntity extends BaseEntity {
   @JoinColumn({ name: 'admin_id' })
   adminId: number | null;
 
+  @Column('boolean', { nullable: false })
+  confirmed: boolean;
+
   @Column('int4', { name: 'live_time', nullable: false })
   liveTime: number;
 

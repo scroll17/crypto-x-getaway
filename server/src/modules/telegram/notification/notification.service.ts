@@ -4,6 +4,7 @@ import { InjectBot } from 'nestjs-telegraf';
 import { Context, Markup, Telegraf } from 'telegraf';
 import { MarkdownHelper } from '@common/telegram/helpers';
 import { ISendNotification } from '@common/telegram/types';
+import { MarkupCallbackButtonName } from '@common/telegram/enums';
 
 @Injectable()
 export class TelegramNotificationBotService {
@@ -17,20 +18,20 @@ export class TelegramNotificationBotService {
     const markupButtons = buttons.map(([title, url]) => Markup.button.url(this.markdownHelper.escape(title), url));
 
     return Markup.inlineKeyboard(markupButtons);
+  }
 
-    // Markup.button.callback(
-    //   'Пометить как выполненое',
-    //   MarkupCallbackButtonName.MarkAsVisited,
-    // ),
+  private buildCallbackButtons(buttons: Array<[string, string]>) {
+    const markupButtons = buttons.map(([title, data]) =>
+      Markup.button.callback(this.markdownHelper.escape(title), data),
+    );
+
+    return Markup.inlineKeyboard(markupButtons);
   }
 
   private buildMessage(data: Omit<ISendNotification, 'button'>) {
-    const notificationTitle = this.markdownHelper.bold('Новое уведомление:');
+    const notificationTitle = this.markdownHelper.bold(data.title);
 
-    const titleMessage = this.markdownHelper.italic('Заголовок: ');
-    const titleDescription = this.markdownHelper.bold(data.title);
-
-    let message = `${notificationTitle}\n\n${titleMessage}${titleDescription}`;
+    let message = `${notificationTitle}`;
 
     if (!_.isEmpty(data.details)) {
       const detailsMessage = this.markdownHelper.italic('Детали: ');
@@ -66,10 +67,22 @@ export class TelegramNotificationBotService {
     }
   }
 
+  public getTelegramBot() {
+    return this.bot.telegram;
+  }
+
+  public getConfirmAccessTokenButtons(tokenId: number): Array<[string, string]> {
+    return [
+      ['Approve', `${MarkupCallbackButtonName.ApproveAccessToken}:${tokenId}`],
+      ['Disapprove', `${MarkupCallbackButtonName.DisapproveAccessToken}:${tokenId}`],
+    ];
+  }
+
   public async send(data: ISendNotification) {
     const extra = {
       parse_mode: 'MarkdownV2' as any,
-      ...(_.isEmpty(data.buttons) ? {} : this.buildButtonsWithUrl(data.buttons!)),
+      ...(_.isEmpty(data.urlButtons) ? {} : this.buildButtonsWithUrl(data.urlButtons!)),
+      ...(_.isEmpty(data.callbackButtons) ? {} : this.buildCallbackButtons(data.callbackButtons!)),
       ...(data.replyToMessage ? { reply_to_message_id: data.replyToMessage } : {}),
     };
 
