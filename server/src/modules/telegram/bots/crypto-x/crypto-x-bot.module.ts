@@ -6,6 +6,7 @@ import { MarkdownHelper, TelegrafMessageHelper } from '@common/telegram/helpers'
 import { TelegramNotificationBotService } from '../../notification/notification.service';
 import { AccessTokenRepositoryProvider, UserRepositoryProvider } from '../../../database/repositories';
 
+
 @Module({
   imports: [ProtectionModule],
   providers: [
