@@ -6,7 +6,7 @@ import { Box, Tab } from '@mui/material';
 
 import { Accounts } from '../components/Accounts';
 import { Browsers } from '../components/Browsers';
-import { Strategies } from '../components/Strategies/Strategies';
+import { Strategies } from '../components/Strategies';
 
 export const HomePage = () => {
   const [value, setValue] = useState('0');
