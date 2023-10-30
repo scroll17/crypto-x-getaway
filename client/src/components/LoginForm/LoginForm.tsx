@@ -6,13 +6,13 @@ import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { login } from '../../api/authApi';
-import { AxiosErrorData, UserLoginData } from '../../api/types';
+import { login, refresh} from '../../api/authApi';
+import {AxiosErrorData, QUERY_KEYS, UserLoginData} from '../../api/types';
 import { isEmailValid } from '../../utils/emailValidation';
 
 export const LoginForm: FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('zololotarenko.2015@gmail.com');
+  const [password, setPassword] = useState('sd234c-012');
   const [error, setError] = useState(true);
 
   const navigate = useNavigate();
@@ -29,14 +29,30 @@ export const LoginForm: FC = () => {
         navigate(from);
       },
       onError: (error: AxiosError<AxiosErrorData>) => {
-        if (error instanceof AxiosError) {
-          toast.error(error?.response?.data?.message, {
+        if (error instanceof AxiosError && error.response) {
+          toast.error(error.response.data.message, {
             position: 'top-right',
           });
         }
       },
     },
   );
+
+  const refreshTokenMutation = useMutation([QUERY_KEYS.RefreshToken], refresh, {
+    retry: 1,
+    onSuccess: () => {
+      navigate(from);
+    },
+    onError: (error: AxiosError<AxiosErrorData>) => {
+      if (error instanceof AxiosError && error.response) {
+        toast.error(error.response.data.message, {
+          position: 'top-right',
+        });
+      }
+    },
+  });
+
+  useEffect(() => refreshTokenMutation.mutate(), []);
 
   useEffect(() => {
     setError(email.length === 0 || password.length === 0);

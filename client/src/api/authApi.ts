@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -26,10 +26,10 @@ authApi.interceptors.response.use(
   async error => {
     if (!error.response) return Promise.reject(error);
 
-    const originalRequest = error.config;
+    const originalRequest: AxiosRequestConfig & { _retry: boolean } = error.config;
     switch (true) {
       // the AccessToken could be expired and we try to make refresh
-      case error.response === 401 && !originalRequest._retry: {
+      case error.response === 401 && !originalRequest._retry && !originalRequest.url?.includes('refresh'): {
         originalRequest._retry = true;
         console.log('originalRequest._retry', originalRequest);
 
@@ -80,6 +80,12 @@ export const login = async (user: UserLoginData) => {
 // Makes a GET request to log out the user.
 export const logout = async () => {
   const response = await authApi.get('auth/logout');
+  return response.data;
+};
+
+// Makes a PUT request to refresh access token because we could have available refresh token
+export const refresh = async () => {
+  const response = await authApi.put('auth/refresh');
   return response.data;
 };
 

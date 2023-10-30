@@ -1,5 +1,6 @@
 export enum QUERY_KEYS {
   AuthUser = 'authUser',
+  RefreshToken = 'refreshToken'
 }
 
 export interface User {
