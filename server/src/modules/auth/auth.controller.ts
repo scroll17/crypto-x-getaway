@@ -202,7 +202,15 @@ export class AuthController {
   })
   @ApiNotFoundResponse({ description: 'Token not found.' })
   async refresh(@RefreshToken() refreshToken: string, @Res({ passthrough: true }) res: Response) {
-    return this.authService.refresh(refreshToken, res);
+    try {
+      return await this.authService.refresh(refreshToken, res);
+    } catch (error) {
+      res.cookie(AuthCookies.LoggedIn, null, { maxAge: 0 });
+      res.cookie(AuthCookies.AccessToken, null, { maxAge: 0 });
+      res.cookie(AuthCookies.RefreshToken, null, { maxAge: 0 });
+
+      throw error;
+    }
   }
 
   @Post('/logout')

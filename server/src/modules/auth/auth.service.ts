@@ -498,7 +498,11 @@ export class AuthService {
     return true;
   }
 
-  public async refresh(refreshToken: string, res: Response) {
+  public async refresh(refreshToken: string | undefined, res: Response) {
+    if (!refreshToken) {
+      throw new HttpException('Refresh token required', HttpStatus.UNAUTHORIZED);
+    }
+
     const refreshTokenPayload: IUserDataInRefreshToken = await this.jwtService.verifyAsync(refreshToken, {
       secret: this.configService.getOrThrow<string>('jwt.refreshSecret'),
     });
