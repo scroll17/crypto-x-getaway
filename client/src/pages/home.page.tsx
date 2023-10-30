@@ -1,25 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Box, Container, Typography } from '@mui/material';
+import { TabContext, TabList } from '@mui/lab';
+import TabPanel from '@mui/lab/TabPanel';
+import { Box, Tab } from '@mui/material';
+
+import { Accounts } from '../components/Accounts';
+import { Browsers } from '../components/Browsers';
+import { Strategies } from '../components/Strategies';
 
 export const HomePage = () => {
+  const [value, setValue] = useState('0');
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
   return (
-    <Container maxWidth={false} sx={{ backgroundColor: '#2363eb', minHeight: '100vh', pt: '5rem' }}>
-      <Box
-        maxWidth="md"
-        sx={{
-          backgroundColor: '#ece9e9',
-          height: '15rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          mx: 'auto',
-        }}
-      >
-        <Typography variant="h2" component="h1" sx={{ color: '#1f1e1e', fontWeight: 500 }}>
-          Home Page
-        </Typography>
-      </Box>
-    </Container>
+    <Box
+      sx={{
+        backgroundColor: '#ece9e9',
+      }}
+    >
+      <TabContext value={value}>
+        <TabList onChange={handleChange} aria-label="simple tabs example">
+          <Tab label="Accounts" value="0" />
+          <Tab label="Browsers" value="1" />
+          <Tab label="Strategies" value="2" />
+        </TabList>
+
+        <TabPanel value="0">
+          <Accounts />
+        </TabPanel>
+        <TabPanel value="1">
+          <Browsers />
+        </TabPanel>
+        <TabPanel value="2">
+          <Strategies />
+        </TabPanel>
+      </TabContext>
+    </Box>
   );
 };

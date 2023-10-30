@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { ToastContainer } from 'react-toastify';
 
+import './App.css';
 import routes from './router';
 
 function App() {
