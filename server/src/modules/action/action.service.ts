@@ -28,7 +28,7 @@ export class ActionService {
     private readonly dataGenerateHelper: DataGenerateHelper,
   ) {
     this.redis = this.redisService.getDefaultConnection();
-    // TODO: set default url
+    this.actionServerUrl = this.configService.get<string>('action.serverDefaultUrl') ?? null;
   }
 
   public async setActionServerUrl(url: string) {
