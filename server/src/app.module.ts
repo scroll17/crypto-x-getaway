@@ -21,7 +21,6 @@ import { AdminModule } from './modules/admin/admin.module';
 import { UserModule } from './modules/user/user.module';
 import { SeedModule } from './modules/seed/seed.module';
 import { TelegramModule } from './modules/telegram/telegram.module';
-import { DebankModule } from './modules/integrations/debank/debank.module';
 import { ProtectionModule } from './modules/protection/protection.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { ActionModule } from './modules/action/action.module';
@@ -68,7 +67,6 @@ import { usersConfiguration } from './config/users-configuration';
     ActionModule,
     SeedModule,
     TelegramModule,
-    DebankModule,
   ],
   controllers: [],
   providers: [
