@@ -21,7 +21,6 @@ import { AdminModule } from './modules/admin/admin.module';
 import { UserModule } from './modules/user/user.module';
 import { SeedModule } from './modules/seed/seed.module';
 import { TelegramModule } from './modules/telegram/telegram.module';
-import { ProtectionModule } from './modules/protection/protection.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { ActionModule } from './modules/action/action.module';
 /*services*/
@@ -60,7 +59,6 @@ import { usersConfiguration } from './config/users-configuration';
     DatabaseModule,
     RedisModule, // Global
     NgrokModule, // Global
-    ProtectionModule, // Global
     AuthModule,
     AdminModule,
     UserModule,

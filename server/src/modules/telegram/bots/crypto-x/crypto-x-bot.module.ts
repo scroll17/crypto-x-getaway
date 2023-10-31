@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
 import { CryptoXBotService } from './crypto-x-bot.service';
 import { CryptoXBotUpdate } from './crypto-x-bot.update';
-import { ProtectionModule } from '../../../protection/protection.module';
 import { MarkdownHelper, TelegrafMessageHelper } from '@common/telegram/helpers';
 import { TelegramNotificationBotService } from '../../notification/notification.service';
 import { AccessTokenRepositoryProvider, UserRepositoryProvider } from '../../../database/repositories';
-import {ActionModule} from "../../../action/action.module";
-
+import { ActionModule } from '../../../action/action.module';
 
 @Module({
-  imports: [ProtectionModule, ActionModule],
+  imports: [ActionModule],
   providers: [
     CryptoXBotService,
     CryptoXBotUpdate,

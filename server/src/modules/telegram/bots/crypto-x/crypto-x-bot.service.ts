@@ -1,7 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NgrokService } from '../../../ngrok/ngrok.service';
-import { ProtectionService } from '../../../protection/protection.service';
 import { MarkdownHelper } from '@common/telegram/helpers';
 import {
   ACCESS_TOKEN_REPOSITORY,
@@ -20,12 +19,10 @@ export class CryptoXBotService {
   private readonly logger = new Logger(this.constructor.name);
 
   private redis: Redis;
-  private lastSecurityToken: string | null = null;
 
   constructor(
     private readonly configService: ConfigService,
     private readonly ngrokService: NgrokService,
-    private readonly protectionService: ProtectionService,
     private readonly actionService: ActionService,
     private readonly markdownHelper: MarkdownHelper,
     private readonly redisService: RedisService,

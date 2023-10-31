@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '@entities/user';
 import { Request, Response } from 'express';
 import { HttpService } from '@nestjs/axios';
-import { IDataInActionToken } from '@common/types/action';
+import { IDataInActionToken } from '@common/types';
 
 @Injectable()
 export class ActionService {
@@ -31,18 +31,6 @@ export class ActionService {
     // TODO: set default url
   }
 
-  // TODO: remove
-  async onModuleInit() {
-    this.logger.verbose('ON MODULE');
-
-    const user = { id: 1, email: 'test@test.com', telegramId: 123_123 };
-
-    const token = await this.generateSecretToken(user, true);
-    console.log('token =>', token);
-
-    await this.getSecretToken(user);
-  }
-
   public async setActionServerUrl(url: string) {
     this.actionServerUrl = url;
   }
@@ -58,7 +46,7 @@ export class ActionService {
   }
 
   public async generateSecretToken(user: Pick<UserEntity, 'id' | 'email' | 'telegramId'>, force: boolean) {
-    const expireAt = this.configService.getOrThrow<string>('protection.securityTokenExpires');
+    const expireAt = this.configService.getOrThrow<string>('action.userSecurityTokenExpires');
     const tokenLiveTime = Math.floor(ms(expireAt) / 1000);
 
     const secret = this.generateSecret(user.id, force);

@@ -14,9 +14,9 @@ import { HttpModule } from '@nestjs/axios';
       useFactory: (configService: ConfigService) => {
         return {
           global: false,
-          secret: configService.get('protection.securityTokenSecret'),
+          secret: configService.getOrThrow('action.userSecurityTokenSecret'),
           signOptions: {
-            expiresIn: configService.get('protection.securityTokenExpires'),
+            expiresIn: configService.getOrThrow('action.userSecurityTokenExpires'),
           },
         };
       },

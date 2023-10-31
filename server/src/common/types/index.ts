@@ -1,5 +1,5 @@
 export * from './auth';
 export * from './ngrok';
-export * from './protection';
+export * from './action';
 export * from './seed';
 export * from './telegram';
