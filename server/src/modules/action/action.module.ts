@@ -4,10 +4,12 @@ import { DataGenerateHelper, IpHelper } from '@common/helpers';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ActionController } from './action.controller';
+import { HttpModule } from '@nestjs/axios';
 
 @Global()
 @Module({
   imports: [
+    HttpModule.register({}),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         return {

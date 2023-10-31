@@ -1,8 +1,10 @@
-import { Controller, All } from '@nestjs/common';
+import { Controller, All, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser, DisableController, AuthUser } from '@common/decorators';
 import { ICurrentUserData } from '@common/types/auth';
 import { ActionService } from './action.service';
+import { UserEntity } from '@entities/user';
 
 @Controller('action')
 @ApiTags('Action')
@@ -17,7 +19,11 @@ export class ActionController {
     description: 'Response from Action server.',
   })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  async transmit(@CurrentUser() user: ICurrentUserData) {
-    return user.info;
+  async transmit(
+    @CurrentUser() user: ICurrentUserData,
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.actionService.transmit(user.info as UserEntity, request, response);
   }
 }
