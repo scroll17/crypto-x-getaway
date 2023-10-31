@@ -68,18 +68,6 @@ export class CryptoXBotService {
     return accessToken;
   }
 
-  public async getServerUrl() {
-    const url = await this.ngrokService.connect({
-      port: this.configService.getOrThrow<number>('ports.http'),
-      proto: 'http',
-    });
-
-    const urlMsg = this.markdownHelper.bold('URL');
-    const urlText = this.markdownHelper.monospaced(url);
-
-    return `${urlMsg}: ${urlText}`;
-  }
-
   public async getSecurityToken(telegramUserId: number) {
     if (this.lastSecurityToken) {
       this.logger.debug('Return old security token');
