@@ -48,29 +48,26 @@ export class CryptoXBotUpdate {
   @TelegrafAuthUser()
   async onHelp(): Promise<string> {
     const commands = [
-      '/get_security_token - Получить токен аутентификации',
-      '/refresh_security_token - Обновить токен аутентификации',
+      '/get_user_secret - Получить токен аутентификации',
+      '/refresh_user_secret - Обновить токен аутентификации',
       '/set_action_server_url - Установить адрес Action server',
     ].join('\n');
-    const description = [
-      'Токен аутентификации используеться в Action server'
-    ].join('\n');
+    const description = ['Токен аутентификации используеться в Action server'].join('\n');
 
     return `${commands}\n\n${description}`;
   }
 
-
-  @Command('get_security_token')
+  @Command('get_user_secret')
   @TelegrafAuthUser()
-  async onGetSecurityTokenCommand(@TelegrafCurrentUser() tgUser: ITelegramUser, @Ctx() ctx: Context): Promise<void> {
-    const message = await this.cryptoXBotService.getSecurityToken(ctx.message!.from.id);
+  async onGetUserSecretCommand(@TelegrafCurrentUser() tgUser: ITelegramUser, @Ctx() ctx: Context): Promise<void> {
+    const message = await this.cryptoXBotService.getUserSecret(ctx.message!.from.id);
     await ctx.replyWithMarkdown(message);
   }
 
-  @Command('refresh_security_token')
+  @Command('refresh_user_secret')
   @TelegrafAuthUser()
-  async onRefreshSecurityTokenCommand(@Ctx() ctx: Context): Promise<void> {
-    const message = await this.cryptoXBotService.refreshSecurityToken(ctx.message!.from.id);
+  async onRefreshUserSecretCommand(@Ctx() ctx: Context): Promise<void> {
+    const message = await this.cryptoXBotService.refreshUserSecret(ctx.message!.from.id);
     await ctx.replyWithMarkdown(message);
   }
 

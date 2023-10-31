@@ -5,10 +5,11 @@ import { ProtectionModule } from '../../../protection/protection.module';
 import { MarkdownHelper, TelegrafMessageHelper } from '@common/telegram/helpers';
 import { TelegramNotificationBotService } from '../../notification/notification.service';
 import { AccessTokenRepositoryProvider, UserRepositoryProvider } from '../../../database/repositories';
+import {ActionModule} from "../../../action/action.module";
 
 
 @Module({
-  imports: [ProtectionModule],
+  imports: [ProtectionModule, ActionModule],
   providers: [
     CryptoXBotService,
     CryptoXBotUpdate,

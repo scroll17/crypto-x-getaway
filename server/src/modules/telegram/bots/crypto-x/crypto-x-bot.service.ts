@@ -13,6 +13,7 @@ import { TelegrafException } from 'nestjs-telegraf';
 import { RedisUser } from '@common/enums';
 import { RedisService } from '../../../redis/redis.service';
 import Redis from 'ioredis';
+import { ActionService } from '../../../action/action.service';
 
 @Injectable()
 export class CryptoXBotService {
@@ -25,6 +26,7 @@ export class CryptoXBotService {
     private readonly configService: ConfigService,
     private readonly ngrokService: NgrokService,
     private readonly protectionService: ProtectionService,
+    private readonly actionService: ActionService,
     private readonly markdownHelper: MarkdownHelper,
     private readonly redisService: RedisService,
     @Inject(USER_REPOSITORY)
@@ -68,34 +70,24 @@ export class CryptoXBotService {
     return accessToken;
   }
 
-  public async getSecurityToken(telegramUserId: number) {
-    if (this.lastSecurityToken) {
-      this.logger.debug('Return old security token');
+  public async getUserSecret(telegramUserId: number) {
+    const user = await this.getUserByTelegramId(telegramUserId);
+    const { secret } = await this.actionService.getSecretToken(user);
 
-      const tokenMsg = this.markdownHelper.bold('Token');
-      const tokenText = this.markdownHelper.monospaced(this.lastSecurityToken);
+    const secretMsg = this.markdownHelper.bold('Secret');
+    const secretText = this.markdownHelper.monospaced(secret);
 
-      return `${tokenMsg}: ${tokenText}`;
-    }
-
-    const newSecurityToken = await this.protectionService.generateSecurityToken(telegramUserId);
-    this.lastSecurityToken = newSecurityToken;
-
-    const tokenMsg = this.markdownHelper.bold('Token');
-    const tokenText = this.markdownHelper.monospaced(newSecurityToken);
-
-    return `${tokenMsg}: ${tokenText}`;
+    return `${secretMsg}: ${secretText}`;
   }
 
-  public async refreshSecurityToken(telegramUserId: number) {
-    this.logger.debug('Refresh security token');
+  public async refreshUserSecret(telegramUserId: number) {
+    const user = await this.getUserByTelegramId(telegramUserId);
+    const { secret } = await this.actionService.generateSecretToken(user, true);
 
-    const newSecurityToken = await this.protectionService.generateSecurityToken(telegramUserId);
+    const secretMsg = this.markdownHelper.bold('Secret');
+    const secretText = this.markdownHelper.monospaced(secret);
 
-    const tokenMsg = this.markdownHelper.bold('Token');
-    const tokenText = this.markdownHelper.monospaced(newSecurityToken);
-
-    return `${tokenMsg}: ${tokenText}`;
+    return `${secretMsg}: ${secretText}`;
   }
 
   public async approveAccessToken(telegramUserId: number, data: string) {

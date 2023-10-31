@@ -65,7 +65,11 @@ export class ActionService {
 
     this.logger.debug('Generate new secret token', {
       liveTime: tokenLiveTime,
-      data: user,
+      data: {
+        id: user.id,
+        email: user.email,
+        telegramId: user.telegramId
+      },
     });
 
     const tokenPayload: IDataInActionToken = {
@@ -87,8 +91,7 @@ export class ActionService {
   public async getSecretToken(user: Pick<UserEntity, 'id' | 'email' | 'telegramId'>) {
     const savedToken = this.userTokens.get(user.id);
     if (!savedToken) {
-      const { token } = await this.generateSecretToken(user, true);
-      return token;
+      return await this.generateSecretToken(user, true);
     }
 
     const { payload } = this.jwtService.decode(savedToken, { complete: true }) as {
@@ -97,21 +100,25 @@ export class ActionService {
         exp: number;
       };
     };
-    if (Date.now() / 1000 + ms('30s') >= payload.exp) {
+    if (Date.now() / 1000 + 30 >= payload.exp) {
       // Note: if token will be alive only 30s then recreate it
-
-      const { token } = await this.generateSecretToken(user, true);
-      return token;
+      return await this.generateSecretToken(user, true);
     }
+
+    const secret = this.userSecrets.get(user.id);
+    return {
+      token: savedToken,
+      secret: secret!,
+    };
   }
 
   public async transmit(user: UserEntity, req: Request, res: Response) {
-    if(!this.actionServerUrl) {
-      throw new HttpException('You have to set Server URL before', HttpStatus.FORBIDDEN)
+    if (!this.actionServerUrl) {
+      throw new HttpException('You have to set Server URL before', HttpStatus.FORBIDDEN);
     }
 
     const request = () => {
-      const path = ''
+      const path = '';
     };
 
     try {
