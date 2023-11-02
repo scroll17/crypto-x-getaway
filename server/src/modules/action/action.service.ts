@@ -1,6 +1,7 @@
+import crypto from 'node:crypto';
 import ms from 'ms';
 import Redis from 'ioredis';
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosRequestConfig, AxiosHeaders } from 'axios';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from '../redis/redis.service';
@@ -9,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '@entities/user';
 import { Request, Response } from 'express';
 import { HttpService } from '@nestjs/axios';
-import { IDataInActionToken } from '@common/types';
+import { IClientMetadata, IDataInActionToken } from '@common/types';
 
 @Injectable()
 export class ActionService {
@@ -29,6 +30,79 @@ export class ActionService {
   ) {
     this.redis = this.redisService.getDefaultConnection();
     this.actionServerUrl = this.configService.get<string>('action.serverDefaultUrl') ?? null;
+  }
+
+  private async buildRequestOptions(user: UserEntity, req: Request) {
+    if (!this.actionServerUrl) {
+      throw new HttpException('You have to set Server URL before', HttpStatus.FORBIDDEN);
+    }
+
+    const clientMetadata = this.buildClientMetadata(req);
+    const signature = await this.buildRequestSignature(req);
+    const userSecretToken = await this.buildUserReqSecretToken(user);
+
+    const headers = new AxiosHeaders();
+    headers.set(clientMetadata.header, clientMetadata.metadata);
+    headers.set(signature.header, signature.value);
+    headers.set(userSecretToken.header, userSecretToken.token);
+
+    const config: AxiosRequestConfig = {
+      url: req.path.replace('/action', ''),
+      method: req.method,
+      baseURL: this.actionServerUrl,
+      headers: headers,
+      params: req.query,
+      data: req.body,
+      responseType: 'json',
+      responseEncoding: 'utf8',
+      maxContentLength: Number.POSITIVE_INFINITY,
+      maxBodyLength: Number.POSITIVE_INFINITY,
+    };
+    this.logger.verbose('Request config for Action server', config);
+
+    return config;
+  }
+
+  private buildClientMetadata(req: Request) {
+    const header = 'x-client-metadata';
+    const metadata: IClientMetadata = {
+      hostname: req.hostname,
+      ip: req.ip,
+      ips: req.ips,
+      protocol: req.protocol,
+      subDomains: req.subdomains,
+    };
+
+    return {
+      header,
+      metadata: JSON.stringify(metadata),
+    };
+  }
+
+  public async buildUserReqSecretToken(user: UserEntity) {
+    const header = this.configService.getOrThrow<string>('action.userSecurityTokenHeader');
+    const { token } = await this.getSecretToken(user);
+
+    return {
+      header,
+      token,
+    };
+  }
+
+  private async buildRequestSignature(req: Request) {
+    const secret = this.configService.getOrThrow<string>('action.signatureSecret');
+    const header = this.configService.getOrThrow<string>('action.signatureHeader');
+
+    const timestamp = Math.floor(Date.now() / 1000);
+    const body = JSON.stringify(req.body);
+    const query = JSON.stringify(req.query);
+
+    const signature = crypto.createHmac('sha256', secret).update(`${timestamp}.${body}.${query}`, 'utf8').digest('hex');
+
+    return {
+      header,
+      value: `t=${timestamp},s=${signature}`,
+    };
   }
 
   public async setActionServerUrl(url: string) {
@@ -56,7 +130,7 @@ export class ActionService {
       data: {
         id: user.id,
         email: user.email,
-        telegramId: user.telegramId
+        telegramId: user.telegramId,
       },
     });
 
@@ -101,16 +175,15 @@ export class ActionService {
   }
 
   public async transmit(user: UserEntity, req: Request, res: Response) {
-    if (!this.actionServerUrl) {
-      throw new HttpException('You have to set Server URL before', HttpStatus.FORBIDDEN);
-    }
+    const request = async () => {
+      const config = await this.buildRequestOptions(user, req);
+      const { data } = await this.httpService.axiosRef.request(config);
 
-    const request = () => {
-      const path = '';
+      return data;
     };
 
     try {
-      // TODO: refresh token if it expired
+      return await request();
     } catch (error) {
       this.logger.error('Request to Action server error:', error);
 

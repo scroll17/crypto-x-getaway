@@ -1,14 +1,13 @@
 import { Controller, All, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CurrentUser, DisableController, AuthUser } from '@common/decorators';
+import { CurrentUser, AuthUser } from '@common/decorators';
 import { ICurrentUserData } from '@common/types/auth';
 import { ActionService } from './action.service';
 import { UserEntity } from '@entities/user';
 
 @Controller('action')
 @ApiTags('Action')
-@DisableController()
 export class ActionController {
   constructor(private readonly actionService: ActionService) {}
 
