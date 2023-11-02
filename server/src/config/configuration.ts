@@ -77,7 +77,9 @@ export const configuration = () => {
   const action = {
     userSecurityTokenSecret: process.env.ACTION_USER_SECURITY_TOKEN_SECRET,
     userSecurityTokenExpires: process.env.ACTION_USER_SECURITY_TOKEN_EXPIRES,
-    userSecurityTokenHeader: process.env.ACTION_SERVER_USER_SECURITY_TOKEN_HEADER,
+    userSecurityTokenHeader: process.env.ACTION_USER_SECURITY_TOKEN_HEADER,
+    signatureSecret: process.env.ACTION_SIGNATURE_SECRET,
+    signatureHeader: process.env.ACTION_SIGNATURE_HEADER,
     serverDefaultUrl: process.env.ACTION_SERVER_DEFAULT_URL,
   };
 
