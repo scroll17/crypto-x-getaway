@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import ms from 'ms';
 import Redis from 'ioredis';
-import { AxiosError, AxiosRequestConfig, AxiosHeaders } from 'axios';
+import { AxiosError, AxiosRequestConfig, AxiosHeaders, AxiosResponse } from 'axios';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from '../redis/redis.service';
@@ -185,13 +185,43 @@ export class ActionService {
     try {
       return await request();
     } catch (error) {
-      this.logger.error('Request to Action server error:', error);
+      this.logger.error(
+        'Request to Action server error:',
+        error instanceof AxiosError ? { ...error.toJSON(), config: '<hidden>' } : error,
+      );
 
       if (error instanceof AxiosError) {
-        const response = error.response;
-        if (res) {
+        const response = error.response as AxiosResponse<{ message: string; statusCode: number }>;
+        if (response) {
           // TODO: repeat request
         }
+
+        throw new HttpException(
+          {
+            source: error.name,
+            details:
+              response && response.data
+                ? response.data
+                : {
+                    message: error.message,
+                    code: error.code,
+                  },
+          },
+          error.status ?? HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      if (error instanceof Error) {
+        throw new HttpException(
+          {
+            source: error.name,
+            details: {
+              message: error.message,
+              stack: error.stack,
+            },
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
 
       throw error;
