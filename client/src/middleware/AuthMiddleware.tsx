@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { AxiosError } from 'axios';
 import { useCookies } from 'react-cookie';
-import {useMutation, useQuery} from 'react-query';
-import {Navigate, useLocation, useNavigate} from 'react-router-dom';
+import { useMutation, useQuery } from 'react-query';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import {getMe, refresh} from '../api/authApi';
+import { getMe, refresh } from '../api/authApi';
 import { AxiosErrorData, QUERY_KEYS } from '../api/types';
-import { FullScreenLoader } from '../components/FullScreenLoader';
 import { ConfirmTokenLoader } from '../components/ConfirmTokenLoader';
+import { FullScreenLoader } from '../components/FullScreenLoader';
 import { Layout } from '../components/Layout';
 import { useStateContext } from '../context';
 import { ACTION_TYPE } from '../context/types';
@@ -25,7 +25,6 @@ const AuthMiddleware: React.FC = () => {
   const authQuery = useQuery([QUERY_KEYS.AuthUser], getMe, {
     enabled: false,
     retry: 1,
-    select: data => data.data.user,
     onSuccess: data => {
       setConfirm(true);
       stateContext.dispatch({ type: ACTION_TYPE.SetUser, payload: data });
@@ -37,7 +36,7 @@ const AuthMiddleware: React.FC = () => {
           position: 'top-right',
         });
 
-        if(['Unauthorized', 'Token is revoked'].includes(response.data.message)) {
+        if (['Unauthorized', 'Token is revoked'].includes(response.data.message)) {
           navigate('/login');
         } else {
           setConfirm(false);
@@ -63,11 +62,11 @@ const AuthMiddleware: React.FC = () => {
 
   useEffect(() => refreshTokenMutation.mutate(), []);
 
-  if(refreshTokenMutation.isLoading || !authQuery.isFetched) {
+  if (refreshTokenMutation.isLoading || !authQuery.isFetched) {
     return <FullScreenLoader />;
   }
 
-  if(!confirmed || authQuery.isFetching) {
+  if (!confirmed || authQuery.isFetching) {
     return <ConfirmTokenLoader />;
   }
 
