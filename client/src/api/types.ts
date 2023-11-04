@@ -1,17 +1,17 @@
 export enum QUERY_KEYS {
   AuthUser = 'authUser',
-  RefreshToken = 'refreshToken'
+  RefreshToken = 'refreshToken',
 }
 
 export interface User {
-  name: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
   email: string;
   role: string;
-  _id: string;
   id: string;
   createdAt: string;
   updatedAt: string;
-  __v: number;
 }
 
 export interface GenericResponse {

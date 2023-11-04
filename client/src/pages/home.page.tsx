@@ -17,7 +17,7 @@ export const HomePage = () => {
   return (
     <Box
       sx={{
-        backgroundColor: '#ece9e9',
+        backgroundColor: '#f1f1f1',
       }}
     >
       <TabContext value={value}>
