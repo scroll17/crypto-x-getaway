@@ -48,11 +48,12 @@ export class CryptoXBotUpdate {
   @TelegrafAuthUser()
   async onHelp(): Promise<string> {
     const commands = [
-      '/get_user_secret - Получить токен аутентификации',
-      '/refresh_user_secret - Обновить токен аутентификации',
+      '/get_user_secret - Получить секрет для аутентификации',
+      '/get_user_token - Получить полный токен аутентификации',
+      '/refresh_user_secret - Обновить секрет для аутентификации',
       '/set_action_server_url - Установить адрес Action server',
     ].join('\n');
-    const description = ['Токен аутентификации используеться в Action server'].join('\n');
+    const description = ['Секрет аутентификации используеться в Action server'].join('\n');
 
     return `${commands}\n\n${description}`;
   }
@@ -60,15 +61,22 @@ export class CryptoXBotUpdate {
   @Command('get_user_secret')
   @TelegrafAuthUser()
   async onGetUserSecretCommand(@TelegrafCurrentUser() tgUser: ITelegramUser, @Ctx() ctx: Context): Promise<void> {
-    const message = await this.cryptoXBotService.getUserSecret(ctx.message!.from.id);
-    await ctx.replyWithMarkdown(message);
+    const message = await this.cryptoXBotService.getUserSecret(tgUser.telegramId);
+    await ctx.replyWithMarkdownV2(message);
+  }
+
+  @Command('get_user_token')
+  @TelegrafAuthUser()
+  async onGetUserTokenCommand(@TelegrafCurrentUser() tgUser: ITelegramUser, @Ctx() ctx: Context): Promise<void> {
+    const message = await this.cryptoXBotService.getUserToken(tgUser.telegramId);
+    await ctx.replyWithMarkdownV2(message);
   }
 
   @Command('refresh_user_secret')
   @TelegrafAuthUser()
-  async onRefreshUserSecretCommand(@Ctx() ctx: Context): Promise<void> {
-    const message = await this.cryptoXBotService.refreshUserSecret(ctx.message!.from.id);
-    await ctx.replyWithMarkdown(message);
+  async onRefreshUserSecretCommand(@TelegrafCurrentUser() tgUser: ITelegramUser, @Ctx() ctx: Context): Promise<void> {
+    const message = await this.cryptoXBotService.refreshUserSecret(tgUser.telegramId);
+    await ctx.replyWithMarkdownV2(message);
   }
 
   // Note: priority - 1

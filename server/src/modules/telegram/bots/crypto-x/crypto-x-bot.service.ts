@@ -77,6 +77,16 @@ export class CryptoXBotService {
     return `${secretMsg}: ${secretText}`;
   }
 
+  public async getUserToken(telegramUserId: number) {
+    const user = await this.getUserByTelegramId(telegramUserId);
+    const { token } = await this.actionService.getSecretToken(user);
+
+    const tokenMsg = this.markdownHelper.bold('Token');
+    const tokenText = this.markdownHelper.monospaced(token);
+
+    return `${tokenMsg}: ${tokenText}`;
+  }
+
   public async refreshUserSecret(telegramUserId: number) {
     const user = await this.getUserByTelegramId(telegramUserId);
     const { secret } = await this.actionService.generateSecretToken(user, true);
