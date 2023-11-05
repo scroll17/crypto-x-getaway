@@ -5,6 +5,7 @@ import { MarkupCallbackButtonName, TelegrafScene } from '@common/telegram/enums'
 import { ActionService } from '../../../../action/action.service';
 import { Markup } from 'telegraf';
 import { Injectable } from '@nestjs/common';
+import { TelegrafAuthUser } from '@common/telegram/decorators';
 
 @Injectable()
 @Wizard(TelegrafScene.SetActionServerUrl)
@@ -22,12 +23,14 @@ export class SetServerUrlWizard {
   }
 
   @Hears(new RegExp(MarkupCallbackButtonName.LeaveScene))
+  @TelegrafAuthUser()
   async onSceneLeave(@Ctx() ctx: WizardContext) {
     await ctx.reply('Вы вышли из установки URL', Markup.removeKeyboard());
     await ctx.scene.leave();
   }
 
   @On('message')
+  @TelegrafAuthUser()
   @WizardStep(2)
   async onUrl(@Ctx() ctx: WizardContext, @Message() msg: { text: string }) {
     if (!msg?.text) {
