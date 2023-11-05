@@ -1,11 +1,12 @@
+import { session } from 'telegraf';
 import { Module } from '@nestjs/common';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CryptoXBotModule } from './bots/crypto-x/crypto-x-bot.module';
+import { telegrafMessageLoggingMiddleware } from '@common/telegram/middlewares';
 
 @Module({
   imports: [
-    CryptoXBotModule,
     TelegrafModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -16,9 +17,11 @@ import { CryptoXBotModule } from './bots/crypto-x/crypto-x-bot.module';
         return {
           token: configService.getOrThrow('telegram.token'),
           include: botEnabled ? [CryptoXBotModule] : [],
+          middlewares: [telegrafMessageLoggingMiddleware, session()],
         };
       },
     }),
+    CryptoXBotModule,
   ],
   exports: [CryptoXBotModule],
 })

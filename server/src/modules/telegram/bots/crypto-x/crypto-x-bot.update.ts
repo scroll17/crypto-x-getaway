@@ -1,15 +1,13 @@
 import * as _ from 'lodash';
-import { Action, Command, Ctx, Help, InjectBot, Next, On, Start, Update, Use } from 'nestjs-telegraf';
-import { Context, Telegraf, Scenes, session } from 'telegraf';
+import { Action, Command, Ctx, Help, InjectBot, Next, On, Start, Update } from 'nestjs-telegraf';
+import { Context, Telegraf } from 'telegraf';
 import { Logger, UseFilters, UseInterceptors } from '@nestjs/common';
 import { CryptoXBotService } from './crypto-x-bot.service';
 import { TelegrafExceptionFilter } from '@common/telegram/filters';
 import { TelegrafAuthUser, TelegrafCurrentUser } from '@common/telegram/decorators';
 import { ITelegramUser } from '@common/types';
-import { MarkupCallbackButtonName } from '@common/telegram/enums';
-import { telegrafMessageLoggingMiddleware } from '@common/telegram/middlewares';
-
-const stage = new Scenes.Stage([]);
+import { MarkupCallbackButtonName, TelegrafScene } from '@common/telegram/enums';
+import { SceneContext } from 'telegraf/typings/scenes';
 
 @Update()
 @UseInterceptors()
@@ -22,24 +20,6 @@ export class CryptoXBotUpdate {
     private readonly bot: Telegraf<Context>,
     private readonly cryptoXBotService: CryptoXBotService,
   ) {}
-
-  @Use()
-  useMiddleware(ctx: Context, next: () => Promise<void>) {
-    const middleware = telegrafMessageLoggingMiddleware.middleware();
-    return middleware(ctx, next);
-  }
-
-  @Use()
-  useSession(ctx: Context, next: () => Promise<void>) {
-    const middleware = session();
-    return middleware(ctx, next);
-  }
-
-  @Use()
-  useStage(ctx: any, next: () => Promise<void>) {
-    const middleware = stage.middleware();
-    return middleware(ctx, next);
-  }
 
   @Start()
   async onStart(@Ctx() ctx: Context): Promise<string> {
@@ -84,6 +64,12 @@ export class CryptoXBotUpdate {
   async onRefreshUserSecretCommand(@TelegrafCurrentUser() tgUser: ITelegramUser, @Ctx() ctx: Context): Promise<void> {
     const message = await this.cryptoXBotService.refreshUserSecret(tgUser.telegramId);
     await ctx.replyWithMarkdownV2(message);
+  }
+
+  @Command('set_action_server_url')
+  @TelegrafAuthUser()
+  async onSetActionServerUrlCommand(@Ctx() ctx: SceneContext): Promise<void> {
+    await ctx.scene.enter(TelegrafScene.SetActionServerUrl);
   }
 
   // Note: priority - 1

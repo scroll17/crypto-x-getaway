@@ -105,7 +105,7 @@ export class ActionService {
     };
   }
 
-  public async setActionServerUrl(url: string) {
+  public setActionServerUrl(url: string) {
     this.actionServerUrl = url;
   }
 

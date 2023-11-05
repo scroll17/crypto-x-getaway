@@ -5,6 +5,7 @@ import { MarkdownHelper, TelegrafMessageHelper } from '@common/telegram/helpers'
 import { TelegramNotificationBotService } from '../../notification/notification.service';
 import { AccessTokenRepositoryProvider, UserRepositoryProvider } from '../../../database/repositories';
 import { ActionModule } from '../../../action/action.module';
+import { SetServerUrlWizard } from './scenes';
 
 @Module({
   imports: [ActionModule],
@@ -16,6 +17,8 @@ import { ActionModule } from '../../../action/action.module';
     TelegramNotificationBotService,
     UserRepositoryProvider,
     AccessTokenRepositoryProvider,
+    // Scenes
+    SetServerUrlWizard,
   ],
   exports: [CryptoXBotService, TelegramNotificationBotService, MarkdownHelper],
 })
