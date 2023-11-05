@@ -1,12 +1,15 @@
 import * as _ from 'lodash';
-import { Action, Command, Ctx, Help, InjectBot, Next, On, Start, Update } from 'nestjs-telegraf';
-import { Context, Telegraf } from 'telegraf';
+import { Action, Command, Ctx, Help, InjectBot, Next, On, Start, Update, Use } from 'nestjs-telegraf';
+import { Context, Telegraf, Scenes, session } from 'telegraf';
 import { Logger, UseFilters, UseInterceptors } from '@nestjs/common';
 import { CryptoXBotService } from './crypto-x-bot.service';
 import { TelegrafExceptionFilter } from '@common/telegram/filters';
 import { TelegrafAuthUser, TelegrafCurrentUser } from '@common/telegram/decorators';
 import { ITelegramUser } from '@common/types';
 import { MarkupCallbackButtonName } from '@common/telegram/enums';
+import { telegrafMessageLoggingMiddleware } from '@common/telegram/middlewares';
+
+const stage = new Scenes.Stage([]);
 
 @Update()
 @UseInterceptors()
@@ -19,6 +22,24 @@ export class CryptoXBotUpdate {
     private readonly bot: Telegraf<Context>,
     private readonly cryptoXBotService: CryptoXBotService,
   ) {}
+
+  @Use()
+  useMiddleware(ctx: Context, next: () => Promise<void>) {
+    const middleware = telegrafMessageLoggingMiddleware.middleware();
+    return middleware(ctx, next);
+  }
+
+  @Use()
+  useSession(ctx: Context, next: () => Promise<void>) {
+    const middleware = session();
+    return middleware(ctx, next);
+  }
+
+  @Use()
+  useStage(ctx: any, next: () => Promise<void>) {
+    const middleware = stage.middleware();
+    return middleware(ctx, next);
+  }
 
   @Start()
   async onStart(@Ctx() ctx: Context): Promise<string> {

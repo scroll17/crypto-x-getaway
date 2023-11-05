@@ -1,6 +1,6 @@
 /*external modules*/
 import { Injectable, Logger } from '@nestjs/common';
-import { Context, Middleware } from 'telegraf';
+import { Context, MiddlewareObj } from 'telegraf';
 /*other*/
 import { TelegrafMessageHelper } from '@common/telegram/helpers';
 
@@ -32,4 +32,4 @@ export class TelegrafMessageLoggingMiddleware {
   }
 }
 
-export const telegrafMessageLoggingMiddleware: Middleware<Context> = new TelegrafMessageLoggingMiddleware();
+export const telegrafMessageLoggingMiddleware: MiddlewareObj<Context> = new TelegrafMessageLoggingMiddleware();
