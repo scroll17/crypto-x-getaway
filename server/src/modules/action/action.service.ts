@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '@entities/user';
 import { Request, Response } from 'express';
 import { HttpService } from '@nestjs/axios';
-import { IClientMetadata, IDataInActionToken } from '@common/types';
+import { IActionTransmitError, IClientMetadata, IDataInActionToken } from '@common/types';
 
 @Injectable()
 export class ActionService {
@@ -105,6 +105,48 @@ export class ActionService {
     };
   }
 
+  private buildTransmitError(error: unknown): Error | HttpException {
+    if (error instanceof AxiosError) {
+      const response = error.response as AxiosResponse<{ message: string; statusCode: number }>;
+
+      const data: IActionTransmitError<{ message: string; statusCode: number }> = {
+        source: error.name,
+        status: {
+          code: response?.status,
+          text: response?.statusText,
+        },
+        details:
+          response && response.data
+            ? response.data
+            : {
+                message: error.message,
+                code: error.code,
+              },
+      };
+      return new HttpException(
+        data,
+        response ? response.data?.statusCode ?? response.status : HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    if (error instanceof Error) {
+      const data: IActionTransmitError<never> = {
+        source: error.name,
+        status: {
+          code: null,
+          text: null,
+        },
+        details: {
+          message: error.message,
+          stack: error.stack,
+        },
+      };
+      return new HttpException(data, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return error as Error;
+  }
+
   public setActionServerUrl(url: string) {
     this.actionServerUrl = url;
   }
@@ -195,36 +237,9 @@ export class ActionService {
         if (response) {
           // TODO: repeat request
         }
-
-        throw new HttpException(
-          {
-            source: error.name,
-            details:
-              response && response.data
-                ? response.data
-                : {
-                    message: error.message,
-                    code: error.code,
-                  },
-          },
-          error.status ?? HttpStatus.INTERNAL_SERVER_ERROR,
-        );
       }
 
-      if (error instanceof Error) {
-        throw new HttpException(
-          {
-            source: error.name,
-            details: {
-              message: error.message,
-              stack: error.stack,
-            },
-          },
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-
-      throw error;
+      throw this.buildTransmitError(error);
     }
   }
 }
