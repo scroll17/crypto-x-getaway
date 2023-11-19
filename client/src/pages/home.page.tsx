@@ -7,6 +7,7 @@ import { Box, Tab } from '@mui/material';
 import { Accounts } from '../components/Accounts';
 import { Browsers } from '../components/Browsers';
 import { Strategies } from '../components/Strategies';
+import { UsersTable } from '../components/UsersTable';
 
 export const HomePage = () => {
   const [value, setValue] = useState('0');
@@ -22,18 +23,22 @@ export const HomePage = () => {
     >
       <TabContext value={value}>
         <TabList onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Accounts" value="0" />
-          <Tab label="Browsers" value="1" />
-          <Tab label="Strategies" value="2" />
-        </TabList>
+          <Tab label="Users" value="0" />
 
+          <Tab label="Accounts" value="1" />
+          <Tab label="Browsers" value="2" />
+          <Tab label="Strategies" value="3" />
+        </TabList>
         <TabPanel value="0">
-          <Accounts />
+          <UsersTable />
         </TabPanel>
         <TabPanel value="1">
-          <Browsers />
+          <Accounts />
         </TabPanel>
         <TabPanel value="2">
+          <Browsers />
+        </TabPanel>
+        <TabPanel value="3">
           <Strategies />
         </TabPanel>
       </TabContext>

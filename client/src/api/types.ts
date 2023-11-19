@@ -12,6 +12,8 @@ export interface User {
   id: string;
   createdAt: string;
   updatedAt: string;
+  telegramId: number;
+  name: string;
 }
 
 export interface GenericResponse {
@@ -32,3 +34,14 @@ export type AxiosErrorData = {
   message: string;
   details: Record<string, unknown>;
 };
+// this file need to refactor
+export interface userTableResponseItem {
+  _id: string;
+  name: string;
+  email: string;
+  telegramId: number;
+  blocked: boolean;
+  hasBotAccess: boolean;
+  isAdmin: boolean;
+  username: string;
+}
