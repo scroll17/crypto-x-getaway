@@ -10,12 +10,11 @@ import { HomePage } from '../pages/home.page';
 import { LoginPage } from '../pages/login.page';
 import ProfilePage from '../pages/profile.page';
 
-const Loadable = (Component: React.ComponentType) => (props: JSX.IntrinsicAttributes) =>
-  (
-    <Suspense fallback={<FullScreenLoader />}>
-      <Component {...props} />
-    </Suspense>
-  );
+const Loadable = (Component: React.ComponentType) => (props: JSX.IntrinsicAttributes) => (
+  <Suspense fallback={<FullScreenLoader />}>
+    <Component {...props} />
+  </Suspense>
+);
 
 const UnauthorizePage = Loadable(lazy(() => import('../pages/unauthorize.page')));
 

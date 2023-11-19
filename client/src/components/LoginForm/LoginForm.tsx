@@ -6,8 +6,8 @@ import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { login, refresh} from '../../api/authApi';
-import {AxiosErrorData, QUERY_KEYS, UserLoginData} from '../../api/types';
+import { login, refresh } from '../../api/authApi';
+import { AxiosErrorData, QUERY_KEYS, UserLoginData } from '../../api/types';
 import { isEmailValid } from '../../utils/emailValidation';
 
 export const LoginForm: FC = () => {
