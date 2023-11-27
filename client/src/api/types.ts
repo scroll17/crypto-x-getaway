@@ -35,7 +35,7 @@ export type AxiosErrorData = {
   details: Record<string, unknown>;
 };
 // this file need to refactor
-export interface userTableResponseItem {
+export interface ActionUser {
   _id: string;
   name: string;
   email: string;

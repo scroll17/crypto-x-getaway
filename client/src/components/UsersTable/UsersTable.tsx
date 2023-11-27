@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 
 import { UsersTableHead } from './UsersTableHead';
 import { users } from '../../api/authApi';
-import { userTableResponseItem } from '../../api/types';
+import { ActionUser } from '../../api/types';
 import { FullScreenLoader } from '../FullScreenLoader';
 
 export interface Column {
@@ -45,7 +45,7 @@ export const UsersTable: FC = () => {
   );
 
   const ROW: Record<Column['id'], string>[] = useMemo(() => {
-    return usersData?.data?.data.map((row: userTableResponseItem) => ({
+    return usersData?.data?.data.map((row: ActionUser) => ({
       id: row._id,
       userName: row.name,
       botAccess: (
