@@ -29,7 +29,9 @@ authApi.interceptors.response.use(
     const originalRequest: AxiosRequestConfig & { _retry: boolean } = error.config;
     switch (true) {
       // the AccessToken could be expired and we try to make refresh
-      case error.response === 401 && !originalRequest._retry && !originalRequest.url?.includes('refresh'): {
+      case error.response === 401 &&
+        !originalRequest._retry &&
+        !originalRequest.url?.includes('refresh'): {
         originalRequest._retry = true;
         console.log('originalRequest._retry', originalRequest);
 
@@ -92,5 +94,10 @@ export const refresh = async () => {
 // Makes a GET request to retrieve the authenticated user’s credentials.
 export const getMe = async () => {
   const response = await authApi.get('user/me');
+  return response.data;
+};
+
+export const users = async requestData => {
+  const response = await authApi.post('action/user/all', requestData);
   return response.data;
 };
