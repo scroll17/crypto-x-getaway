@@ -5,8 +5,8 @@ import { Paper, TableContainer, Table, TableBody, TableRow, TableCell } from '@m
 import { useQuery } from 'react-query';
 
 import { UsersTableHead } from './UsersTableHead';
-import { users } from '../../api/authApi';
-import { ActionUser } from '../../api/types';
+import { users } from '../../api/rest/actionUser';
+import { ActionUser } from '../../types/userAction';
 import { FullScreenLoader } from '../FullScreenLoader';
 
 export interface Column {

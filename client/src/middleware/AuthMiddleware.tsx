@@ -6,13 +6,14 @@ import { useMutation, useQuery } from 'react-query';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { getMe, refresh } from '../api/authApi';
-import { AxiosErrorData, QUERY_KEYS } from '../api/types';
+import { getMe, refresh } from '../api/rest/auth';
+import { AxiosErrorData } from '../api/types';
 import { ConfirmTokenLoader } from '../components/ConfirmTokenLoader';
 import { FullScreenLoader } from '../components/FullScreenLoader';
 import { Layout } from '../components/Layout';
 import { useStateContext } from '../context';
 import { ACTION_TYPE } from '../context/types';
+import { QUERY_KEYS } from '../types/auth';
 
 const AuthMiddleware: React.FC = () => {
   const [cookies] = useCookies(['logged_in']);
