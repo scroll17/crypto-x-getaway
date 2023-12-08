@@ -1,27 +1,16 @@
-import axios, { AxiosError, AxiosRequestConfig } from 'axios';
-import { redirect } from 'react-router-dom';
+import { AxiosError, AxiosRequestConfig } from 'axios';
+import { User } from '../types/auth';
 import { toast } from 'react-toastify';
-
-import { User, UserLoginData } from './types';
+import { redirect } from 'react-router-dom';
 import { ROUTES } from '../router/routerTypes';
+import { baseApi } from './config';
 
-const BASE_URL = 'http://localhost:4040';
-
-// Axios instance and default configuration
-export const authApi = axios.create({
-  baseURL: BASE_URL,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-authApi.interceptors.request.use(
+baseApi.interceptors.request.use(
   config => config,
   error => Promise.reject(error),
 );
 
-authApi.interceptors.response.use(
+baseApi.interceptors.response.use(
   response => response,
   async error => {
     if (!error.response) return Promise.reject(error);
@@ -36,9 +25,9 @@ authApi.interceptors.response.use(
         console.log('originalRequest._retry', originalRequest);
 
         try {
-          const response = await authApi.get<User>('auth/refresh');
+          const response = await baseApi.get<User>('auth/refresh');
           if (response.status === 201) {
-            return authApi(originalRequest);
+            return baseApi(originalRequest);
           }
         } catch (error) {
           console.log('originalRequest._retry', originalRequest);
@@ -71,33 +60,3 @@ authApi.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-
-// Makes a POST request to sign in the registered user.
-export const login = async (user: UserLoginData) => {
-  const response = await authApi.post('/auth/login', user);
-
-  return response.data;
-};
-
-// Makes a GET request to log out the user.
-export const logout = async () => {
-  const response = await authApi.get('auth/logout');
-  return response.data;
-};
-
-// Makes a PUT request to refresh access token because we could have available refresh token
-export const refresh = async () => {
-  const response = await authApi.put('auth/refresh');
-  return response.data;
-};
-
-// Makes a GET request to retrieve the authenticated user’s credentials.
-export const getMe = async () => {
-  const response = await authApi.get('user/me');
-  return response.data;
-};
-
-export const users = async requestData => {
-  const response = await authApi.post('action/user/all', requestData);
-  return response.data;
-};
