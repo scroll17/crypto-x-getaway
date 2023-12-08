@@ -1,5 +1,5 @@
 import { AxiosError, AxiosRequestConfig } from 'axios';
-import { User } from '../types/auth';
+import { User } from '../types/getaway/auth';
 import { toast } from 'react-toastify';
 import { redirect } from 'react-router-dom';
 import { ROUTES } from '../router/routerTypes';

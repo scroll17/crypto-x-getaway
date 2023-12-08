@@ -1,3 +1,5 @@
+export enum ActionUserQueryKeys {}
+
 export interface ActionUser {
   _id: string;
   name: string;

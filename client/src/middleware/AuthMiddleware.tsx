@@ -6,14 +6,14 @@ import { useMutation, useQuery } from 'react-query';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { getMe, refresh } from '../api/rest/auth';
+import { getMe, refresh } from '../api/rest/getaway/auth';
 import { AxiosErrorData } from '../api/types';
 import { ConfirmTokenLoader } from '../components/ConfirmTokenLoader';
 import { FullScreenLoader } from '../components/FullScreenLoader';
 import { Layout } from '../components/Layout';
 import { useStateContext } from '../context';
 import { ACTION_TYPE } from '../context/types';
-import { QUERY_KEYS } from '../types/auth';
+import { GetawayAuthQueryKeys } from '../types/getaway';
 
 const AuthMiddleware: React.FC = () => {
   const [cookies] = useCookies(['logged_in']);
@@ -23,7 +23,7 @@ const AuthMiddleware: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const authQuery = useQuery([QUERY_KEYS.AuthUser], getMe, {
+  const authQuery = useQuery([GetawayAuthQueryKeys.AuthUser], getMe, {
     enabled: false,
     retry: 1,
     onSuccess: data => {
@@ -47,7 +47,7 @@ const AuthMiddleware: React.FC = () => {
     },
   });
 
-  const refreshTokenMutation = useMutation([QUERY_KEYS.RefreshToken], refresh, {
+  const refreshTokenMutation = useMutation([GetawayAuthQueryKeys.RefreshToken], refresh, {
     retry: 1,
     onSuccess: () => authQuery.refetch(),
     onError: (error: AxiosError<AxiosErrorData>) => {

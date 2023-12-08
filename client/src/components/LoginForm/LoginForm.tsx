@@ -6,10 +6,10 @@ import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { login, refresh } from '../../api/rest/auth';
+import { login, refresh } from '../../api/rest/getaway/auth';
 import { AxiosErrorData } from '../../api/types';
 import { isEmailValid } from '../../utils/emailValidation';
-import { QUERY_KEYS, UserLoginData } from '../../types/auth';
+import { GetawayAuthQueryKeys, UserLoginData } from '../../types/getaway';
 
 export const LoginForm: FC = () => {
   const [email, setEmail] = useState('zololotarenko.2015@gmail.com');
@@ -39,7 +39,7 @@ export const LoginForm: FC = () => {
     },
   );
 
-  const refreshTokenMutation = useMutation([QUERY_KEYS.RefreshToken], refresh, {
+  const refreshTokenMutation = useMutation([GetawayAuthQueryKeys.RefreshToken], refresh, {
     retry: 1,
     onSuccess: () => {
       navigate(from);

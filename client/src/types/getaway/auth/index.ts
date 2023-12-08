@@ -1,4 +1,4 @@
-export enum QUERY_KEYS {
+export enum GetawayAuthQueryKeys {
   AuthUser = 'authUser',
   RefreshToken = 'refreshToken',
 }
