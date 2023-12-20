@@ -1,5 +1,3 @@
-export enum ActionUserQueryKeys {}
-
 export interface ActionUser {
   _id: string;
   name: string;
@@ -9,4 +7,5 @@ export interface ActionUser {
   hasBotAccess: boolean;
   isAdmin: boolean;
   username: string;
+  lastActivityAt: string;
 }
