@@ -6,6 +6,7 @@ import { getBlockchainNetwork } from '../../api/rest/blockchainNetwork';
 import { ActionBlockchainNetworkAll } from '../../types/action';
 import { FullScreenLoader } from '../FullScreenLoader';
 import { Column, TableComponent } from '../TableComponent';
+import { Button } from '@mui/material';
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
@@ -29,6 +30,11 @@ export const NetworksTab: FC = () => {
     }),
   );
 
+  // mb good idea transfer it with button component to hook
+  const handleClick = () => {
+    blockchainNetworkData.refetch();
+  };
+
   const ROW: Record<Column['id'], string>[] = useMemo(() => {
     return blockchainNetworkData?.data?.data.map((row: ActionBlockchainNetworkAll) => ({
       id: row._id,
@@ -40,12 +46,20 @@ export const NetworksTab: FC = () => {
   if (blockchainNetworkData.isFetching) {
     return <FullScreenLoader />;
   }
+
   return (
-    <TableComponent
-      row={ROW}
-      columns={columns}
-      openModal={isOpenModal}
-      onClickRow={handleModalActions}
-    />
+    <>
+      <div style={{ textAlign: 'right', marginBottom: '20px' }}>
+        <Button size="large" variant="contained" onClick={handleClick}>
+          Reload
+        </Button>
+      </div>
+      <TableComponent
+        row={ROW}
+        columns={columns}
+        openModal={isOpenModal}
+        onClickRow={handleModalActions}
+      />
+    </>
   );
 };

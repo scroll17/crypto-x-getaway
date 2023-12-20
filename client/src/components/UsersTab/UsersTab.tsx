@@ -8,6 +8,7 @@ import { ActionUser } from '../../types/action';
 import { calcUsersOnline } from '../../utils/calcUsersOnline';
 import { FullScreenLoader } from '../FullScreenLoader';
 import { Column, TableComponent } from '../TableComponent';
+import { Button } from '@mui/material';
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
@@ -36,6 +37,11 @@ export const UsersTab: FC = () => {
       filter: {},
     }),
   );
+  // mb good idea transfer it with button component to hook
+  const handleClick = () => {
+    usersData.refetch();
+  };
+
   const ROW: Record<Column['id'], string>[] = useMemo(() => {
     return usersData?.data?.data.map((row: ActionUser) => ({
       id: row._id,
@@ -57,5 +63,15 @@ export const UsersTab: FC = () => {
     return <FullScreenLoader />;
   }
 
-  return <TableComponent row={ROW} columns={columns} />;
+  return (
+    <>
+      <div style={{ textAlign: 'right', marginBottom: '20px' }}>
+        <Button size="large" variant="contained" onClick={handleClick}>
+          Reload
+        </Button>
+      </div>
+
+      <TableComponent row={ROW} columns={columns} />
+    </>
+  );
 };
