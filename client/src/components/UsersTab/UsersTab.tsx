@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
 import { users } from '../../api/rest/action/user';
@@ -8,7 +9,6 @@ import { ActionUser } from '../../types/action';
 import { calcUsersOnline } from '../../utils/calcUsersOnline';
 import { FullScreenLoader } from '../FullScreenLoader';
 import { Column, TableComponent } from '../TableComponent';
-import { Button } from '@mui/material';
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
@@ -30,20 +30,30 @@ export const UsersTab: FC = () => {
   //   page: 0,
   // });
 
-  const usersData = useQuery('users', () =>
-    users({
-      paginate: { page: 1, count: 10 },
-      sort: { name: '_id', type: 'asc' },
-      filter: {},
-    }),
+  const usersData = useQuery(
+    'users',
+    () =>
+      users({
+        paginate: { page: 1, count: 10 },
+        sort: { name: '_id', type: 'asc' },
+        filter: {},
+      }),
+    { select: data => data.data },
   );
+
+  const dataExists = usersData && usersData.data?.length > 0;
+
   // mb good idea transfer it with button component to hook
   const handleClick = () => {
     usersData.refetch();
   };
 
   const ROW: Record<Column['id'], string>[] = useMemo(() => {
-    return usersData?.data?.data.map((row: ActionUser) => ({
+    if (!dataExists) return [];
+
+    const { data } = usersData;
+
+    return data.map((row: ActionUser) => ({
       id: row._id,
       userName: row.name,
       botAccess: (
@@ -70,8 +80,7 @@ export const UsersTab: FC = () => {
           Reload
         </Button>
       </div>
-
-      <TableComponent row={ROW} columns={columns} />
+      {dataExists ? <TableComponent row={ROW} columns={columns} /> : 'noDATA'}
     </>
   );
 };

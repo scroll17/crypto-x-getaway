@@ -1,12 +1,12 @@
 import React, { FC, useMemo, useState } from 'react';
 
+import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
-import { getBlockchainNetwork } from '../../api/rest/blockchainNetwork';
+import { getAllBlockchainNetwork } from '../../api/rest/action/blockchain/network';
 import { ActionBlockchainNetworkAll } from '../../types/action';
 import { FullScreenLoader } from '../FullScreenLoader';
 import { Column, TableComponent } from '../TableComponent';
-import { Button } from '@mui/material';
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
@@ -22,13 +22,18 @@ export const NetworksTab: FC = () => {
     console.log(id);
   };
 
-  const blockchainNetworkData = useQuery('blockchainNetwork', () =>
-    getBlockchainNetwork({
-      paginate: { page: 1, count: 10 },
-      sort: { name: '_id', type: 'asc' },
-      filter: {},
-    }),
+  const blockchainNetworkData = useQuery(
+    'blockchainNetwork',
+    () =>
+      getAllBlockchainNetwork({
+        paginate: { page: 1, count: 10 },
+        sort: { name: '_id', type: 'asc' },
+        filter: {},
+      }),
+    { select: data => data.data },
   );
+
+  const dataExists = blockchainNetworkData && blockchainNetworkData.data?.length > 0;
 
   // mb good idea transfer it with button component to hook
   const handleClick = () => {
@@ -36,7 +41,11 @@ export const NetworksTab: FC = () => {
   };
 
   const ROW: Record<Column['id'], string>[] = useMemo(() => {
-    return blockchainNetworkData?.data?.data.map((row: ActionBlockchainNetworkAll) => ({
+    if (!dataExists) return [];
+
+    const { data } = blockchainNetworkData;
+
+    return data.map((row: ActionBlockchainNetworkAll) => ({
       id: row._id,
       name: row.name,
       description: row.description,
@@ -54,12 +63,16 @@ export const NetworksTab: FC = () => {
           Reload
         </Button>
       </div>
-      <TableComponent
-        row={ROW}
-        columns={columns}
-        openModal={isOpenModal}
-        onClickRow={handleModalActions}
-      />
+      {dataExists ? (
+        <TableComponent
+          row={ROW}
+          columns={columns}
+          openModal={isOpenModal}
+          onClickRow={handleModalActions}
+        />
+      ) : (
+        'noDATA'
+      )}
     </>
   );
 };
