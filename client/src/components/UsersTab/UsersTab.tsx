@@ -36,7 +36,6 @@ export const UsersTab: FC = () => {
       users({
         paginate: { page: 1, count: 10 },
         sort: { name: '_id', type: 'asc' },
-        filter: {},
       }),
     { select: data => data.data },
   );
