@@ -8,8 +8,8 @@ import { toast } from 'react-toastify';
 
 import { login, refresh } from '../../api/rest/getaway/auth';
 import { AxiosErrorData } from '../../api/types';
-import { isEmailValid } from '../../utils/emailValidation';
 import { GetawayAuthQueryKeys, UserLoginData } from '../../types/getaway';
+import { isEmailValid } from '../../utils/emailValidation';
 
 export const LoginForm: FC = () => {
   const [email, setEmail] = useState('zololotarenko.2015@gmail.com');

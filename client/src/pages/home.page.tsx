@@ -4,10 +4,10 @@ import { TabContext, TabList } from '@mui/lab';
 import TabPanel from '@mui/lab/TabPanel';
 import { Box, Tab } from '@mui/material';
 
-import { Accounts } from '../components/Accounts';
 import { Browsers } from '../components/Browsers';
+import { NetworksTab } from '../components/NetworksTab';
 import { Strategies } from '../components/Strategies';
-import { UsersTable } from '../components/UsersTable';
+import { UsersTab } from '../components/UsersTab';
 
 export const HomePage = () => {
   const [value, setValue] = useState('0');
@@ -25,15 +25,15 @@ export const HomePage = () => {
         <TabList onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Users" value="0" />
 
-          <Tab label="Accounts" value="1" />
+          <Tab label="Networks" value="1" />
           <Tab label="Browsers" value="2" />
           <Tab label="Strategies" value="3" />
         </TabList>
         <TabPanel value="0">
-          <UsersTable />
+          <UsersTab />
         </TabPanel>
         <TabPanel value="1">
-          <Accounts />
+          <NetworksTab />
         </TabPanel>
         <TabPanel value="2">
           <Browsers />

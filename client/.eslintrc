@@ -80,7 +80,7 @@
     },
     "settings": {
         "react": {
-            "version": "detect" // Tell eslint-plugin-react to automatically detect the latest version of react.
+            "version": "detect" // Tell eslint-plugin-react to automatically detect the latest version of React.
         }
     }
 }

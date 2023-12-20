@@ -1,9 +1,10 @@
 import { AxiosError, AxiosRequestConfig } from 'axios';
-import { User } from '../types/getaway/auth';
-import { toast } from 'react-toastify';
 import { redirect } from 'react-router-dom';
-import { ROUTES } from '../router/routerTypes';
+import { toast } from 'react-toastify';
+
 import { baseApi } from './config';
+import { ROUTES } from '../router/routerTypes';
+import { User } from '../types/getaway/auth';
 
 baseApi.interceptors.request.use(
   config => config,

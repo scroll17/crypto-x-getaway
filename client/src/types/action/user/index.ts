@@ -1,4 +1,10 @@
-export enum ActionUserQueryKeys {}
+import { TPaginateRequest, IActionFilter } from '../common';
+
+export enum User {
+  UserAll = 'allUsers',
+}
+
+export type ActionUserRequestData = TPaginateRequest<IActionFilter>;
 
 export interface ActionUser {
   _id: string;
@@ -9,4 +15,5 @@ export interface ActionUser {
   hasBotAccess: boolean;
   isAdmin: boolean;
   username: string;
+  lastActivityAt: string;
 }
