@@ -4,7 +4,7 @@ import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
 import { getAllBlockchainNetwork } from '../../api/rest/action/blockchain/network';
-import { ActionBlockchainNetworkAll } from '../../types/action';
+import { ActionBlockchainNetworkAll, BlockchainNetworkQueryKeys } from '../../types/action';
 import { FullScreenLoader } from '../FullScreenLoader';
 import { Column, TableComponent } from '../TableComponent';
 
@@ -23,12 +23,11 @@ export const NetworksTab: FC = () => {
   };
 
   const blockchainNetworkData = useQuery(
-    'blockchainNetwork',
+    BlockchainNetworkQueryKeys.blockchainNetworkAll,
     () =>
       getAllBlockchainNetwork({
         paginate: { page: 1, count: 10 },
         sort: { name: '_id', type: 'asc' },
-        filter: {},
       }),
     { select: data => data.data },
   );

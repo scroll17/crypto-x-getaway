@@ -5,7 +5,7 @@ import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
 import { users } from '../../api/rest/action/user';
-import { ActionUser } from '../../types/action';
+import { ActionUser, User } from '../../types/action';
 import { calcUsersOnline } from '../../utils/calcUsersOnline';
 import { FullScreenLoader } from '../FullScreenLoader';
 import { Column, TableComponent } from '../TableComponent';
@@ -31,7 +31,7 @@ export const UsersTab: FC = () => {
   // });
 
   const usersData = useQuery(
-    'users',
+    User.UserAll,
     () =>
       users({
         paginate: { page: 1, count: 10 },
