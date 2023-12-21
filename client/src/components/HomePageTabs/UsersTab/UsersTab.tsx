@@ -4,11 +4,11 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
-import { users } from '../../api/rest/action/user';
-import { ActionUser, User } from '../../types/action';
-import { calcUsersOnline } from '../../utils/calcUsersOnline';
-import { FullScreenLoader } from '../FullScreenLoader';
-import { Column, TableComponent } from '../TableComponent';
+import { users } from '../../../api/rest/action/user';
+import { ActionUser, User } from '../../../types/action';
+import { calcUsersOnline } from '../../../utils/calcUsersOnline';
+import { FullScreenLoader } from '../../FullScreenLoader';
+import { Column, TableComponent } from '../../TableComponent';
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },

@@ -1,2 +1,2 @@
 export * from './user';
-export * from './blockchainNetwork';
+export * from './blockchain/network';

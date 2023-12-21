@@ -14,9 +14,20 @@ import {
 } from '@mui/material';
 
 export interface Column {
-  id: 'id' | 'userName' | 'botAccess' | 'online' | 'lastActivity' | 'name' | 'description';
+  id:
+    | 'id'
+    | 'userName'
+    | 'botAccess'
+    | 'online'
+    | 'lastActivity'
+    | 'name'
+    | 'description'
+    | 'labels'
+    | 'createdBy'
+    | 'network';
   label: string;
   minWidth?: number;
+  maxWidth?: number;
   align?: 'left';
 }
 
@@ -67,7 +78,12 @@ export const TableComponent: FC<TableProps> = ({ row, columns, onClickRow, openM
             {row &&
               row.map(row => {
                 return (
-                  <TableRow hover key={row.id} onClick={() => handleOpenModal(row.id)}>
+                  <TableRow
+                    style={onClickRow && { cursor: 'pointer' }}
+                    hover
+                    key={row.id}
+                    onClick={() => handleOpenModal(row.id)}
+                  >
                     {columns.map(column => {
                       const value = row[column.id];
 

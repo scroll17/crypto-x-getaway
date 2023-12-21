@@ -3,10 +3,13 @@ import React, { FC, useMemo, useState } from 'react';
 import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
-import { getAllBlockchainNetwork } from '../../api/rest/action/blockchain/network';
-import { ActionBlockchainNetworkAll, BlockchainNetworkQueryKeys } from '../../types/action';
-import { FullScreenLoader } from '../FullScreenLoader';
-import { Column, TableComponent } from '../TableComponent';
+import { getAllBlockchainNetwork } from '../../../api/rest/action/blockchain/network';
+import {
+  ActionBlockchainNetworkAll,
+  BlockchainNetworkQueryKeys,
+} from '../../../types/action/blockchain/network';
+import { FullScreenLoader } from '../../FullScreenLoader';
+import { Column, TableComponent } from '../../TableComponent';
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
