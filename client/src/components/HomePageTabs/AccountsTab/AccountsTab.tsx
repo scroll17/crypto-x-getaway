@@ -11,6 +11,7 @@ import {
 import { generateRandomColorExcludingWhite } from '../../../utils/getRandomColor';
 import { FullScreenLoader } from '../../FullScreenLoader';
 import { Column, TableComponent } from '../../TableComponent';
+import { AddAccountForm } from './AddAccountForm/AddAccountForm';
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
@@ -29,7 +30,7 @@ const labelStyle = {
 
 export const AccountsTab: FC = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
-
+  const [showForm, setShowForm] = useState(false);
   const handleModalActions = (state: boolean, id: string = '') => {
     setIsOpenModal(state);
     console.log(id);
@@ -62,7 +63,11 @@ export const AccountsTab: FC = () => {
       name: row.name,
       labels: row.labels.map((label, index) => (
         <TableCell
-          sx={{ ...labelStyle, backgroundColor: generateRandomColorExcludingWhite() }}
+          sx={{
+            ...labelStyle,
+            backgroundColor: generateRandomColorExcludingWhite(),
+            color: 'white',
+          }}
           key={index}
         >
           {label}
@@ -81,19 +86,29 @@ export const AccountsTab: FC = () => {
   return (
     <>
       <div style={{ textAlign: 'right', marginBottom: '20px' }}>
+        <Button
+          sx={{ mr: 2 }}
+          size="large"
+          variant="contained"
+          color={showForm ? 'success' : 'primary'}
+          onClick={() => setShowForm(true)}
+        >
+          Add
+        </Button>
         <Button size="large" variant="contained" onClick={handleClick}>
           Reload
         </Button>
       </div>
-      {dataExists ? (
+      {showForm ? (
+        <AddAccountForm onCloseHandler={setShowForm} />
+      ) : (
         <TableComponent
           row={ROW}
           columns={columns}
           openModal={isOpenModal}
           onClickRow={handleModalActions}
+          dataCheck={dataExists}
         />
-      ) : (
-        'noDATA'
       )}
     </>
   );

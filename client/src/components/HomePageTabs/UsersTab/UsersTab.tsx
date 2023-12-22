@@ -79,7 +79,7 @@ export const UsersTab: FC = () => {
           Reload
         </Button>
       </div>
-      {dataExists ? <TableComponent row={ROW} columns={columns} /> : 'noDATA'}
+      <TableComponent row={ROW} columns={columns} dataCheck={dataExists} />
     </>
   );
 };

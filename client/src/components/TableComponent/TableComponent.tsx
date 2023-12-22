@@ -31,12 +31,6 @@ export interface Column {
   align?: 'left';
 }
 
-interface TableProps {
-  row: Record<string, string>[];
-  columns: Column[];
-  onClickRow?: (action: boolean, id?: string) => void;
-  openModal?: boolean;
-}
 const style = {
   position: 'absolute',
   top: '50%',
@@ -48,7 +42,21 @@ const style = {
   p: 4,
 };
 
-export const TableComponent: FC<TableProps> = ({ row, columns, onClickRow, openModal }) => {
+interface TableProps {
+  row: Record<string, string>[];
+  columns: Column[];
+  dataCheck: boolean;
+  onClickRow?: (action: boolean, id?: string) => void;
+  openModal?: boolean;
+}
+
+export const TableComponent: FC<TableProps> = ({
+  row,
+  columns,
+  onClickRow,
+  openModal,
+  dataCheck,
+}) => {
   const handleCloseModal = () => {
     onClickRow && onClickRow(false);
   };
@@ -56,6 +64,8 @@ export const TableComponent: FC<TableProps> = ({ row, columns, onClickRow, openM
   const handleOpenModal = (id: string) => {
     onClickRow && onClickRow(true, id);
   };
+
+  if (!dataCheck) return 'noDATA';
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>

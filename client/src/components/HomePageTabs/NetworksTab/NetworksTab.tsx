@@ -65,16 +65,13 @@ export const NetworksTab: FC = () => {
           Reload
         </Button>
       </div>
-      {dataExists ? (
-        <TableComponent
-          row={ROW}
-          columns={columns}
-          openModal={isOpenModal}
-          onClickRow={handleModalActions}
-        />
-      ) : (
-        'noDATA'
-      )}
+      <TableComponent
+        row={ROW}
+        columns={columns}
+        openModal={isOpenModal}
+        onClickRow={handleModalActions}
+        dataCheck={dataExists}
+      />
     </>
   );
 };
