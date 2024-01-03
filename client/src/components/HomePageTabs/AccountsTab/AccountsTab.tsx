@@ -11,7 +11,7 @@ import {
 import { generateRandomColorExcludingWhite } from '../../../utils/getRandomColor';
 import { FullScreenLoader } from '../../FullScreenLoader';
 import { Column, TableComponent } from '../../TableComponent';
-import { AddAccountForm } from './AddAccountForm/AddAccountForm';
+import { AddAccountForm } from './AddAccountForm';
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
@@ -73,7 +73,7 @@ export const AccountsTab: FC = () => {
           {label}
         </TableCell>
       )),
-      network: row.network,
+      network: row.network.name,
       comments: row.comments,
       createdBy: row.createdBy.name,
     }));

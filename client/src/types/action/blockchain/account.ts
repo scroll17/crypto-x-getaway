@@ -10,6 +10,8 @@ export interface IActionAccountFilter {
 
 export enum BlockchainAccountQueryKeys {
   blockchainAccountsAll = 'blockchainAccountAll',
+  blockchainAccountLabels = 'blockchainAccountLabels',
+  blockchainAccountAdd = 'blockchainAccountAdd',
 }
 
 export type ActionBlockchainAccountAllRequestData = TPaginateRequest<IActionAccountFilter>;
@@ -50,4 +52,13 @@ export interface ActionBlockchainAccountsAll {
   network: BlockchainNetwork;
   comments: Comment[];
   createdBy: UserEntity;
+}
+
+export interface ActionAddBlockchainAccountRequestData {
+  name: string;
+  address: string;
+  labels: string[];
+  network: string;
+  // temporality unknown
+  networkInfo: unknown;
 }
