@@ -123,7 +123,7 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
   };
 
   const { name, address } = formData;
-
+  console.log(formData);
   return (
     <Box sx={{ p: 2 }} bgcolor="white">
       <form onSubmit={handleSubmit}>
@@ -181,7 +181,7 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
               <Grid item xs={2}>
                 <label>Labels:</label>
               </Grid>
-              <Grid item xs={5}>
+              <Grid item xs={10}>
                 <MultiSelectComponent
                   menuItems={labelsData}
                   fieldName="labels"

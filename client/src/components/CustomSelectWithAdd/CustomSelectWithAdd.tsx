@@ -29,9 +29,7 @@ export const CustomSelectWithAdd: FC<CustomSelectWithAddProps> = ({
     if (options?.data) {
       return options.data;
     } else {
-      return [
-        { value: '', label: '' },
-      ];
+      return [{ value: '', label: '' }];
     }
   }, [options]);
 

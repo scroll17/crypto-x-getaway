@@ -1,4 +1,4 @@
-import { TPaginateRequest } from '../common';
+import { BlockchainNetwork, TPaginateRequest } from '../common';
 
 export interface IActionAccountFilter {
   id: string;
@@ -16,11 +16,6 @@ export enum BlockchainAccountQueryKeys {
 
 export type ActionBlockchainAccountAllRequestData = TPaginateRequest<IActionAccountFilter>;
 
-enum BlockchainNetworks {
-  Ethereum = 'ethereum',
-  StarkNet = 'starknet',
-}
-
 type UserEntity = {
   _id: string;
   name: string;
@@ -31,18 +26,6 @@ type UserEntity = {
   hasBotAccess: boolean;
   isAdmin: boolean;
   lastActivityAt: Date;
-};
-
-type Comment = {
-  _id: string;
-  text: string;
-  createdBy: UserEntity;
-};
-
-type BlockchainNetwork = {
-  _id: string;
-  name: BlockchainNetworks;
-  description: string;
 };
 
 export interface ActionBlockchainAccountsAll {

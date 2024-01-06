@@ -14,3 +14,20 @@ export interface IActionFilter {
   id: string;
   name: string;
 }
+
+export type Comment = {
+  _id: string;
+  text: string;
+  createdBy: UserEntity;
+};
+
+enum BlockchainNetworks {
+  Ethereum = 'ethereum',
+  StarkNet = 'starknet',
+}
+
+export type BlockchainNetwork = {
+  _id: string;
+  name: BlockchainNetworks;
+  description: string;
+};
