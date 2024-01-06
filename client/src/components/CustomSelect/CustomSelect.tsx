@@ -1,6 +1,6 @@
 import React, { useState, FC, Dispatch, useMemo } from 'react';
 
-import { Select, MenuItem, TextField, SelectChangeEvent } from '@mui/material';
+import { Select, MenuItem, SelectChangeEvent } from '@mui/material';
 
 import { ActionAddBlockchainAccountRequestData } from '../../types/action/blockchain/account';
 
@@ -9,7 +9,7 @@ interface CustomOption {
   label: string;
 }
 
-interface CustomSelectWithAddProps {
+interface CustomSelectProps {
   options: { data: CustomOption[] | undefined };
   // adding ActionAddBlockchainAccountRequestData is incorrect need to improve
   setFormValue: Dispatch<React.SetStateAction<ActionAddBlockchainAccountRequestData>>;
@@ -17,13 +17,12 @@ interface CustomSelectWithAddProps {
   formValue: string;
 }
 
-export const CustomSelectWithAdd: FC<CustomSelectWithAddProps> = ({
+export const CustomSelect: FC<CustomSelectProps> = ({
   options,
   setFormValue,
-  formValue,
   fieldName,
+  formValue
 }) => {
-  const [selectedValue, setSelectedValue] = useState('');
 
   const customOptions: CustomOption[] = useMemo(() => {
     if (options?.data) {
@@ -35,22 +34,13 @@ export const CustomSelectWithAdd: FC<CustomSelectWithAddProps> = ({
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const { value } = event.target;
-    setSelectedValue(value);
 
     setFormValue(prevState => ({
       ...prevState,
-      [fieldName]: value === 'addCustom' ? '' : value,
+      [fieldName]: value,
     }));
   };
 
-  const handleCustomInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-
-    setFormValue(prevState => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
 
   return (
     <>
@@ -59,9 +49,7 @@ export const CustomSelectWithAdd: FC<CustomSelectWithAddProps> = ({
         size="small"
         sx={{ minWidth: '166px' }}
         name={fieldName}
-        placeholder="Choose"
-        value={selectedValue}
-        defaultValue={`Choose your ${fieldName}`}
+        value={formValue}
         onChange={handleChange}
         renderValue={value => {
           const selectedOption = customOptions.find(option => option.value === value);
@@ -76,19 +64,7 @@ export const CustomSelectWithAdd: FC<CustomSelectWithAddProps> = ({
             {option.label}
           </MenuItem>
         ))}
-        <MenuItem value="addCustom">Add Custom</MenuItem>
       </Select>
-      {selectedValue === 'addCustom' && (
-        <TextField
-          name={fieldName}
-          sx={{ ml: 2 }}
-          variant="outlined"
-          size="small"
-          label="Enter custom value"
-          value={formValue}
-          onChange={handleCustomInputChange}
-        />
-      )}
     </>
   );
 };

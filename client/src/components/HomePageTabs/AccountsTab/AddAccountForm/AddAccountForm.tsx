@@ -15,7 +15,7 @@ import {
   ActionBlockchainNetworkAll,
   BlockchainNetworkQueryKeys,
 } from '../../../../types/action/blockchain/network';
-import { CustomSelectWithAdd } from '../../../CustomSelectWithAdd';
+import { CustomSelect } from '../../../CustomSelect';
 import { MultiSelectComponent } from '../../../MultiSelectComponent';
 
 interface AddAccountFormProps {
@@ -53,7 +53,7 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
     network: '',
     labels: '',
   });
-
+console.log(formData)
   const { data: labelsData } = useQuery(
     BlockchainAccountQueryKeys.blockchainAccountLabels,
     getBlockchainAccountLabels,
@@ -123,7 +123,7 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
   };
 
   const { name, address } = formData;
-  console.log(formData);
+
   return (
     <Box sx={{ p: 2 }} bgcolor="white">
       <form onSubmit={handleSubmit}>
@@ -168,7 +168,7 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
                 <label>Network:</label>
               </Grid>
               <Grid item xs={10}>
-                <CustomSelectWithAdd
+                <CustomSelect
                   options={blockchainNetworkData}
                   setFormValue={setFormData}
                   fieldName="network"
