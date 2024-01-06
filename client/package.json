@@ -73,6 +73,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "autoprefixer": "10.4.5",
     "axios": "^1.5.0",
+    "bitcoin-address-validation": "^2.2.3",
     "react": "^18.2.0",
     "react-cookie": "^6.1.1",
     "react-dom": "^18.2.0",

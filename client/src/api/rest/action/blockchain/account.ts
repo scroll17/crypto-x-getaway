@@ -1,0 +1,22 @@
+import {
+  ActionBlockchainAccountAllRequestData,
+  ActionAddBlockchainAccountRequestData,
+} from '../../../../types/action/blockchain/account';
+import { baseApi } from '../../../config';
+
+export const getAllBlockchainAccount = async (
+  requestData: ActionBlockchainAccountAllRequestData,
+) => {
+  const response = await baseApi.post('action/blockchain/account/all', requestData);
+  return response.data;
+};
+
+export const getBlockchainAccountLabels = async () => {
+  const response = await baseApi.get('action/blockchain/account/labels');
+  return response.data;
+};
+
+export const addBlockchainAccount = async (requestData: ActionAddBlockchainAccountRequestData) => {
+  const response = await baseApi.post('action/blockchain/account/add', requestData);
+  return response.data;
+};

@@ -14,18 +14,23 @@ import {
 } from '@mui/material';
 
 export interface Column {
-  id: 'id' | 'userName' | 'botAccess' | 'online' | 'lastActivity' | 'name' | 'description';
+  id:
+    | 'id'
+    | 'userName'
+    | 'botAccess'
+    | 'online'
+    | 'lastActivity'
+    | 'name'
+    | 'description'
+    | 'labels'
+    | 'createdBy'
+    | 'network';
   label: string;
   minWidth?: number;
+  maxWidth?: number;
   align?: 'left';
 }
 
-interface TableProps {
-  row: Record<string, string>[];
-  columns: Column[];
-  onClickRow?: (action: boolean, id?: string) => void;
-  openModal?: boolean;
-}
 const style = {
   position: 'absolute',
   top: '50%',
@@ -37,7 +42,21 @@ const style = {
   p: 4,
 };
 
-export const TableComponent: FC<TableProps> = ({ row, columns, onClickRow, openModal }) => {
+interface TableProps {
+  row: Record<string, string>[];
+  columns: Column[];
+  dataCheck: boolean;
+  onClickRow?: (action: boolean, id?: string) => void;
+  openModal?: boolean;
+}
+
+export const TableComponent: FC<TableProps> = ({
+  row,
+  columns,
+  onClickRow,
+  openModal,
+  dataCheck,
+}) => {
   const handleCloseModal = () => {
     onClickRow && onClickRow(false);
   };
@@ -45,6 +64,8 @@ export const TableComponent: FC<TableProps> = ({ row, columns, onClickRow, openM
   const handleOpenModal = (id: string) => {
     onClickRow && onClickRow(true, id);
   };
+
+  if (!dataCheck) return 'noDATA';
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -67,7 +88,12 @@ export const TableComponent: FC<TableProps> = ({ row, columns, onClickRow, openM
             {row &&
               row.map(row => {
                 return (
-                  <TableRow hover key={row.id} onClick={() => handleOpenModal(row.id)}>
+                  <TableRow
+                    style={onClickRow && { cursor: 'pointer' }}
+                    hover
+                    key={row.id}
+                    onClick={() => handleOpenModal(row.id)}
+                  >
                     {columns.map(column => {
                       const value = row[column.id];
 

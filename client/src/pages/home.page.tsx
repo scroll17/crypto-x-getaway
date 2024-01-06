@@ -1,47 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, FC, ReactNode } from 'react';
 
-import { TabContext, TabList } from '@mui/lab';
-import TabPanel from '@mui/lab/TabPanel';
-import { Box, Tab } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Browsers } from '../components/Browsers';
-import { NetworksTab } from '../components/NetworksTab';
-import { Strategies } from '../components/Strategies';
-import { UsersTab } from '../components/UsersTab';
+import { AccountsTab } from '../components/HomePageTabs/AccountsTab';
+import { NetworksTab } from '../components/HomePageTabs/NetworksTab';
+import { UsersTab } from '../components/HomePageTabs/UsersTab';
+
+interface TabPanelProps {
+  children?: ReactNode;
+  value: number;
+  index: number;
+}
+
+const TabPanel: FC<TabPanelProps> = ({ children, value, index, ...other }) => {
+  return (
+    <div hidden={value !== index} id={`tabpanel-${index}`} {...other}>
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+};
 
 export const HomePage = () => {
-  const [value, setValue] = useState('0');
+  const location = useLocation();
+  const history = useNavigate();
+  const [value, setValue] = useState(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const tab = parseInt(searchParams.get('tab') as string, 10);
+    return isNaN(tab) ? 0 : tab;
+  });
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set('tab', value.toString());
+    const newUrl = `${location.pathname}?${searchParams.toString()}`;
+    window.history.replaceState({}, '', newUrl);
+  }, [value, location.search, location.pathname]);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    history(`?tab=${newValue}`);
   };
+
   return (
     <Box
       sx={{
         backgroundColor: '#f1f1f1',
       }}
     >
-      <TabContext value={value}>
-        <TabList onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Users" value="0" />
+      <Tabs value={value} onChange={handleChange}>
+        <Tab label="Users" />
 
-          <Tab label="Networks" value="1" />
-          <Tab label="Browsers" value="2" />
-          <Tab label="Strategies" value="3" />
-        </TabList>
-        <TabPanel value="0">
-          <UsersTab />
-        </TabPanel>
-        <TabPanel value="1">
-          <NetworksTab />
-        </TabPanel>
-        <TabPanel value="2">
-          <Browsers />
-        </TabPanel>
-        <TabPanel value="3">
-          <Strategies />
-        </TabPanel>
-      </TabContext>
+        <Tab label="Networks" />
+        <Tab label="Accounts" />
+        <Tab label="Strategies" />
+      </Tabs>
+      <TabPanel value={value} index={0}>
+        <UsersTab />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <NetworksTab />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <AccountsTab />
+      </TabPanel>
     </Box>
   );
 };

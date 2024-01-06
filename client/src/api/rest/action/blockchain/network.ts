@@ -1,4 +1,4 @@
-import { ActionBlockchainNetworkAllRequestData } from '../../../../types/action';
+import { ActionBlockchainNetworkAllRequestData } from '../../../../types/action/blockchain/network';
 import { baseApi } from '../../../config';
 
 export const getAllBlockchainNetwork = async (
