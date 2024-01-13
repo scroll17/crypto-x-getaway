@@ -11,6 +11,11 @@ export const getAllBlockchainAccount = async (
   return response.data;
 };
 
+export const getBlockchainAccount = async (id: string) => {
+  const response = await baseApi.get(`action/blockchain/account/${id}`);
+  return response.data;
+};
+
 export const getBlockchainAccountLabels = async () => {
   const response = await baseApi.get('action/blockchain/account/labels');
   return response.data;

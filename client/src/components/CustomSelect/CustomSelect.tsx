@@ -21,9 +21,8 @@ export const CustomSelect: FC<CustomSelectProps> = ({
   options,
   setFormValue,
   fieldName,
-  formValue
+  formValue,
 }) => {
-
   const customOptions: CustomOption[] = useMemo(() => {
     if (options?.data) {
       return options.data;
@@ -40,7 +39,6 @@ export const CustomSelect: FC<CustomSelectProps> = ({
       [fieldName]: value,
     }));
   };
-
 
   return (
     <>
