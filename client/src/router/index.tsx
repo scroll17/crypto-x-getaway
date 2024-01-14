@@ -8,6 +8,7 @@ import { FullScreenLoader } from '../components/FullScreenLoader';
 import AuthMiddleware from '../middleware/AuthMiddleware';
 import { HomePage } from '../pages/home.page';
 import { LoginPage } from '../pages/login.page';
+import { NotFoundPage } from '../pages/notFound.page';
 import ProfilePage from '../pages/profile.page';
 
 const Loadable = (Component: React.ComponentType) => (props: JSX.IntrinsicAttributes) => (
@@ -43,6 +44,10 @@ const normalRoutes: RouteObject = {
     {
       path: ROUTES.Unauthorized,
       element: <UnauthorizePage />,
+    },
+    {
+      path: '*',
+      element: <NotFoundPage />,
     },
   ],
 };
