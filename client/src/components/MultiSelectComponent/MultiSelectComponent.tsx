@@ -60,7 +60,9 @@ export const MultiSelectComponent: FC<MultySelectComponentProps> = ({
         value={selectedValues}
         onChange={handleSelectChange}
         renderValue={selected =>
-          selected.map(value => <Chip sx={{height: 'auto'}} key={value} label={value} style={{ margin: 2 }} />)
+          selected.map(value => (
+            <Chip sx={{ height: 'auto' }} key={value} label={value} style={{ margin: 2 }} />
+          ))
         }
       >
         {menuItems &&

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import {
   Paper,
@@ -8,10 +8,9 @@ import {
   TableContainer,
   TableRow,
   TableHead,
-  Modal,
-  Button,
-  Box,
 } from '@mui/material';
+
+import { CustomModal } from '../CustomModal/CustomModal';
 
 export interface Column {
   id:
@@ -31,23 +30,14 @@ export interface Column {
   align?: 'left';
 }
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 900,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-};
-
 interface TableProps {
   row: Record<string, string>[];
   columns: Column[];
   dataCheck: boolean;
   onClickRow?: (action: boolean, id?: string) => void;
   openModal?: boolean;
+  modalChildren?: ReactNode;
+  isLoading?: boolean;
 }
 
 export const TableComponent: FC<TableProps> = ({
@@ -56,6 +46,8 @@ export const TableComponent: FC<TableProps> = ({
   onClickRow,
   openModal,
   dataCheck,
+  modalChildren,
+  isLoading,
 }) => {
   const handleCloseModal = () => {
     onClickRow && onClickRow(false);
@@ -105,15 +97,11 @@ export const TableComponent: FC<TableProps> = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <Modal open={openModal ?? false} onClose={handleCloseModal}>
-        <Box sx={{ ...style, width: 200 }}>
-          <h2 id="child-modal-title">Text in a child modal</h2>
-          <p id="child-modal-description">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-          </p>
-          <Button onClick={handleCloseModal}>Close Child Modal</Button>
-        </Box>
-      </Modal>
+      {!isLoading && (
+        <CustomModal isOpen={openModal ?? false} handleClose={handleCloseModal}>
+          {modalChildren}
+        </CustomModal>
+      )}
     </Paper>
   );
 };

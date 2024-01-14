@@ -1,17 +1,19 @@
 import React, { FC, useMemo, useState } from 'react';
 
-import { Button, TableCell } from '@mui/material';
+import { Button, Box } from '@mui/material';
 import { useQuery } from 'react-query';
 
+import { AccountContent } from './AccountContent';
+import { AddAccountForm } from './AddAccountForm';
 import { getAllBlockchainAccount } from '../../../api/rest/action/blockchain/account';
+import { useGetAccountById } from '../../../hooks/getAccountById';
 import {
-  ActionBlockchainAccountsAll,
+  BlockchainAccountEntity,
   BlockchainAccountQueryKeys,
 } from '../../../types/action/blockchain/account';
 import { generateRandomColorExcludingWhite } from '../../../utils/getRandomColor';
 import { FullScreenLoader } from '../../FullScreenLoader';
 import { Column, TableComponent } from '../../TableComponent';
-import { AddAccountForm } from './AddAccountForm';
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
@@ -30,10 +32,14 @@ const labelStyle = {
 
 export const AccountsTab: FC = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [accountId, setAccountId] = useState('');
   const [showForm, setShowForm] = useState(false);
+
+  const { data: accountData, isLoading: accountDataLoading } = useGetAccountById(accountId);
+
   const handleModalActions = (state: boolean, id: string = '') => {
     setIsOpenModal(state);
-    console.log(id);
+    setAccountId(id);
   };
 
   const blockchainAccountsData = useQuery(
@@ -58,11 +64,11 @@ export const AccountsTab: FC = () => {
 
     const { data } = blockchainAccountsData;
 
-    return data.map((row: ActionBlockchainAccountsAll) => ({
+    return data.map((row: BlockchainAccountEntity) => ({
       id: row._id,
       name: row.name,
       labels: row.labels.map((label, index) => (
-        <TableCell
+        <Box
           sx={{
             ...labelStyle,
             backgroundColor: generateRandomColorExcludingWhite(),
@@ -71,9 +77,9 @@ export const AccountsTab: FC = () => {
           key={index}
         >
           {label}
-        </TableCell>
+        </Box>
       )),
-      network: row.network.name,
+      network: row.networkInfo.name,
       comments: row.comments,
       createdBy: row.createdBy.name,
     }));
@@ -108,6 +114,8 @@ export const AccountsTab: FC = () => {
           openModal={isOpenModal}
           onClickRow={handleModalActions}
           dataCheck={dataExists}
+          modalChildren={<AccountContent data={accountData} />}
+          isLoading={accountDataLoading}
         />
       )}
     </>

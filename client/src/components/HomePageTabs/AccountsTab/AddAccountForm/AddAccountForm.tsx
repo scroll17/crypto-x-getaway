@@ -53,7 +53,7 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
     network: '',
     labels: '',
   });
-console.log(formData)
+
   const { data: labelsData } = useQuery(
     BlockchainAccountQueryKeys.blockchainAccountLabels,
     getBlockchainAccountLabels,
@@ -68,7 +68,7 @@ console.log(formData)
       }),
     {
       select: data =>
-        data.data.map((el: ActionBlockchainNetworkAll) => ({ value: el.name, label: el.name })),
+        data.data.map((el: ActionBlockchainNetworkAll) => ({ value: el._id, label: el.name })),
     },
   );
 
