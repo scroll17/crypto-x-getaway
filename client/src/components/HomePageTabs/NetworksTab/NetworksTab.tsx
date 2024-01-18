@@ -1,7 +1,7 @@
 import React, { FC, useMemo, useState } from 'react';
 
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
 import { getAllBlockchainNetwork } from '../../../api/rest/action/blockchain/network';
@@ -9,8 +9,16 @@ import {
   ActionBlockchainNetworkAll,
   BlockchainNetworkQueryKeys,
 } from '../../../types/action/blockchain/network';
+import { stringToColour } from '../../../utils/stringToColor';
 import { FullScreenLoader } from '../../FullScreenLoader';
 import { Column, TableComponent } from '../../TableComponent';
+
+const labelStyle = {
+  display: 'inline-block',
+  padding: '5px 10px',
+  borderRadius: '20px',
+  marginLeft: '5px',
+};
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
@@ -18,7 +26,6 @@ const columns: Column[] = [
   {
     id: 'localName',
     label: 'Local Name',
-    style: { backgroundColor: '#dfdfdf ', border: '1px solid' },
   },
   { id: 'family', label: 'Family' },
   { id: 'token', label: 'Token', style: { fontWeight: 'bold' } },
@@ -60,10 +67,39 @@ export const NetworksTab: FC = () => {
     return data.map((row: ActionBlockchainNetworkAll) => ({
       id: row._id,
       name: row.name,
-      localName: row.localName,
-      family: row.family,
+      localName: (
+        <Box
+          sx={{
+            ...labelStyle,
+            backgroundColor: '#dfdfdf',
+          }}
+        >
+          {row.localName}
+        </Box>
+      ),
+      family: (
+        <Box
+          sx={{
+            ...labelStyle,
+            backgroundColor: stringToColour(row.family),
+            color: 'white',
+          }}
+        >
+          {row.family}
+        </Box>
+      ),
       token: row.currencySymbol,
-      level: row.prototypeLevel,
+      level: (
+        <Box
+          sx={{
+            ...labelStyle,
+            backgroundColor: stringToColour(row.prototypeLevel),
+            color: 'white',
+          }}
+        >
+          {row.prototypeLevel}
+        </Box>
+      ),
       networkId: row.networkId,
       available: (
         <FiberManualRecordIcon sx={{ pl: 2 }} color={row.available ? 'success' : 'error'} />
