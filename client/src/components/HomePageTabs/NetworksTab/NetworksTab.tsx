@@ -1,5 +1,6 @@
 import React, { FC, useMemo, useState } from 'react';
 
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
@@ -13,8 +14,17 @@ import { Column, TableComponent } from '../../TableComponent';
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
-  { id: 'name', label: 'Name' },
-  { id: 'description', label: 'Descriprion' },
+  { id: 'name', label: 'Name', style: { fontWeight: 'bold' } },
+  {
+    id: 'localName',
+    label: 'Local Name',
+    style: { backgroundColor: '#dfdfdf ', border: '1px solid' },
+  },
+  { id: 'family', label: 'Family' },
+  { id: 'token', label: 'Token', style: { fontWeight: 'bold' } },
+  { id: 'level', label: 'Level' },
+  { id: 'networkId', label: 'Network Id' },
+  { id: 'available', label: 'Available' },
 ];
 
 export const NetworksTab: FC = () => {
@@ -50,7 +60,14 @@ export const NetworksTab: FC = () => {
     return data.map((row: ActionBlockchainNetworkAll) => ({
       id: row._id,
       name: row.name,
-      description: row.description,
+      localName: row.localName,
+      family: row.family,
+      token: row.currencySymbol,
+      level: row.prototypeLevel,
+      networkId: row.networkId,
+      available: (
+        <FiberManualRecordIcon sx={{ pl: 2 }} color={row.available ? 'success' : 'error'} />
+      ),
     }));
   }, [blockchainNetworkData]);
 

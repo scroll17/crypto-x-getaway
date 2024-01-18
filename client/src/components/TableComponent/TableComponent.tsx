@@ -20,14 +20,21 @@ export interface Column {
     | 'online'
     | 'lastActivity'
     | 'name'
-    | 'description'
+    | 'localName'
     | 'labels'
     | 'createdBy'
-    | 'network';
+    | 'network'
+    | 'family'
+    | 'token'
+    | 'level'
+    | 'networkId'
+    | 'available';
   label: string;
+  // should be transfer to style
   minWidth?: number;
   maxWidth?: number;
   align?: 'left';
+  style?: Record<string, string>;
 }
 
 interface TableProps {
@@ -89,7 +96,11 @@ export const TableComponent: FC<TableProps> = ({
                     {columns.map(column => {
                       const value = row[column.id];
 
-                      return <TableCell key={column.id}>{value}</TableCell>;
+                      return (
+                        <TableCell style={{ ...column.style }} key={column.id}>
+                          {value}
+                        </TableCell>
+                      );
                     })}
                   </TableRow>
                 );

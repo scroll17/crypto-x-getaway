@@ -35,7 +35,7 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
     labels: [],
     networkInfo: {
       name: 'The network name called by Provider',
-      type: 'mainnet',
+      type: 'testnet',
       url: 'https://mainnet.infura.io/ws/v3/234234234234234',
     },
   });
