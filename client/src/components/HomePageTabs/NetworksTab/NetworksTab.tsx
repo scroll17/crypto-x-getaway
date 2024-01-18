@@ -1,7 +1,7 @@
 import React, { FC, useMemo, useState } from 'react';
 
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { Box, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
 import { getAllBlockchainNetwork } from '../../../api/rest/action/blockchain/network';
@@ -10,15 +10,9 @@ import {
   BlockchainNetworkQueryKeys,
 } from '../../../types/action/blockchain/network';
 import { stringToColour } from '../../../utils/stringToColor';
+import { CustomLabel } from '../../CustomLabel';
 import { FullScreenLoader } from '../../FullScreenLoader';
 import { Column, TableComponent } from '../../TableComponent';
-
-const labelStyle = {
-  display: 'inline-block',
-  padding: '5px 10px',
-  borderRadius: '20px',
-  marginLeft: '5px',
-};
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
@@ -68,37 +62,31 @@ export const NetworksTab: FC = () => {
       id: row._id,
       name: row.name,
       localName: (
-        <Box
-          sx={{
-            ...labelStyle,
+        <CustomLabel
+          text={row.localName}
+          customStyle={{
             backgroundColor: '#dfdfdf',
           }}
-        >
-          {row.localName}
-        </Box>
+        />
       ),
       family: (
-        <Box
-          sx={{
-            ...labelStyle,
+        <CustomLabel
+          text={row.family}
+          customStyle={{
             backgroundColor: stringToColour(row.family),
             color: 'white',
           }}
-        >
-          {row.family}
-        </Box>
+        />
       ),
       token: row.currencySymbol,
       level: (
-        <Box
-          sx={{
-            ...labelStyle,
+        <CustomLabel
+          text={row.prototypeLevel}
+          customStyle={{
             backgroundColor: stringToColour(row.prototypeLevel),
             color: 'white',
           }}
-        >
-          {row.prototypeLevel}
-        </Box>
+        />
       ),
       networkId: row.networkId,
       available: (
