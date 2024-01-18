@@ -1,6 +1,6 @@
 import React, { FC, useMemo, useState } from 'react';
 
-import { Button, Box } from '@mui/material';
+import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
 import { AccountContent } from './AccountContent';
@@ -12,6 +12,7 @@ import {
   BlockchainAccountQueryKeys,
 } from '../../../types/action/blockchain/account';
 import { generateRandomColorExcludingWhite } from '../../../utils/getRandomColor';
+import { CustomLabel } from '../../CustomLabel';
 import { FullScreenLoader } from '../../FullScreenLoader';
 import { Column, TableComponent } from '../../TableComponent';
 
@@ -22,13 +23,6 @@ const columns: Column[] = [
   { id: 'createdBy', label: 'CreatedBy' },
   { id: 'labels', label: 'lLabels', minWidth: 400 },
 ];
-
-const labelStyle = {
-  display: 'inline-block',
-  padding: '5px 10px',
-  borderRadius: '20px',
-  marginLeft: '5px',
-};
 
 export const AccountsTab: FC = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -68,16 +62,14 @@ export const AccountsTab: FC = () => {
       id: row._id,
       name: row.name,
       labels: row.labels.map((label, index) => (
-        <Box
-          sx={{
-            ...labelStyle,
+        <CustomLabel
+          text={label}
+          customStyle={{
             backgroundColor: generateRandomColorExcludingWhite(),
             color: 'white',
           }}
           key={index}
-        >
-          {label}
-        </Box>
+        />
       )),
       network: row.networkInfo.name,
       comments: row.comments,

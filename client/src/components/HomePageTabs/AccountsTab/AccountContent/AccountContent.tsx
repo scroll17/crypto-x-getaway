@@ -4,6 +4,7 @@ import { Box, Grid, Typography } from '@mui/material';
 
 import { BlockchainAccountEntity } from '../../../../types/action/blockchain/account';
 import { generateRandomColorExcludingWhite } from '../../../../utils/getRandomColor';
+import { CustomLabel } from '../../../CustomLabel';
 
 interface AccountContentProps {
   data: BlockchainAccountEntity;
@@ -16,15 +17,7 @@ const boxStyle = {
   color: 'white',
 };
 
-const labelStyle = {
-  display: 'inline-block',
-  padding: '5px 10px',
-  borderRadius: '20px',
-  marginRight: '5px',
-};
-
 export const AccountContent: FC<AccountContentProps> = ({ data }) => {
-  console.log(data);
   return (
     <Grid sx={{ border: '2px solid', p: 1 }} container rowGap={2}>
       <Grid container alignItems="center">
@@ -53,16 +46,15 @@ export const AccountContent: FC<AccountContentProps> = ({ data }) => {
         <Grid item xs={6}>
           <Typography>
             {data?.labels.map((label, index) => (
-              <span
-                style={{
-                  ...labelStyle,
+              <CustomLabel
+                text={label}
+                customStyle={{
                   backgroundColor: generateRandomColorExcludingWhite(),
                   color: 'white',
                 }}
                 key={index}
-              >
-                {label}
-              </span>
+                component="span"
+              />
             ))}
           </Typography>
         </Grid>

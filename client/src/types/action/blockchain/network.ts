@@ -6,8 +6,19 @@ export enum BlockchainNetworkQueryKeys {
 
 export type ActionBlockchainNetworkAllRequestData = TPaginateRequest<IActionFilter>;
 
+enum NetworkName {
+  ethereum = 'ethereum',
+  zkSync = 'zkSync',
+}
+
 export interface ActionBlockchainNetworkAll {
   _id: string;
-  name: string;
-  description: string;
+  name: NetworkName;
+  localName: string;
+  family: string;
+  currencySymbol: string;
+  level: string;
+  prototypeLevel: string;
+  networkId: number;
+  available: boolean;
 }

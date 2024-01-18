@@ -1,5 +1,6 @@
 import React, { FC, useMemo, useState } from 'react';
 
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
@@ -8,13 +9,23 @@ import {
   ActionBlockchainNetworkAll,
   BlockchainNetworkQueryKeys,
 } from '../../../types/action/blockchain/network';
+import { stringToColour } from '../../../utils/stringToColor';
+import { CustomLabel } from '../../CustomLabel';
 import { FullScreenLoader } from '../../FullScreenLoader';
 import { Column, TableComponent } from '../../TableComponent';
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
-  { id: 'name', label: 'Name' },
-  { id: 'description', label: 'Descriprion' },
+  { id: 'name', label: 'Name', style: { fontWeight: 'bold' } },
+  {
+    id: 'localName',
+    label: 'Local Name',
+  },
+  { id: 'family', label: 'Family' },
+  { id: 'token', label: 'Token', style: { fontWeight: 'bold' } },
+  { id: 'level', label: 'Level' },
+  { id: 'networkId', label: 'Network Id' },
+  { id: 'available', label: 'Available' },
 ];
 
 export const NetworksTab: FC = () => {
@@ -50,7 +61,37 @@ export const NetworksTab: FC = () => {
     return data.map((row: ActionBlockchainNetworkAll) => ({
       id: row._id,
       name: row.name,
-      description: row.description,
+      localName: (
+        <CustomLabel
+          text={row.localName}
+          customStyle={{
+            backgroundColor: '#dfdfdf',
+          }}
+        />
+      ),
+      family: (
+        <CustomLabel
+          text={row.family}
+          customStyle={{
+            backgroundColor: stringToColour(row.family),
+            color: 'white',
+          }}
+        />
+      ),
+      token: row.currencySymbol,
+      level: (
+        <CustomLabel
+          text={row.prototypeLevel}
+          customStyle={{
+            backgroundColor: stringToColour(row.prototypeLevel),
+            color: 'white',
+          }}
+        />
+      ),
+      networkId: row.networkId,
+      available: (
+        <FiberManualRecordIcon sx={{ pl: 2 }} color={row.available ? 'success' : 'error'} />
+      ),
     }));
   }, [blockchainNetworkData]);
 
