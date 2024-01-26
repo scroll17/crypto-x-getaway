@@ -20,10 +20,17 @@ const boxStyle = {
 
 export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
   return (
-    <Grid sx={{ border: '2px solid', p: 1 }} container rowGap={2}>
+    <Grid sx={{ border: '2px dashed', p: 3 }} container rowGap={2}>
+      <Grid borderBottom="2px solid" container>
+        <Typography variant="h6" sx={{ pb: 2 }}>
+          {data?.name}
+        </Typography>
+      </Grid>
       <Grid container alignItems="center">
         <Grid item xs={2}>
-          <Typography variant="h6">ID</Typography>
+          <Typography fontWeight="bold" variant="h6">
+            ID
+          </Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography>{data?._id}</Typography>
@@ -34,7 +41,9 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
       </Grid>
       <Grid container alignItems="center">
         <Grid item xs={2}>
-          <Typography variant="h6">Name</Typography>
+          <Typography fontWeight="bold" variant="h6">
+            Name
+          </Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography>{data?.name}</Typography>
@@ -42,7 +51,9 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
       </Grid>
       <Grid container alignItems="center">
         <Grid item xs={2}>
-          <Typography variant="h6">Labels</Typography>
+          <Typography fontWeight="bold" variant="h6">
+            Labels
+          </Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography>
@@ -62,7 +73,9 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
       </Grid>
       <Grid container alignItems="center">
         <Grid item xs={2}>
-          <Typography variant="h6">CreatedBy</Typography>
+          <Typography fontWeight="bold" variant="h6">
+            CreatedBy
+          </Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography>{data?.createdBy.name}</Typography>
@@ -70,7 +83,9 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
       </Grid>
       <Grid container alignItems="center">
         <Grid item xs={2}>
-          <Typography variant="h6">Adress</Typography>
+          <Typography fontWeight="bold" variant="h6">
+            Adress
+          </Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography>{data?.address}</Typography>
