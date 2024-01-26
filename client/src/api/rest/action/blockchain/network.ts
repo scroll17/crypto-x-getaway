@@ -7,3 +7,8 @@ export const getAllBlockchainNetwork = async (
   const response = await baseApi.post('action/blockchain/network/all', requestData);
   return response.data;
 };
+
+export const getBlockchainNetwork = async (id: string) => {
+  const response = await baseApi.get(`action/blockchain/network/${id}`);
+  return response.data;
+};

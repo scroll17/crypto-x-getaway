@@ -6,9 +6,10 @@ import { BlockchainAccountEntity } from '../../../../types/action/blockchain/acc
 import { generateRandomColorExcludingWhite } from '../../../../utils/getRandomColor';
 import { CustomLabel } from '../../../CustomLabel';
 
-interface AccountContentProps {
+interface AccountModalContentProps {
   data: BlockchainAccountEntity;
 }
+
 const boxStyle = {
   display: 'inline-block',
   padding: '10px',
@@ -17,7 +18,7 @@ const boxStyle = {
   color: 'white',
 };
 
-export const AccountContent: FC<AccountContentProps> = ({ data }) => {
+export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
   return (
     <Grid sx={{ border: '2px solid', p: 1 }} container rowGap={2}>
       <Grid container alignItems="center">

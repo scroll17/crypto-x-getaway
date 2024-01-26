@@ -3,7 +3,7 @@ import React, { FC, useMemo, useState } from 'react';
 import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
-import { AccountContent } from './AccountContent';
+import { AccountModalContent } from './AccountModalContent';
 import { AddAccountForm } from './AddAccountForm';
 import { getAllBlockchainAccount } from '../../../api/rest/action/blockchain/account';
 import { useGetAccountById } from '../../../hooks/getAccountById';
@@ -106,7 +106,7 @@ export const AccountsTab: FC = () => {
           openModal={isOpenModal}
           onClickRow={handleModalActions}
           dataCheck={dataExists}
-          modalChildren={<AccountContent data={accountData} />}
+          modalChildren={<AccountModalContent data={accountData} />}
           isLoading={accountDataLoading}
         />
       )}
