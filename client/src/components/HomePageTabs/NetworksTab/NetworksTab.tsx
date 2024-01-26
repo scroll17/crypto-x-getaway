@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 
 import { NetworkModalContent } from './NetworkModalContent';
 import { getAllBlockchainNetwork } from '../../../api/rest/action/blockchain/network';
-import { useGetNetworkById } from '../../../hooks/getNetworkById';
+import { useGetNetworkById } from '../../../hooks/useGetNetworkById';
 import {
   ActionBlockchainNetworkAll,
   BlockchainNetworkQueryKeys,

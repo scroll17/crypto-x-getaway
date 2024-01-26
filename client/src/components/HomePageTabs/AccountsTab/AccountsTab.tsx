@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import { AccountModalContent } from './AccountModalContent';
 import { AddAccountForm } from './AddAccountForm';
 import { getAllBlockchainAccount } from '../../../api/rest/action/blockchain/account';
-import { useGetAccountById } from '../../../hooks/getAccountById';
+import { useGetAccountById } from '../../../hooks/useGetAccountById';
 import {
   BlockchainAccountEntity,
   BlockchainAccountQueryKeys,
