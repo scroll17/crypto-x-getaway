@@ -19,11 +19,15 @@ const boxStyle = {
 };
 
 export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
+  if (!data) {
+    return;
+  }
+
   return (
     <Grid sx={{ border: '2px dashed', p: 3 }} container rowGap={2}>
       <Grid borderBottom="2px solid" container>
         <Typography variant="h6" sx={{ pb: 2 }}>
-          {data?.name}
+          {data.name}
         </Typography>
       </Grid>
       <Grid container alignItems="center">
@@ -33,10 +37,10 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
           </Typography>
         </Grid>
         <Grid item xs={6}>
-          <Typography>{data?._id}</Typography>
+          <Typography>{data._id}</Typography>
         </Grid>
         <Grid item xs={4} textAlign="right">
-          <Box sx={boxStyle}>{data?.networkInfo.name}</Box>
+          <Box sx={boxStyle}>{data.networkInfo.name}</Box>
         </Grid>
       </Grid>
       <Grid container alignItems="center">
@@ -46,7 +50,7 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
           </Typography>
         </Grid>
         <Grid item xs={6}>
-          <Typography>{data?.name}</Typography>
+          <Typography>{data.name}</Typography>
         </Grid>
       </Grid>
       <Grid container alignItems="center">
@@ -57,7 +61,7 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
         </Grid>
         <Grid item xs={6}>
           <Typography>
-            {data?.labels.map((label, index) => (
+            {data.labels.map((label, index) => (
               <CustomLabel
                 text={label}
                 customStyle={{
@@ -78,7 +82,7 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
           </Typography>
         </Grid>
         <Grid item xs={6}>
-          <Typography>{data?.createdBy.name}</Typography>
+          <Typography>{data.createdBy.name}</Typography>
         </Grid>
       </Grid>
       <Grid container alignItems="center">
@@ -88,7 +92,7 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
           </Typography>
         </Grid>
         <Grid item xs={6}>
-          <Typography>{data?.address}</Typography>
+          <Typography>{data.address}</Typography>
         </Grid>
       </Grid>
     </Grid>

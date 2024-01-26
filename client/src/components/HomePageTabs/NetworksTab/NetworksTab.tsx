@@ -34,7 +34,7 @@ export const NetworksTab: FC = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [networkId, setNetworkId] = useState('');
 
-  const {data: networkData, isLoading: networkDataLoading} = useGetNetworkById(networkId);
+  const { data: networkData, isLoading: networkDataLoading } = useGetNetworkById(networkId);
 
   const handleModalActions = (state: boolean, id: string = '') => {
     setIsOpenModal(state);
@@ -117,7 +117,7 @@ export const NetworksTab: FC = () => {
         openModal={isOpenModal}
         onClickRow={handleModalActions}
         dataCheck={dataExists}
-        modalChildren={<NetworkModalContent data={networkData}/>}
+        modalChildren={<NetworkModalContent data={networkData} />}
         isLoading={networkDataLoading}
       />
     </>
