@@ -4,7 +4,9 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 
+import { NetworkModalContent } from './NetworkModalContent';
 import { getAllBlockchainNetwork } from '../../../api/rest/action/blockchain/network';
+import { useGetNetworkById } from '../../../hooks/useGetNetworkById';
 import {
   ActionBlockchainNetworkAll,
   BlockchainNetworkQueryKeys,
@@ -30,10 +32,13 @@ const columns: Column[] = [
 
 export const NetworksTab: FC = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [networkId, setNetworkId] = useState('');
+
+  const { data: networkData, isLoading: networkDataLoading } = useGetNetworkById(networkId);
 
   const handleModalActions = (state: boolean, id: string = '') => {
     setIsOpenModal(state);
-    console.log(id);
+    setNetworkId(id);
   };
 
   const blockchainNetworkData = useQuery(
@@ -112,6 +117,8 @@ export const NetworksTab: FC = () => {
         openModal={isOpenModal}
         onClickRow={handleModalActions}
         dataCheck={dataExists}
+        modalChildren={<NetworkModalContent data={networkData} />}
+        isLoading={networkDataLoading}
       />
     </>
   );
