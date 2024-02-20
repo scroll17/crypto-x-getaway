@@ -71,7 +71,7 @@ export const AccountsTab: FC = () => {
           key={index}
         />
       )),
-      network: row.networkInfo.name,
+      network: row.network?.name ?? '<undefined>',
       comments: row.comments,
       createdBy: row.createdBy.name,
     }));

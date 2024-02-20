@@ -40,7 +40,7 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
           <Typography>{data._id}</Typography>
         </Grid>
         <Grid item xs={4} textAlign="right">
-          <Box sx={boxStyle}>{data.networkInfo.name}</Box>
+          <Box sx={boxStyle}>{data.network?.name ?? '<undefined>'}</Box>
         </Grid>
       </Grid>
       <Grid container alignItems="center">

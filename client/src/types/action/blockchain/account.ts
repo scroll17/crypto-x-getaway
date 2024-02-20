@@ -33,7 +33,7 @@ export interface BlockchainAccountEntity {
   _id: string;
   name: string;
   labels: string[];
-  networkInfo: BlockchainNetwork;
+  network?: BlockchainNetwork;
   comments: Comment[];
   createdBy: UserEntity;
   address: string;
