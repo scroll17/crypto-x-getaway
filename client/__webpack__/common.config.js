@@ -1,6 +1,7 @@
 const path = require('path');
 
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -33,6 +34,9 @@ const plugins = [
     filename: 'index.html',
   }),
   new webpack.HotModuleReplacementPlugin(), // For page reloading
+  new Dotenv({
+    path: path.resolve(__dirname, '..', '.env')
+  })
 ];
 
 if (process.env.SERVE) {
