@@ -10,7 +10,7 @@ import {
   TableHead,
 } from '@mui/material';
 
-import { CustomModal } from '../CustomModal/CustomModal';
+import { CustomModal } from '../CustomModal';
 
 export interface Column {
   id:

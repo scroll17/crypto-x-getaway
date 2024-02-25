@@ -1,17 +1,17 @@
 import React, { FC, useMemo, useState } from 'react';
 
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
-
-import { NetworkModalContent } from './NetworkModalContent';
-import { getAllBlockchainNetwork } from '../../../api/rest/action/blockchain/network';
-import { useGetNetworkById } from '../../../hooks/useGetNetworkById';
+import { Button } from '@mui/material';
+import { getAllBlockchainNetwork } from '@api-r/action/blockchain/network';
+import { useGetNetworkById } from '@hooks/useGetNetworkById';
+import { stringToColour } from '@utils/stringToColor';
 import {
   ActionBlockchainNetworkAll,
   BlockchainNetworkQueryKeys,
-} from '../../../types/action/blockchain/network';
-import { stringToColour } from '../../../utils/stringToColor';
+} from '@types/action/blockchain/network';
+
+import { NetworkModalContent } from './NetworkModalContent';
 import { CustomLabel } from '../../CustomLabel';
 import { FullScreenLoader } from '../../FullScreenLoader';
 import { Column, TableComponent } from '../../TableComponent';

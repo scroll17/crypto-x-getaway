@@ -1,17 +1,17 @@
 import React, { FC, useMemo, useState } from 'react';
 
-import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
-
-import { AccountModalContent } from './AccountModalContent';
-import { AddAccountForm } from './AddAccountForm';
-import { getAllBlockchainAccount } from '../../../api/rest/action/blockchain/account';
-import { useGetAccountById } from '../../../hooks/useGetAccountById';
+import { Button } from '@mui/material';
+import { getAllBlockchainAccount } from '@api/rest/action/blockchain/account';
 import {
   BlockchainAccountEntity,
   BlockchainAccountQueryKeys,
-} from '../../../types/action/blockchain/account';
-import { generateRandomColorExcludingWhite } from '../../../utils/getRandomColor';
+} from '@types/action/blockchain/account';
+import { generateRandomColorExcludingWhite } from '@utils/getRandomColor';
+import { useGetAccountById } from '@hooks/useGetAccountById';
+
+import { AccountModalContent } from './AccountModalContent';
+import { AddAccountForm } from './AddAccountForm';
 import { CustomLabel } from '../../CustomLabel';
 import { FullScreenLoader } from '../../FullScreenLoader';
 import { Column, TableComponent } from '../../TableComponent';

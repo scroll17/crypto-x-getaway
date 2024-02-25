@@ -2,9 +2,8 @@ import React, { FC } from 'react';
 
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { Grid, TextareaAutosize, Typography } from '@mui/material';
-
-import { BlockchainNetworkEntity } from '../../../../types/action';
-import { stringToColour } from '../../../../utils/stringToColor';
+import { BlockchainNetworkEntity } from '@types/action';
+import { stringToColour } from '@utils/stringToColor';
 
 interface NetworkModalContentProps {
   data: BlockchainNetworkEntity;

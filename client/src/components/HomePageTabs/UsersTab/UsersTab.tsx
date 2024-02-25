@@ -1,12 +1,12 @@
 import React, { FC, useMemo } from 'react';
 
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
+import { Button } from '@mui/material';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { users } from '@api-r/action/user';
+import { ActionUserEntity, ActionUserQueryKeys } from '@types/action/user';
+import { calcUsersOnline } from '@utils/calcUsersOnline';
 
-import { users } from '../../../api/rest/action/user';
-import { ActionUser, User } from '../../../types/action';
-import { calcUsersOnline } from '../../../utils/calcUsersOnline';
 import { FullScreenLoader } from '../../FullScreenLoader';
 import { Column, TableComponent } from '../../TableComponent';
 
@@ -31,7 +31,7 @@ export const UsersTab: FC = () => {
   // });
 
   const usersData = useQuery(
-    User.UserAll,
+    ActionUserQueryKeys.UserAll,
     () =>
       users({
         paginate: { page: 1, count: 10 },
@@ -52,7 +52,7 @@ export const UsersTab: FC = () => {
 
     const { data } = usersData;
 
-    return data.map((row: ActionUser) => ({
+    return data.map((row: ActionUserEntity) => ({
       id: row._id,
       userName: row.name,
       botAccess: (

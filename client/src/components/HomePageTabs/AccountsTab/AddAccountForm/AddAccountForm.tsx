@@ -1,20 +1,19 @@
 import React, { FC, FormEvent, useState, ChangeEvent, FocusEvent } from 'react';
 
-import { TextField, Grid, Box, Button, Typography } from '@mui/material';
-// import { validate } from 'bitcoin-address-validation';
-import { useMutation, useQuery } from 'react-query';
 
-import { getBlockchainAccountLabels } from '../../../../api/rest/action/blockchain/account';
-import { addBlockchainAccount } from '../../../../api/rest/action/blockchain/account';
-import { getAllBlockchainNetwork } from '../../../../api/rest/action/blockchain/network';
+import { useMutation, useQuery } from 'react-query';
+import { TextField, Grid, Box, Button, Typography } from '@mui/material';
+import { getBlockchainAccountLabels, addBlockchainAccount } from '@api-r/action/blockchain/account';
+import { getAllBlockchainNetwork } from '@api-r/action/blockchain/network';
 import {
   ActionAddBlockchainAccountRequestData,
   BlockchainAccountQueryKeys,
-} from '../../../../types/action/blockchain/account';
+} from '@types/action/blockchain/account';
 import {
   ActionBlockchainNetworkAll,
   BlockchainNetworkQueryKeys,
-} from '../../../../types/action/blockchain/network';
+} from '@types/action/blockchain/network';
+
 import { CustomSelect } from '../../../CustomSelect';
 import { MultiSelectComponent } from '../../../MultiSelectComponent';
 

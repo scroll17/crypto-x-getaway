@@ -1,15 +1,16 @@
 import React, { useEffect, useState, FC, FormEvent } from 'react';
 
-import { Container, Typography, TextField, Button, Box } from '@mui/material';
 import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Container, Typography, TextField, Button, Box } from '@mui/material';
 
-import { login, refresh } from '../../api/rest/getaway/auth';
-import { AxiosErrorData } from '../../api/types';
-import { GetawayAuthQueryKeys, UserLoginData } from '../../types/getaway';
-import { isEmailValid } from '../../utils/emailValidation';
+import { login, refresh } from '@api-r/getaway/auth';
+import { AxiosErrorData } from '@types/common';
+import { GetawayAuthQueryKeys, UserLoginData } from '@types/getaway/auth';
+import { isEmailValid } from '@utils/isEmailValid';
+
 
 export const LoginForm: FC = () => {
   const [email, setEmail] = useState('zololotarenko.2015@gmail.com');

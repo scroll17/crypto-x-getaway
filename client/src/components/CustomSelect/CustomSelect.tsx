@@ -1,8 +1,7 @@
 import React, { FC, Dispatch, useMemo } from 'react';
 
 import { Select, MenuItem, SelectChangeEvent } from '@mui/material';
-
-import { ActionAddBlockchainAccountRequestData } from '../../types/action/blockchain/account';
+import { ActionAddBlockchainAccountRequestData } from '@types/action/blockchain/account';
 
 interface CustomOption {
   value: string;

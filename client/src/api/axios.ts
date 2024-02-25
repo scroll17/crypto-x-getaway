@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 
 import { baseApi } from './config';
 import { ROUTES } from '../router/routerTypes';
-import { User } from '../types/getaway/auth';
+import { User } from '@types/getaway/auth';
 
 baseApi.interceptors.request.use(
   config => config,

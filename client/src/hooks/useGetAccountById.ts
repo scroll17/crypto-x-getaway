@@ -1,7 +1,6 @@
 import { useQuery } from 'react-query';
-
-import { getBlockchainAccount } from '../api/rest/action/blockchain/account';
-import { BlockchainAccountQueryKeys } from '../types/action/blockchain/account';
+import { getBlockchainAccount } from '@api-r/action/blockchain/account';
+import { BlockchainAccountQueryKeys } from '@types/action/blockchain/account';
 
 export const useGetAccountById = (id: string) => {
   const { data, isLoading, isError } = useQuery(

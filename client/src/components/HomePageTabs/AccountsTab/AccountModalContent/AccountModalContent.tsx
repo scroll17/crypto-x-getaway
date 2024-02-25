@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 
 import { Box, Grid, Typography } from '@mui/material';
+import { BlockchainAccountEntity } from '@types/action/blockchain/account';
+import { generateRandomColorExcludingWhite } from '@utils/getRandomColor';
 
-import { BlockchainAccountEntity } from '../../../../types/action/blockchain/account';
-import { generateRandomColorExcludingWhite } from '../../../../utils/getRandomColor';
 import { CustomLabel } from '../../../CustomLabel';
 
 interface AccountModalContentProps {

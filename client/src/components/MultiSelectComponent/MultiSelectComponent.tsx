@@ -1,8 +1,7 @@
 import React, { FC, Dispatch, useState } from 'react';
 
 import { Select, MenuItem, SelectChangeEvent, TextField, Chip, Button, Box } from '@mui/material';
-
-import { ActionAddBlockchainAccountRequestData } from '../../types/action/blockchain/account';
+import { ActionAddBlockchainAccountRequestData } from '@types/action/blockchain/account';
 
 interface MultySelectComponentProps {
   menuItems: string[];
