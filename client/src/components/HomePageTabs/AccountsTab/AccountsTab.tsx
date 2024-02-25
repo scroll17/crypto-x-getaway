@@ -21,7 +21,7 @@ const columns: Column[] = [
   { id: 'name', label: 'Name' },
   { id: 'network', label: 'Network' },
   { id: 'createdBy', label: 'CreatedBy' },
-  { id: 'labels', label: 'lLabels', minWidth: 400 },
+  { id: 'labels', label: 'Labels', minWidth: 400 },
 ];
 
 export const AccountsTab: FC = () => {

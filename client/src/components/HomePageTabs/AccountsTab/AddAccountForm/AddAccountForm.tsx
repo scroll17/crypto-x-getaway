@@ -1,10 +1,9 @@
 import React, { FC, FormEvent, useState, ChangeEvent, FocusEvent } from 'react';
 
 
-import { useMutation, useQuery } from 'react-query';
-import { TextField, Grid, Box, Button, Typography } from '@mui/material';
 import { getBlockchainAccountLabels, addBlockchainAccount } from '@api-r/action/blockchain/account';
 import { getAllBlockchainNetwork } from '@api-r/action/blockchain/network';
+import { TextField, Grid, Box, Button, Typography } from '@mui/material';
 import {
   ActionAddBlockchainAccountRequestData,
   BlockchainAccountQueryKeys,
@@ -13,6 +12,7 @@ import {
   ActionBlockchainNetworkAll,
   BlockchainNetworkQueryKeys,
 } from '@types/action/blockchain/network';
+import { useMutation, useQuery } from 'react-query';
 
 import { CustomSelect } from '../../../CustomSelect';
 import { MultiSelectComponent } from '../../../MultiSelectComponent';
@@ -32,11 +32,6 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
     address: '',
     network: '',
     labels: [],
-    networkInfo: {
-      name: 'The network name called by Provider',
-      type: 'testnet',
-      url: 'https://mainnet.infura.io/ws/v3/234234234234234',
-    },
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -73,6 +68,7 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
 
   const addBlockchainAccountRequest = useMutation({ mutationFn: addBlockchainAccount });
 
+  
   const handleChange = (
     event: ChangeEvent<HTMLInputElement> | FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -94,7 +90,7 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
     });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // if (!validate(formData.address)) {
@@ -118,7 +114,13 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
       return;
     }
 
-    addBlockchainAccountRequest.mutate(formData);
+    await addBlockchainAccountRequest.mutateAsync(formData);
+    setFormData({
+      name: '',
+      address: '',
+      network: '',
+      labels: [],
+    });
   };
 
   const { name, address } = formData;

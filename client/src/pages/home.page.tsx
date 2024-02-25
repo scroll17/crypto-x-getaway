@@ -54,7 +54,7 @@ export const HomePage = () => {
         <Tab label="Users" />
         <Tab label="Networks" />
         <Tab label="Accounts" />
-        <Tab label="Strategies" />
+        {/*<Tab label="Strategies" />*/}
         <Tab label="Wallet Inspector" />
       </Tabs>
       <TabPanel value={value} index={0}>
