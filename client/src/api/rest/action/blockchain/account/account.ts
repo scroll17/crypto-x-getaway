@@ -1,8 +1,8 @@
 import {
   ActionBlockchainAccountAllRequestData,
   ActionAddBlockchainAccountRequestData,
-} from '../../../../types/action/blockchain/account';
-import { baseApi } from '../../../config';
+} from '../../../../../types/action/blockchain/account';
+import { baseApi } from '../../../../config';
 
 export const getAllBlockchainAccount = async (
   requestData: ActionBlockchainAccountAllRequestData,
