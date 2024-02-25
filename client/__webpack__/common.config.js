@@ -5,6 +5,7 @@ const Dotenv = require('dotenv-webpack');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TSConfigPathsWebpackPlugin = require('tsconfig-paths-webpack-plugin');
 const webpack = require('webpack');
 
 const BUILD_DIR = path.resolve(__dirname, '..', 'build');
@@ -95,6 +96,12 @@ module.exports = {
   // Modules resolved
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
+    plugins: [
+      new TSConfigPathsWebpackPlugin({
+        configFile: path.join(__dirname, '../', 'tsconfig.json'),
+        logLevel: 'info',
+      }),
+    ],
   },
   module: {
     strictExportPresence: true, // Strict mod to avoid of importing non-existent objects
