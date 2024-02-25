@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { AccountsTab } from '../components/HomePageTabs/AccountsTab';
 import { NetworksTab } from '../components/HomePageTabs/NetworksTab';
 import { UsersTab } from '../components/HomePageTabs/UsersTab';
+import { WalletInspectorTab } from '../components/HomePageTabs/WalletInspectorTab';
 
 interface TabPanelProps {
   children?: ReactNode;
@@ -33,6 +34,7 @@ export const HomePage = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set('tab', value.toString());
+
     const newUrl = `${location.pathname}?${searchParams.toString()}`;
     window.history.replaceState({}, '', newUrl);
   }, [value, location.search, location.pathname]);
@@ -50,10 +52,10 @@ export const HomePage = () => {
     >
       <Tabs value={value} onChange={handleChange}>
         <Tab label="Users" />
-
         <Tab label="Networks" />
         <Tab label="Accounts" />
         <Tab label="Strategies" />
+        <Tab label="Wallet Inspector" />
       </Tabs>
       <TabPanel value={value} index={0}>
         <UsersTab />
@@ -63,6 +65,9 @@ export const HomePage = () => {
       </TabPanel>
       <TabPanel value={value} index={2}>
         <AccountsTab />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        <WalletInspectorTab />
       </TabPanel>
     </Box>
   );
