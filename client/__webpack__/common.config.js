@@ -34,10 +34,10 @@ const plugins = [
     template: path.join(PUBLIC_DIR, 'index.html'),
     filename: 'index.html',
   }),
-  new webpack.HotModuleReplacementPlugin(), // For page reloading
   new Dotenv({
     path: path.resolve(__dirname, '..', '.env')
-  })
+  }),
+  new webpack.HotModuleReplacementPlugin(), // For page reloading
 ];
 
 if (process.env.SERVE) {
@@ -75,6 +75,7 @@ const devServer = {
       directory: path.join(BUILD_DIR, 'favicons'),
     },
   ],
+  watchFiles: ['src/**/*'],
 };
 
 module.exports = {

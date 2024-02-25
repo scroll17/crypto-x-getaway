@@ -1,10 +1,10 @@
+import { User } from '@types/getaway/auth';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 import { redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { baseApi } from './config';
 import { ROUTES } from '../router/routerTypes';
-import { User } from '@types/getaway/auth';
 
 baseApi.interceptors.request.use(
   config => config,
@@ -14,9 +14,11 @@ baseApi.interceptors.request.use(
 baseApi.interceptors.response.use(
   response => response,
   async error => {
+    console.log('errpr => ', error);
+
     if (!error.response) return Promise.reject(error);
 
-    const originalRequest: AxiosRequestConfig & { _retry: boolean } = error.config;
+    const originalRequest: AxiosRequestConfig & { _retry: boolean } = error.config
     switch (true) {
       // the AccessToken could be expired and we try to make refresh
       case error.response === 401 &&
@@ -24,6 +26,9 @@ baseApi.interceptors.response.use(
         !originalRequest.url?.includes('refresh'): {
         originalRequest._retry = true;
         console.log('originalRequest._retry', originalRequest);
+
+        console.log('show errr', error.message);
+        toast.error(error.message);
 
         try {
           const response = await baseApi.get<User>('auth/refresh');
@@ -54,9 +59,14 @@ baseApi.interceptors.response.use(
       }
       // just request to Forbidden resource
       case error.response.status === 403 && error.response.data: {
+        console.log('show errr', error.message);
+        toast.error(error.message);
         return Promise.reject(error.response.data);
       }
     }
+
+    console.log('show errr', error.message);
+    toast.error(error.message);
 
     return Promise.reject(error);
   },
