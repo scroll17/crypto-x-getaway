@@ -1,11 +1,11 @@
-import { TPaginateRequest, IActionFilter } from '../common';
+import { TPaginateRequest } from '../../common';
 
 export enum BlockchainNetworkQueryKeys {
   blockchainNetworkAll = 'blockchainNetworkAll',
   blockchainNetwork = 'blockchainNetwork',
 }
 
-export type ActionBlockchainNetworkAllRequestData = TPaginateRequest<IActionFilter>;
+export type ActionBlockchainNetworkAllRequestData = TPaginateRequest<object>;
 
 enum NetworkName {
   ethereum = 'ethereum',

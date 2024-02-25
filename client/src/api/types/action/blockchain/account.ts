@@ -1,4 +1,6 @@
-import { BlockchainNetwork, TPaginateRequest } from '../common';
+import { BlockchainNetworkEntity } from './network';
+import { TPaginateRequest } from '../../common';
+import { ActionUserEntity } from '../user';
 
 export interface IActionAccountFilter {
   id: string;
@@ -17,25 +19,13 @@ export enum BlockchainAccountQueryKeys {
 
 export type ActionBlockchainAccountAllRequestData = TPaginateRequest<IActionAccountFilter>;
 
-type UserEntity = {
-  _id: string;
-  name: string;
-  username: string;
-  email: string;
-  telegramId: number;
-  blocked: boolean;
-  hasBotAccess: boolean;
-  isAdmin: boolean;
-  lastActivityAt: Date;
-};
-
 export interface BlockchainAccountEntity {
   _id: string;
   name: string;
   labels: string[];
-  network?: BlockchainNetwork;
+  network?: BlockchainNetworkEntity;
   comments: Comment[];
-  createdBy: UserEntity;
+  createdBy: ActionUserEntity;
   address: string;
 }
 
@@ -44,6 +34,4 @@ export interface ActionAddBlockchainAccountRequestData {
   address: string;
   labels: string[];
   network: string;
-  // temporality unknown
-  networkInfo: unknown;
 }
