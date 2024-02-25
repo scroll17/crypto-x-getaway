@@ -37,7 +37,18 @@
                     "customTemplate": "./customTemplate.js"
                 }
             }
-        ]
+        ],
+        "paths": {
+            "@api/*": [
+                "src/api/*"
+            ],
+            "@api-r/*": [
+                "src/api/rest/*"
+            ],
+            "@types/*": [
+                "src/api/types/*"
+            ]
+        }
     },
     "exclude": [
         "node_modules",

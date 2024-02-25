@@ -1,5 +1,5 @@
-import { UserLoginData } from '../../../../types/getaway/auth';
-import { baseApi } from '../../../config';
+import { baseApi } from '@api/config';
+import { UserLoginData } from '@types/getaway/auth';
 
 // Makes a POST request to sign in the registered user.
 export const login = async (user: UserLoginData) => {
