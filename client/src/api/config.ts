@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:4040';
+const BASE_URL = process.env.BASE_API_URL;
 
 // Axios instance and default configuration
 export const baseApi = axios.create({

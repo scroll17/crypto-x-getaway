@@ -1,12 +1,10 @@
-const minuteInMilliseconds: number = 60000;
-const fiveMinutes: number = 5;
-const fiveMinutesInMilliseconds: number = fiveMinutes * minuteInMilliseconds;
+const USERS_ONLINE_DURING_MS = 1000 * 60 * parseFloat(process.env.USER_ONLINE_DURING_MIN!);
 
 export const calcUsersOnline = (lastActivity: string) => {
   const currentDate: Date = new Date();
-  const fiveMinutesAgo: Date = new Date(currentDate.getTime() - fiveMinutesInMilliseconds);
 
-  const otherDate: Date = new Date(lastActivity);
+  const prevDate: Date = new Date(currentDate.getTime() - USERS_ONLINE_DURING_MS);
+  const lastActivityDate: Date = new Date(lastActivity);
 
-  return fiveMinutesAgo > otherDate;
+  return prevDate > lastActivityDate;
 };
