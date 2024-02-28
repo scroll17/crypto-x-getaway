@@ -1,6 +1,5 @@
 import React, { FC, FormEvent, useState, ChangeEvent, FocusEvent } from 'react';
 
-
 import { getBlockchainAccountLabels, addBlockchainAccount } from '@api-r/action/blockchain/account';
 import { getAllBlockchainNetwork } from '@api-r/action/blockchain/network';
 import { TextField, Grid, Box, Button, Typography } from '@mui/material';
@@ -68,7 +67,6 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
 
   const addBlockchainAccountRequest = useMutation({ mutationFn: addBlockchainAccount });
 
-  
   const handleChange = (
     event: ChangeEvent<HTMLInputElement> | FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {

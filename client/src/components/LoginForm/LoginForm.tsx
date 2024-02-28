@@ -11,7 +11,6 @@ import { AxiosErrorData } from '@types/common';
 import { GetawayAuthQueryKeys, UserLoginData } from '@types/getaway/auth';
 import { isEmailValid } from '@utils/isEmailValid';
 
-
 export const LoginForm: FC = () => {
   const [email, setEmail] = useState('zololotarenko.2015@gmail.com');
   const [password, setPassword] = useState('sd234c-012');

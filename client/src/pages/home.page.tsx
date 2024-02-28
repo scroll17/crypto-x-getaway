@@ -7,6 +7,7 @@ import { AccountsTab } from '../components/HomePageTabs/AccountsTab';
 import { NetworksTab } from '../components/HomePageTabs/NetworksTab';
 import { UsersTab } from '../components/HomePageTabs/UsersTab';
 import { WalletInspectorTab } from '../components/HomePageTabs/WalletInspectorTab';
+import { IntegrationsTab } from '../components/HomePageTabs/IntegrationsTab';
 
 interface TabPanelProps {
   children?: ReactNode;
@@ -54,6 +55,7 @@ export const HomePage = () => {
         <Tab label="Users" />
         <Tab label="Networks" />
         <Tab label="Accounts" />
+        <Tab label="Integrations" />
         {/*<Tab label="Strategies" />*/}
         <Tab label="Wallet Inspector" />
       </Tabs>
@@ -67,6 +69,9 @@ export const HomePage = () => {
         <AccountsTab />
       </TabPanel>
       <TabPanel value={value} index={3}>
+        <IntegrationsTab />
+      </TabPanel>
+      <TabPanel value={value} index={4}>
         <WalletInspectorTab />
       </TabPanel>
     </Box>

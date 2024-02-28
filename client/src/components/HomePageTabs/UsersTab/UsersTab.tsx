@@ -38,7 +38,7 @@ export const UsersTab: FC = () => {
         sort: { name: '_id', type: 'asc' },
       }),
     { select: data => data.data },
-  )
+  );
 
   const dataExists = usersData && usersData.data?.length > 0;
 
@@ -61,7 +61,9 @@ export const UsersTab: FC = () => {
       online: (
         <FiberManualRecordIcon
           sx={{ pl: 2 }}
-          color={calcUsersOnline(row.lastActivityAt ?? new Date(0).toString()) ? 'error' : 'success'}
+          color={
+            calcUsersOnline(row.lastActivityAt ?? new Date(0).toString()) ? 'error' : 'success'
+          }
         />
       ),
       lastActivity: row.lastActivityAt ? new Date(row.lastActivityAt).toLocaleString() : '-',
