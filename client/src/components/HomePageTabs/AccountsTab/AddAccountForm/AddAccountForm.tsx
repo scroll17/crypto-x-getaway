@@ -16,6 +16,7 @@ import { useMutation, useQuery } from 'react-query';
 
 import { CustomSelect } from '../../../CustomSelect';
 import { MultiSelectComponent } from '../../../MultiSelectComponent';
+import {toast} from "react-toastify";
 
 interface AddAccountFormProps {
   onCloseHandler: (state: boolean) => void;
@@ -102,25 +103,27 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
 
     if (formData.network.trim().length === 0) {
       setFormErrors(prevState => ({ ...prevState, network: true }));
-
       setErrorMsg(prevState => ({ ...prevState, network: 'Please fill this field' }));
+
       return;
     }
 
     if (formData.labels.length === 0) {
       setFormErrors(prevState => ({ ...prevState, labels: true }));
-
       setErrorMsg(prevState => ({ ...prevState, labels: 'Please fill this field' }));
+
       return;
     }
 
     await addBlockchainAccountRequest.mutateAsync(formData);
+
     setFormData({
       name: '',
       address: '',
       network: '',
       labels: [],
     });
+    toast.success('Account was added');
   };
 
   const { name, address } = formData;
