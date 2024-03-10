@@ -1,16 +1,15 @@
 import React, { FC, Dispatch, useState } from 'react';
 
-import { Select, MenuItem, SelectChangeEvent, TextField, Chip, Button, Box } from '@mui/material';
-import { ActionAddBlockchainAccountRequestData } from '@types/action/blockchain/account';
+import {Select, MenuItem, SelectChangeEvent, TextField, Chip, Button, Box, Container} from '@mui/material';
 
-interface MultySelectComponentProps {
-  menuItems: string[];
+interface MultiSelectComponentProps {
+  menuItems: Array<{ value: string; label: string; }>;
   fieldName: string;
   selectedValues: string[];
-  setSelectedValues: Dispatch<React.SetStateAction<ActionAddBlockchainAccountRequestData>>;
+  setSelectedValues: Dispatch<React.SetStateAction<Record<string, unknown>>>;
 }
 
-export const MultiSelectComponent: FC<MultySelectComponentProps> = ({
+export const MultiSelectComponent: FC<MultiSelectComponentProps> = ({
   menuItems,
   selectedValues = [],
   setSelectedValues,
@@ -49,43 +48,56 @@ export const MultiSelectComponent: FC<MultySelectComponentProps> = ({
   };
 
   return (
-    <Box display="flex" alignItems="center" columnGap={2}>
-      <Select
-        variant="outlined"
-        size="small"
-        multiple
-        sx={{ minWidth: '166px' }}
-        name={fieldName}
-        value={selectedValues}
-        onChange={handleSelectChange}
-        renderValue={selected =>
-          selected.map(value => (
-            <Chip sx={{ height: 'auto' }} key={value} label={value} style={{ margin: 2 }} />
-          ))
-        }
-      >
-        {menuItems &&
-          menuItems.map(value => (
-            <MenuItem key={value} value={value}>
-              {value}
-            </MenuItem>
-          ))}
-      </Select>
-      <TextField
-        variant="outlined"
-        size="small"
-        name={fieldName}
-        label="Add Custom Value"
-        value={customValue}
-        onChange={handleInputChange}
-        onBlur={handleAddCustomValue}
-      />
-      <Button variant="contained" onClick={handleAddCustomValue}>
-        Add
-      </Button>
-      <Button variant="contained" onClick={handleClear}>
-        Clear
-      </Button>
-    </Box>
+    <Container style={{ padding: 0 }}>
+      <Box display="flex" alignItems="center" sx={{ margin: '0 0 20px 0' }} columnGap={2}>
+        <Select
+          variant="outlined"
+          size="small"
+          multiple
+          sx={{
+            minWidth: '166px',
+            '> div:first-child': {
+              whiteSpace: 'pre-wrap',
+              overflow: 'visible',
+            }
+          }}
+          name={fieldName}
+          value={selectedValues}
+          onChange={handleSelectChange}
+          renderValue={selected =>
+            selected.map(value => (
+              <Chip sx={{ height: 'auto' }} key={value} label={value} style={{ margin: 2 }} />
+            ))
+          }
+        >
+          {
+            menuItems.length > 0
+              ? menuItems.map(item => (
+                <MenuItem key={item.label} value={item.value}>
+                  {item.label}
+                </MenuItem>
+              ))
+              : []
+          }
+        </Select>
+      </Box>
+      <Box display="flex" alignItems="center" columnGap={2}>
+        <TextField
+          variant="outlined"
+          size="small"
+          name={fieldName}
+          label="Add Custom Value"
+          value={customValue}
+          onChange={handleInputChange}
+          onBlur={handleAddCustomValue}
+        />
+        <Button variant="contained" onClick={handleAddCustomValue}>
+          Add
+        </Button>
+        <Button variant="contained" onClick={handleClear}>
+          Clear
+        </Button>
+      </Box>
+    </Container>
   );
 };
