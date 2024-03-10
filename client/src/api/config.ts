@@ -28,11 +28,22 @@ baseApi.interceptors.response.use(
   async error => {
     if (!error.response) return Promise.reject(error);
 
-    if(error.response.data) {
-      const errorData = error.response.data as AxiosErrorData;
-      toast.error(`(${errorData.error}) ${errorData.message}`);
-    } else {
-      toast.error(error.message);
+    switch (true) {
+      case Boolean(error.response.data): {
+        const errorData = error.response.data as AxiosErrorData;
+
+        if('status' in errorData && errorData.status) {
+          toast.error(`(${errorData.status.code}) ${errorData.status.text}`);
+        } else {
+          toast.error(`(${errorData.error}) ${errorData.message}`);
+        }
+
+          break;
+      }
+      default: {
+        toast.error(error.message);
+        break;
+      }
     }
 
     const originalRequest: AxiosRequestConfig & { _retry: boolean } = error.config;
