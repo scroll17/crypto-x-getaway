@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 
 import { Box, Grid, Typography } from '@mui/material';
 import { BlockchainAccountEntity } from '@types/action/blockchain/account';
-import { generateRandomColorExcludingWhite } from '@utils/getRandomColor';
 
 import { CustomLabel } from '../../../CustomLabel';
+import {stringToColour} from "@utils/stringToColor";
 
 interface AccountModalContentProps {
   data: BlockchainAccountEntity;
@@ -65,7 +65,7 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
               <CustomLabel
                 text={label}
                 customStyle={{
-                  backgroundColor: generateRandomColorExcludingWhite(),
+                  backgroundColor: stringToColour(label),
                   color: 'white',
                 }}
                 key={index}

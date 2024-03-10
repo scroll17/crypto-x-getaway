@@ -7,7 +7,6 @@ import {
   BlockchainAccountEntity,
   BlockchainAccountQueryKeys,
 } from '@types/action/blockchain/account';
-import { generateRandomColorExcludingWhite } from '@utils/getRandomColor';
 import { useGetAccountById } from '@hooks/useGetAccountById';
 
 import { AccountModalContent } from './AccountModalContent';
@@ -15,6 +14,7 @@ import { AddAccountForm } from './AddAccountForm';
 import { CustomLabel } from '../../CustomLabel';
 import { FullScreenLoader } from '../../FullScreenLoader';
 import { Column, TableComponent } from '../../TableComponent';
+import {stringToColour} from "@utils/stringToColor";
 
 const columns: Column[] = [
   { id: 'id', label: 'id' },
@@ -65,7 +65,7 @@ export const AccountsTab: FC = () => {
         <CustomLabel
           text={label}
           customStyle={{
-            backgroundColor: generateRandomColorExcludingWhite(),
+            backgroundColor: stringToColour(label),
             color: 'white',
           }}
           key={index}

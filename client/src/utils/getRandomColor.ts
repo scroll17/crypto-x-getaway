@@ -1,3 +1,7 @@
+/**
+ *  @deprecated
+ *  It always generates different colors what is wrong
+ * */
 export function generateRandomColorExcludingWhite() {
   const letters = '0123456789ABCDEF';
 
