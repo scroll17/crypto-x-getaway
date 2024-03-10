@@ -19,7 +19,7 @@ export const getBlockchainAccount = async (id: string) => {
 };
 
 export const getBlockchainAccountLabels = async () => {
-  const response = await baseApi.get('action/blockchain/account/labels');
+  const response = await baseApi.get<string[]>('action/blockchain/account/labels');
   return response.data;
 };
 
