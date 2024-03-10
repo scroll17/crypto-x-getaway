@@ -1,7 +1,6 @@
 import React, { FC, Dispatch, useMemo } from 'react';
 
 import { Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import { ActionAddBlockchainAccountRequestData } from '@types/action/blockchain/account';
 
 interface CustomOption {
   value: string;
@@ -11,7 +10,7 @@ interface CustomOption {
 interface CustomSelectProps {
   options: { data: CustomOption[] | undefined };
   // adding ActionAddBlockchainAccountRequestData is incorrect need to improve
-  setFormValue: Dispatch<React.SetStateAction<ActionAddBlockchainAccountRequestData>>;
+  setFormValue: Dispatch<React.SetStateAction<Record<string, unknown>>>;
   fieldName: string;
   formValue: string;
 }
