@@ -1,4 +1,4 @@
-import {AxiosErrorData} from '@types/common';
+import { AxiosErrorData } from '@types/common';
 import { User } from '@types/getaway/auth';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 import { redirect } from 'react-router-dom';
@@ -17,13 +17,13 @@ baseApi.interceptors.response.use(
   async error => {
     if (!error.response) return Promise.reject(error);
 
-    if(error.response.data) {
+    if (error.response.data) {
       const errorData = error.response.data as AxiosErrorData;
       toast.error(`(${errorData.error}) ${errorData.message}`);
     } else {
       toast.error(error.message);
     }
-    
+
     const originalRequest: AxiosRequestConfig & { _retry: boolean } = error.config;
     switch (true) {
       // the AccessToken could be expired and we try to make refresh
@@ -32,7 +32,7 @@ baseApi.interceptors.response.use(
         !originalRequest.url?.includes('refresh'): {
         originalRequest._retry = true;
         console.log('originalRequest._retry', originalRequest);
-        
+
         try {
           const response = await baseApi.get<User>('auth/refresh');
           if (response.status === 201) {

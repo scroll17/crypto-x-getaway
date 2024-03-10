@@ -5,11 +5,13 @@ import {
   BlockchainAccountEntity,
 } from '@types/action/blockchain/account';
 
-
 export const getAllBlockchainAccount = async (
   requestData: ActionBlockchainAccountAllRequestData,
 ) => {
-  const response = await baseApi.post<{ data: BlockchainAccountEntity[] }>('action/blockchain/account/all', requestData);
+  const response = await baseApi.post<{ data: BlockchainAccountEntity[] }>(
+    'action/blockchain/account/all',
+    requestData,
+  );
   return response.data;
 };
 

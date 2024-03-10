@@ -28,7 +28,11 @@ export interface Column {
     | 'token'
     | 'level'
     | 'networkId'
-    | 'available';
+    | 'available'
+    | 'apiUrl'
+    | 'description'
+    | 'active';
+
   label: string;
   // should be transfer to style
   minWidth?: number;
@@ -97,7 +101,7 @@ export const TableComponent: FC<TableProps> = ({
                       const value = row[column.id];
 
                       return (
-                        <TableCell style={{ ...column.style }} key={column.id}>
+                        <TableCell style={{ ...column.style }} key={column.id} title={value}>
                           {value}
                         </TableCell>
                       );

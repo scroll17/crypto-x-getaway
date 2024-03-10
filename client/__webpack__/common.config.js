@@ -35,7 +35,7 @@ const plugins = [
     filename: 'index.html',
   }),
   new Dotenv({
-    path: path.resolve(__dirname, '..', '.env')
+    path: path.resolve(__dirname, '..', '.env'),
   }),
   new webpack.HotModuleReplacementPlugin(), // For page reloading
 ];

@@ -1,11 +1,11 @@
-import {AxiosErrorData} from '@types/common';
-import {User} from '@types/getaway/auth';
+import { AxiosErrorData } from '@types/common';
+import { User } from '@types/getaway/auth';
 import axios from 'axios';
-import {AxiosError, AxiosRequestConfig} from 'axios';
-import {redirect} from 'react-router-dom';
-import {toast} from 'react-toastify';
+import { AxiosError, AxiosRequestConfig } from 'axios';
+import { redirect } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import {ROUTES} from '../router/routerTypes';
+import { ROUTES } from '../router/routerTypes';
 
 const BASE_URL = process.env.BASE_API_URL;
 
@@ -50,8 +50,8 @@ baseApi.interceptors.response.use(
     switch (true) {
       // the AccessToken could be expired and we try to make refresh
       case error.response === 401 &&
-      !originalRequest._retry &&
-      !originalRequest.url?.includes('refresh'): {
+        !originalRequest._retry &&
+        !originalRequest.url?.includes('refresh'): {
         originalRequest._retry = true;
         console.log('originalRequest._retry', originalRequest);
 
