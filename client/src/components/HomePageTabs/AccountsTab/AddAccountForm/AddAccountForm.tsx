@@ -13,10 +13,10 @@ import {
   BlockchainNetworkQueryKeys,
 } from '@types/action/blockchain/network';
 import { useMutation, useQuery } from 'react-query';
+import {toast} from 'react-toastify';
 
 import { CustomSelect } from '../../../CustomSelect';
 import { MultiSelectComponent } from '../../../MultiSelectComponent';
-import {toast} from "react-toastify";
 
 interface AddAccountFormProps {
   onCloseHandler: (state: boolean) => void;
@@ -52,9 +52,12 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
   const { data: labelsData } = useQuery(
     BlockchainAccountQueryKeys.blockchainAccountLabels,
     getBlockchainAccountLabels,
+    {
+      select: data => data.map((el) => ({ value: el, label: el })),
+    }
   );
 
-  const blockchainNetworkData = useQuery(
+  const { data: blockchainNetworksData } = useQuery(
     BlockchainNetworkQueryKeys.blockchainNetworkAll,
     () =>
       getAllBlockchainNetwork({
@@ -67,9 +70,23 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
     },
   );
 
-  const addBlockchainAccountRequest = useMutation({ mutationFn: addBlockchainAccount });
+  const addBlockchainAccountRequest = useMutation({
+    mutationFn: addBlockchainAccount,
+    onSuccess: () => {
+      toast.success('Account was added');
+      setFormData({
+        name: '',
+        address: '',
+        network: '',
+        labels: [],
+      });
+    },
+    onError: (error: Error) => {
+      toast.error(`Error during add new account: "${error.message}"`);
+      console.log('add new account error', error);
+    }
+  });
 
-  
   const handleChange = (
     event: ChangeEvent<HTMLInputElement> | FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -115,15 +132,7 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
       return;
     }
 
-    await addBlockchainAccountRequest.mutateAsync(formData);
-
-    setFormData({
-      name: '',
-      address: '',
-      network: '',
-      labels: [],
-    });
-    toast.success('Account was added');
+    addBlockchainAccountRequest.mutate(formData);
   };
 
   const { name, address } = formData;
@@ -173,7 +182,7 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
               </Grid>
               <Grid item xs={10}>
                 <CustomSelect
-                  options={blockchainNetworkData}
+                  options={blockchainNetworksData ?? []}
                   setFormValue={setFormData}
                   fieldName="network"
                   formValue={formData.network}
@@ -187,7 +196,7 @@ export const AddAccountForm: FC<AddAccountFormProps> = ({ onCloseHandler }) => {
               </Grid>
               <Grid item xs={10}>
                 <MultiSelectComponent
-                  menuItems={labelsData}
+                  menuItems={labelsData ?? []}
                   fieldName="labels"
                   selectedValues={formData.labels}
                   setSelectedValues={setFormData}
