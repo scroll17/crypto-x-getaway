@@ -107,13 +107,13 @@ export class AppModule implements NestModule {
                 });
 
               if (allowedForAllWhiteList) {
-                callback(null, true);
+                callback(null, origin);
                 return;
               }
 
               // Note: "!origin" -> for server requests
               if (originInWhiteList || originIsEmpty) {
-                callback(null, true);
+                callback(null, origin);
               } else {
                 this.logger.error('Request from not allowed CORS', {
                   origin: origin ?? typeof origin,
