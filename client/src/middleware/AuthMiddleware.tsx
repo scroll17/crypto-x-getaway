@@ -62,21 +62,20 @@ const AuthMiddleware: React.FC = () => {
     },
   });
 
+  // TODO: deps haven't be empty?
   useEffect(() => refreshTokenMutation.mutate(), []);
 
   if (refreshTokenMutation.isLoading || !authQuery.isFetched) {
     return <FullScreenLoader />;
   }
 
-  if (!confirmed || authQuery.isFetching) {
+  if (authQuery.isFetching || !confirmed) {
     return <ConfirmTokenLoader />;
   }
 
-  return cookies.logged_in ? (
-    <Layout />
-  ) : (
-    <Navigate to="/login" state={{ from: location }} replace />
-  );
+  return cookies.logged_in
+    ? (<Layout />)
+    : (<Navigate to="/login" state={{ from: location }} replace />);
 };
 
 export default AuthMiddleware;

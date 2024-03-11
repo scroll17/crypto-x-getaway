@@ -20,6 +20,7 @@ export const LoginForm: FC = () => {
   const location = useLocation();
 
   const from = (location.state?.from.pathname as string) || '/';
+  const next = from.includes('login') ? '/' : from;
 
   //  API Login Mutation
   const { mutate: loginUser, isLoading } = useMutation(
@@ -27,7 +28,7 @@ export const LoginForm: FC = () => {
     {
       onSuccess: () => {
         toast.success('You successfully logged in');
-        navigate(from);
+        navigate(next);
       },
       onError: (error: AxiosError<AxiosErrorData>) => {
         if (error instanceof AxiosError && error.response) {
@@ -42,7 +43,8 @@ export const LoginForm: FC = () => {
   const refreshTokenMutation = useMutation([GetawayAuthQueryKeys.RefreshToken], refresh, {
     retry: 1,
     onSuccess: () => {
-      navigate(from);
+      toast.success('You successfully refreshed session');
+      navigate(next);
     },
     onError: (error: AxiosError<AxiosErrorData>) => {
       if (error instanceof AxiosError && error.response) {
@@ -53,6 +55,7 @@ export const LoginForm: FC = () => {
     },
   });
 
+  // TODO: deps haven't be empty?
   useEffect(() => refreshTokenMutation.mutate(), []);
 
   useEffect(() => {
@@ -66,6 +69,7 @@ export const LoginForm: FC = () => {
       setError(true);
       return;
     }
+
     loginUser({ email, password });
   };
 
