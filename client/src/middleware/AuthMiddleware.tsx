@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
+import { getMe, refresh } from '@api-r/getaway/auth';
+import { AxiosErrorData } from '@types/common';
+import { GetawayAuthQueryKeys } from '@types/getaway/auth';
 import { AxiosError } from 'axios';
 import { useCookies } from 'react-cookie';
 import { useMutation, useQuery } from 'react-query';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { getMe, refresh } from '@api-r/getaway/auth';
-import { AxiosErrorData } from '@types/common';
-import { GetawayAuthQueryKeys } from '@types/getaway/auth';
 
 import { ConfirmTokenLoader } from '../components/ConfirmTokenLoader';
 import { FullScreenLoader } from '../components/FullScreenLoader';
@@ -24,6 +24,9 @@ const AuthMiddleware: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  console.log('stateContext => ', stateContext.state);
+  console.log('cookies => ', cookies);
+  
   const authQuery = useQuery([GetawayAuthQueryKeys.AuthUser], getMe, {
     enabled: false,
     retry: 1,
@@ -64,6 +67,10 @@ const AuthMiddleware: React.FC = () => {
 
   // TODO: deps haven't be empty?
   useEffect(() => refreshTokenMutation.mutate(), []);
+
+  if(stateContext.state.authUser) {
+    return <Layout />;
+  }
 
   if (refreshTokenMutation.isLoading || !authQuery.isFetched) {
     return <FullScreenLoader />;
