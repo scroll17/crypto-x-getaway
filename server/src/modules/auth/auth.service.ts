@@ -75,17 +75,18 @@ export class AuthService {
 
   private setAccessAuthCookies(res: Response, accessToken: string) {
     const secure = this.configService.getOrThrow<boolean>('security.cookiesOverHttps');
+    const sameSite = this.configService.getOrThrow<boolean>('security.cookiesSameSite');
 
     res.cookie(AuthCookies.LoggedIn, true, {
       maxAge: this.getAccessTokenLiveTime(),
-      sameSite: 'strict',
+      sameSite: sameSite,
       httpOnly: false, // http only, prevents JavaScript cookie access
       secure: secure, // cookie must be sent over https / ssl
     });
 
     res.cookie(AuthCookies.AccessToken, accessToken, {
       maxAge: this.getAccessTokenLiveTime(),
-      sameSite: 'strict',
+      sameSite: sameSite,
       httpOnly: true, // http only, prevents JavaScript cookie access
       secure: secure, // cookie must be sent over https / ssl
     });

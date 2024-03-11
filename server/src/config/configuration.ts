@@ -17,6 +17,7 @@ export const configuration = () => {
   const security = {
     corsWhiteList: JSON.parse(process.env.CORS_WHITE_LIST!),
     cookiesOverHttps: Boolean(Number.parseInt(process.env.COOKIES_OVER_HTTPS!, 10)),
+    cookiesSameSite: process.env.COOKIES_SAME_SITE,
     loginConfirmationExpires: ms(process.env.LOGIN_CONFIRMATION_EXPIRES!),
     accessTokenAutoConfirmed: Boolean(Number.parseInt(process.env.ACCESS_TOKEN_AUTO_CONFIRMED!, 10)),
   };
