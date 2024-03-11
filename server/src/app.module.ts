@@ -93,24 +93,34 @@ export class AppModule implements NestModule {
             preflightContinue: false,
             credentials: true,
             origin: (origin, callback) => {
+              const allowedForAllWhiteList = whitelist.includes('*');
+              const originInWhiteList = whitelist.includes(origin);
+              const originIsEmpty = !origin;
+
               if (logsEnabled)
                 this.logger.debug('Request from origin:', {
                   origin: origin ?? typeof origin,
                   serverConfig: {
                     whitelist,
                   },
+                  allowed: allowedForAllWhiteList || originInWhiteList || originIsEmpty,
                 });
 
-              if (whitelist.includes('*')) {
+              if (allowedForAllWhiteList) {
                 callback(null, true);
                 return;
               }
 
               // Note: "!origin" -> for server requests
-              if (whitelist.includes(origin) || !origin) {
+              if (originInWhiteList || originIsEmpty) {
                 callback(null, true);
               } else {
-                this.logger.error('Request from not allowed CORS');
+                this.logger.error('Request from not allowed CORS', {
+                  origin: origin ?? typeof origin,
+                  serverConfig: {
+                    whitelist,
+                  },
+                });
 
                 callback(new HttpException('Not allowed by CORS', HttpStatus.FORBIDDEN));
               }
