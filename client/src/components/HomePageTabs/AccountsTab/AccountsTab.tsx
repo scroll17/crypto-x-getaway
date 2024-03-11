@@ -40,7 +40,7 @@ export const AccountsTab: FC = () => {
     BlockchainAccountQueryKeys.blockchainAccountsAll,
     () =>
       getAllBlockchainAccount({
-        paginate: { page: 1, count: 10 },
+        paginate: { page: 1, count: 100 },
         sort: { name: '_id', type: 'asc' },
       }),
     { select: data => data.data },
