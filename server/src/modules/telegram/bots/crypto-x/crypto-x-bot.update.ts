@@ -35,6 +35,7 @@ export class CryptoXBotUpdate {
   @TelegrafAuthUser()
   async onHelp(): Promise<string> {
     const commands = [
+      '/get_server_url - Получить URL сервера',
       '/get_user_secret - Получить секрет для аутентификации',
       '/get_user_token - Получить полный токен аутентификации',
       '/refresh_user_secret - Обновить секрет для аутентификации',
@@ -43,6 +44,13 @@ export class CryptoXBotUpdate {
     const description = ['Секрет аутентификации используеться в Action server'].join('\n');
 
     return `${commands}\n\n${description}`;
+  }
+
+  @Command('get_server_url')
+  @TelegrafAuthUser()
+  async onGetServerUrlCommand(@Ctx() ctx: Context): Promise<void> {
+    const message = await this.cryptoXBotService.getServerUrl();
+    await ctx.replyWithMarkdownV2(message);
   }
 
   @Command('get_user_secret')
