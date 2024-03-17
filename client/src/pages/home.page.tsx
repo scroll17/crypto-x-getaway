@@ -1,27 +1,40 @@
-import React, { useState, useEffect, FC, ReactNode } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { Box, Tab, Tabs } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { CustomTabs } from '../components/CustomTabs/CustomTabs';
 import { AccountsTab } from '../components/HomePageTabs/AccountsTab';
+import { IntegrationsTab } from '../components/HomePageTabs/IntegrationsTab';
 import { NetworksTab } from '../components/HomePageTabs/NetworksTab';
 import { UsersTab } from '../components/HomePageTabs/UsersTab';
 import { WalletInspectorTab } from '../components/HomePageTabs/WalletInspectorTab';
-import { IntegrationsTab } from '../components/HomePageTabs/IntegrationsTab';
 
-interface TabPanelProps {
-  children?: ReactNode;
-  value: number;
-  index: number;
-}
 
-const TabPanel: FC<TabPanelProps> = ({ children, value, index, ...other }) => {
-  return (
-    <div hidden={value !== index} id={`tabpanel-${index}`} {...other}>
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-};
+const tabLabels = ['Users', 'Networks', 'Accounts', 'Integrations', 'Wallet Inspector'];
+
+const tabsElements = [
+  {
+    index: 0,
+    renderContent: () => <UsersTab />,
+  },
+  {
+    index: 1,
+    renderContent: () => <NetworksTab />,
+  },
+  {
+    index: 2,
+    renderContent: () => <AccountsTab />,
+  },
+  {
+    index: 3,
+    renderContent: () => <IntegrationsTab />,
+  },
+  {
+    index: 4,
+    renderContent: () => <WalletInspectorTab />,
+  },
+];
+
 
 export const HomePage = () => {
   const location = useLocation();
@@ -40,40 +53,17 @@ export const HomePage = () => {
     window.history.replaceState({}, '', newUrl);
   }, [value, location.search, location.pathname]);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
     history(`?tab=${newValue}`);
   };
 
   return (
-    <Box
-      sx={{
-        backgroundColor: '#f1f1f1',
-      }}
-    >
-      <Tabs value={value} onChange={handleChange}>
-        <Tab label="Users" />
-        <Tab label="Networks" />
-        <Tab label="Accounts" />
-        <Tab label="Integrations" />
-        <Tab label="Wallet Inspector" />
-        {/*<Tab label="Strategies" />*/}
-      </Tabs>
-      <TabPanel value={value} index={0}>
-        <UsersTab />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <NetworksTab />
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <AccountsTab />
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        <IntegrationsTab />
-      </TabPanel>
-      <TabPanel value={value} index={4}>
-        <WalletInspectorTab />
-      </TabPanel>
-    </Box>
+    <CustomTabs
+      value={value}
+      tabLabels={tabLabels}
+      tabs={tabsElements}
+      onChangeTab={handleTabChange}
+    />
   );
 };

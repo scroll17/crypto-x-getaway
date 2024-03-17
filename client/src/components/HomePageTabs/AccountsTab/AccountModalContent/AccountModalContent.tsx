@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 import { Box, Grid, Typography } from '@mui/material';
 import { BlockchainAccountEntity } from '@types/action/blockchain/account';
+import { stringToColour } from '@utils/stringToColor';
 
 import { CustomLabel } from '../../../CustomLabel';
-import {stringToColour} from "@utils/stringToColor";
+import { CustomTabs } from '../../../CustomTabs/CustomTabs';
 
 interface AccountModalContentProps {
   data: BlockchainAccountEntity;
@@ -18,10 +19,17 @@ const boxStyle = {
   color: 'white',
 };
 
+const tabLabels = ['Comments', 'Adress', 'Network', 'Transactions'];
+
 export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
+  const [value, setValue] = useState(0);
   if (!data) {
     return;
   }
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
   return (
     <Grid sx={{ border: '2px dashed', p: 3 }} container rowGap={2}>
@@ -93,6 +101,19 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
         </Grid>
         <Grid item xs={6}>
           <Typography>{data.address}</Typography>
+        </Grid>
+      </Grid>
+      <Grid container alignItems="center" sx={{ pt: 3 }}>
+        <Grid item xs={12}>
+          <CustomTabs
+            value={value}
+            tabLabels={tabLabels}
+            tabs={[
+              { index: 0, renderContent: () => 'hekko1' },
+              { index: 1, renderContent: () => 'hekko2' },
+            ]}
+            onChangeTab={handleTabChange}
+          />
         </Grid>
       </Grid>
     </Grid>
