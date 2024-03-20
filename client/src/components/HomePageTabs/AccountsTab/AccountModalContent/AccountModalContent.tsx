@@ -22,13 +22,13 @@ const boxStyle = {
 const tabLabels = ['Comments', 'Adress', 'Network', 'Transactions'];
 
 export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
-  const [value, setValue] = useState(0);
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
   if (!data) {
     return;
   }
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    setActiveTabIndex(newValue);
   };
 
   return (
@@ -106,7 +106,7 @@ export const AccountModalContent: FC<AccountModalContentProps> = ({ data }) => {
       <Grid container alignItems="center" sx={{ pt: 3 }}>
         <Grid item xs={12}>
           <CustomTabs
-            value={value}
+            value={activeTabIndex}
             tabLabels={tabLabels}
             tabs={[
               { index: 0, renderContent: () => 'hekko1' },
